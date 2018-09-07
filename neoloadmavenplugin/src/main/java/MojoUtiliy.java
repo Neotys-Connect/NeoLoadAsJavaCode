@@ -1,3 +1,4 @@
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +14,7 @@ public final class MojoUtiliy {
 	private MojoUtiliy() {
 	}
 
-	public static String[] generateCmd(String projectPath, String neoLoadPath, String nlscenario, String resultFolder, String nlWebUrl, String nlapikey) throws NeoLoadException {
+	public static String[] generateCmd(String projectPath, String neoLoadPath, String nlscenario, String resultFolder, String nlWebUrl, String nlapikey, URL ntsUrl, String ntsLogin, String ntsPassword, String ntsLicenseID,int ntsmaxVu,int ntsmaxhour) throws NeoLoadException {
 
 		final ArrayList<String> cmdArray = new ArrayList<>();
 
@@ -58,7 +59,23 @@ public final class MojoUtiliy {
 		cmdArray.add("-SLAJUnitResults");
 		cmdArray.add( resultFolder + fileSeperator + "junit.xml");
 
+		if(ntsUrl!= null)
+		{
+			//-----case of using NTS for storing the license-----------
+			if(ntsLogin==null || ntsPassword==null || ntsLicenseID==null)
+				throw new NeoLoadException("NTS error : Login , Password and LicenseID cannot be null");
 
+			//cmd.addRaw("-leaseLicense "+"\""+this.NTSLicenseID+":"+NbVU+":"+Nbhour+"\"");
+
+			cmdArray.add("-NTS");
+			cmdArray.add(ntsUrl.toString());
+			cmdArray.add("-NTSLogin");
+			cmdArray.add(ntsLogin+":"+ntsPassword);
+			cmdArray.add("-leaseLicense");
+			cmdArray.add(ntsLicenseID+":"+String.valueOf(ntsmaxVu)+":"+String.valueOf(ntsmaxVu));
+
+			//-----------------------------------------------------------
+		}
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Date.from(Instant.now()));
 

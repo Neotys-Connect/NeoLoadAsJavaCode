@@ -87,8 +87,13 @@ public class NeoLoadMojo extends AbstractNeoLoadMojo {
 							scenarioname,
 							this.reportDirectory.getAbsolutePath(),
 							this.neoLoadWebUrl.toString(),
-							this.neoLoadWebAPIKey
-					);
+							this.neoLoadWebAPIKey,
+							this.neotysTeamServerURL,
+							this.neotysTeamServerLogin,
+							this.neotysTeamServerEncryptedPassword,
+							this.neotysTeamServerLicenseID,
+							this.neotysTeamMaxVuRequired,
+							this.neotysTeamMaxTestDuration);
 					log.info("Going to run NeoLoadCmd.");
 					log.info(asList(command).toString());
 					Process p = Runtime.getRuntime()

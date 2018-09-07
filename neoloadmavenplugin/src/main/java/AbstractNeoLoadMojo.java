@@ -36,4 +36,21 @@ public abstract class AbstractNeoLoadMojo  extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/neoload/reports")
     protected File reportDirectory;
 
+    @Parameter
+    protected URL neotysTeamServerURL;
+
+    @Parameter
+    protected String neotysTeamServerLogin;
+
+    @Parameter
+    protected String neotysTeamServerEncryptedPassword;
+
+    @Parameter
+    protected String neotysTeamServerLicenseID;
+
+    @Parameter
+    protected int neotysTeamMaxVuRequired;
+
+    @Parameter
+    protected int neotysTeamMaxTestDuration;
 }
