@@ -1,5 +1,4 @@
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -86,7 +85,7 @@ public class NeoLoadMojo extends AbstractNeoLoadMojo {
 							this.neoLoadInstallationDirectory.getAbsolutePath(),
 							scenarioname,
 							this.reportDirectory.getAbsolutePath(),
-							this.neoLoadWebUrl.toString(),
+							this.neoLoadWebAPIUrl.toString(),
 							this.neoLoadWebAPIKey,
 							this.neotysTeamServerURL,
 							this.neotysTeamServerLogin,

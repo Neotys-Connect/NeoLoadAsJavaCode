@@ -24,6 +24,9 @@ public abstract class AbstractNeoLoadMojo  extends AbstractMojo {
     protected File neoLoadInstallationDirectory;
 
     @Parameter
+    protected URL neoLoadWebAPIUrl;
+
+    @Parameter
     protected URL neoLoadWebUrl;
 
     @Parameter
@@ -53,4 +56,11 @@ public abstract class AbstractNeoLoadMojo  extends AbstractMojo {
 
     @Parameter
     protected int neotysTeamMaxTestDuration;
+
+    @Parameter
+    protected String neoloadWebControllerID;
+
+    @Parameter
+    protected String neoloadWeblgZonneID;
+
 }

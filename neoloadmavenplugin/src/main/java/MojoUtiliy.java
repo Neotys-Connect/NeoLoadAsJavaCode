@@ -1,9 +1,14 @@
+import io.swagger.client.ApiClient;
+import io.swagger.client.ApiException;
+import io.swagger.client.api.RuntimeApi;
+import io.swagger.client.model.ProjectDefinition;
+import io.swagger.client.model.RunTestDefinition;
+import io.swagger.client.model.ScenarioDefinition;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.time.Instant;
 
 /**
@@ -11,11 +16,52 @@ import java.time.Instant;
  */
 final class MojoUtiliy {
 	private static boolean IS_WINDOWS = SystemUtils.IS_OS_WINDOWS;
+	private static final String TESTNAME="Maven Test";
 	private static String neoLoadCmd = "NeoLoadCmd";
-
 	private MojoUtiliy() {
 	}
 
+	public static List<String> executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL) throws ApiException, NeoLoadException {
+		//---open the Json File to get the List of project and scenarios to execute----
+		List<String> testresultsurl=new ArrayList<>();
+
+		ApiClient nlWebApiClient=new ApiClient();
+		// Configure API key authorization: NeoloadAuthorizer
+		nlWebApiClient.setBasePath(nLwebAPIURL.toString());
+		nlWebApiClient.setApiKey(token);
+		RuntimeApi runtimeApi=new RuntimeApi(nlWebApiClient);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(Date.from(Instant.now()));
+
+		// Create a filename from a format string.
+		// ... Apply date formatting codes.
+		String description = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal) ;
+		///----start the upload of the project----
+
+		ProjectDefinition projectDefinition=runtimeApi.postUploadProject(new File(projectPath));
+		String nlWebScenario=getScenarioFromdefinition(projectDefinition,scenarioName);
+		if(nlWebScenario!=null) {
+			RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME+" "+ scenarioName,projectDefinition.getProjectId(),nlWebScenario,TESTNAME +description,controllerID,lgzoneID,true);
+			testresultsurl.add(nlwebURL.toString()+"/#!trend/?scenario="+nlWebScenario+"&limit=-1&project="+projectDefinition.getProjectId());
+			testresultsurl.add(nlwebURL.toString()+"/#!result/"+runTestDefinition.getTestId()+"/overview");
+			return testresultsurl;
+		}
+		else {
+			throw new NeoLoadException(scenarioName+" is not found on the project upload on NLWEB");
+		}
+	}
+	private static String getScenarioFromdefinition(ProjectDefinition projectDefinition,String scenarioname)
+	{
+		List<ScenarioDefinition> scenarioDefinitionList=projectDefinition.getScenarios();
+
+		Optional<ScenarioDefinition> optionalScenarioDefinition=scenarioDefinitionList.stream().filter(scenarioDefinition -> scenarioDefinition.getScenarioName().equalsIgnoreCase(scenarioname)).findFirst();
+		if(optionalScenarioDefinition.isPresent())
+		{
+			return optionalScenarioDefinition.get().getScenarioName();
+		}
+		else
+			return null;
+	}
 	public static String[] generateCmd(String projectPath, String neoLoadPath, String nlscenario, String resultFolder, String nlWebUrl, String nlapikey, URL ntsUrl, String ntsLogin, String ntsPassword, String ntsLicenseID,int ntsmaxVu,int ntsmaxhour) throws NeoLoadException {
 
 		final ArrayList<String> cmdArray = new ArrayList<>();
@@ -83,12 +129,15 @@ final class MojoUtiliy {
 
 		// Create a filename from a format string.
 		// ... Apply date formatting codes.
-		String resultlastname = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal);
+		String resultlastname = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal) ;
 		cmdArray.add("-description");
 		cmdArray.add( projectPath + "_" + resultlastname);
 
+
 		cmdArray.add("-report");
 		cmdArray.add(resultFolder + fileSeperator + "report.xml," + resultFolder + fileSeperator + "report.pdf");
+
+
 
 		return cmdArray.toArray(new String[0]);
 

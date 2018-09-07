@@ -1,3 +1,5 @@
+import io.swagger.client.ApiException;
+import io.swagger.client.model.ProjectDefinition;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -12,6 +14,7 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by hrexed on 10/07/18.
@@ -32,34 +35,50 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
         log.info(LINE_SEPARATOR);
         log.info("NEOLOAD P E R F O R M A N C E    T E S T S");
         log.info(LINE_SEPARATOR);
-//        try {
 
 
+
+            if (neoLoadWebAPIUrl.toString().isEmpty()) {
+                log.info("<neoLoadWebAPIUrl>" + neoLoadWebAPIUrl.toString() + "</neoLoadWebAPIUrl> does not exist...");
+                log.info("Performance tests are skipped.");
+                return;
+            }
             if (neoLoadWebUrl.toString().isEmpty()) {
-                getLog().info("<neoLoadWebUrl>" + neoLoadWebUrl.toString() + "</neoLoadWebUrl> does not exist...");
-                getLog().info("Performance tests are skipped.");
+                log.info("<neoLoadWebUrl>" + neoLoadWebUrl.toString() + "</neoLoadWebUrl> does not exist...");
+                log.info("Performance tests are skipped.");
                 return;
             }
             if (neoLoadWebAPIKey.isEmpty()) {
-                getLog().info("<neoLoadWebAPIKey>" + neoLoadWebAPIKey + "</neoLoadWebAPIKey> does not exist...");
-                getLog().info("Performance tests are skipped.");
+                log.info("<neoLoadWebAPIKey>" + neoLoadWebAPIKey + "</neoLoadWebAPIKey> does not exist...");
+                log.info("Performance tests are skipped.");
+                return;
+            }
+            if (neoloadWebControllerID.isEmpty()) {
+                log.info("<neoloadWebControllerID>" + neoloadWebControllerID + "</neoloadWebControllerID> does not exist...");
+                log.info("Performance tests are skipped.");
+                return;
+            }
+            if (neoloadWeblgZonneID.isEmpty()) {
+                log.info("<neoloadWeblgZonneID>" + neoloadWeblgZonneID + "</neoloadWeblgZonneID> does not exist...");
+                log.info("Performance tests are skipped.");
+                return;
+            }
+            if (neoLoadWebAPIKey.isEmpty()) {
+                log.info("<neoLoadWebAPIKey>" + neoLoadWebAPIKey + "</neoLoadWebAPIKey> does not exist...");
+                log.info("Performance tests are skipped.");
                 return;
             }
             listofTest=new File(neoLoadProjectDirectory.getAbsolutePath()+"/"+NeoLoad_List_of_Test);
             if(!listofTest.exists())
             {
-                getLog().info("<testFilesDirectory>" + neoLoadProjectDirectory.getAbsolutePath()+"/"+NeoLoad_List_of_Test + "</testFilesDirectory> does not exist...");
-                getLog().info("Performance tests are skipped.");
+                log.info("<testFilesDirectory>" + neoLoadProjectDirectory.getAbsolutePath()+"/"+NeoLoad_List_of_Test + "</testFilesDirectory> does not exist...");
+                log.info("Performance tests are skipped.");
                 return;
             }
 
 
-            //---open the Json File to get the List of project and scenarios to execute----
-//            ApiClient nlWebApiClient=new ApiClient();
-//            // Configure API key authorization: NeoloadAuthorizer
-//            nlWebApiClient.setBasePath(neoLoadWebUrl.toString());
-//            nlWebApiClient.setApiKey(neoLoadWebAPIKey);
-//            nlWebApiClient.p
+
+
             try {
 
                 parser = new JSONParser();
@@ -70,12 +89,12 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
             }
             catch(IOException e)
             {
-                getLog().error(e.getMessage());
+                log.error(e.getMessage());
                 return;
             }
             catch(ParseException e)
             {
-                getLog().error(e.getMessage());
+                log.error(e.getMessage());
                 return;
             }
             for(int i=0;i<projectList.size();i++)
@@ -94,24 +113,39 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                     log.info(LINE_SEPARATOR);
 
 
+                    try {
+                        List<String> nltesturl=MojoUtiliy.executeTestOnNLWEB(
+                                neoLoadWebAPIKey,
+                                neoLoadWebAPIUrl,
+                                scenarioname,
+                                nlprojectpath,
+                                neoloadWebControllerID,
+                                neoloadWeblgZonneID,
+                                neoLoadWebUrl
+                        );
+                        if(nltesturl !=null)
+                        {
+                            if(nltesturl.size()>1)
+                            {
+                                log.info("Trending URL : " + nltesturl.get(0));
+                                log.info("Testing result url : "+nltesturl.get(1));
+                            }
+                        }
+                        else
+                            throw new MojoExecutionException("Impossible to launche the scenario "+scenarioname+" on the project "+ nlprojectpath);
+
+                    } catch (ApiException e) {
+                        log.error("Error uploading the project ",e );
+                        throw new MojoExecutionException("Error uploading the project "+e.getMessage());
+                    } catch (NeoLoadException e) {
+                        log.error("Issue with the upload of the project",e);
+                        throw new MojoExecutionException("Error uploading the project "+e.getMessage());
+
+                    }
 
                 }
             }
 
 
-//        }
-//        catch(NeoLoadException e) {
-//            log.error(e.getMessage());
-//            throw new MojoExecutionException(e.getMessage());
-//        }
-//        catch(InterruptedException e) {
-//            log.error(e.getMessage());
-//            throw new MojoExecutionException(e.getMessage());
-//
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//            throw new MojoExecutionException(e.getMessage());
-//
-//        }
     }
 }
