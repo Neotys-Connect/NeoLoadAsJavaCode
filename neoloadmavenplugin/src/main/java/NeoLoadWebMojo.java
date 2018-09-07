@@ -20,7 +20,7 @@ import java.util.List;
  * Created by hrexed on 10/07/18.
  */
 @Mojo(name = "neoloadweb", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
-@Execute(goal = "NeoLoadWebTest")
+@Execute(goal = "neoloadweb")
 public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
