@@ -1,16 +1,17 @@
-import io.swagger.client.ApiClient;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Created by hrexed on 10/07/18.
@@ -31,7 +32,7 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
         log.info(LINE_SEPARATOR);
         log.info("NEOLOAD P E R F O R M A N C E    T E S T S");
         log.info(LINE_SEPARATOR);
-        try {
+//        try {
 
 
             if (neoLoadWebUrl.toString().isEmpty()) {
@@ -54,11 +55,11 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
 
 
             //---open the Json File to get the List of project and scenarios to execute----
-            ApiClient nlWebApiClient=new ApiClient();
-            // Configure API key authorization: NeoloadAuthorizer
-            nlWebApiClient.setBasePath(neoLoadWebUrl.toString());
-            nlWebApiClient.setApiKey(neoLoadWebAPIKey);
-            nlWebApiClient.p
+//            ApiClient nlWebApiClient=new ApiClient();
+//            // Configure API key authorization: NeoloadAuthorizer
+//            nlWebApiClient.setBasePath(neoLoadWebUrl.toString());
+//            nlWebApiClient.setApiKey(neoLoadWebAPIKey);
+//            nlWebApiClient.p
             try {
 
                 parser = new JSONParser();
@@ -77,15 +78,15 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                 getLog().error(e.getMessage());
                 return;
             }
-            for(int i=0;i<projectList.length();i++)
+            for(int i=0;i<projectList.size();i++)
             {
                 //----for each nl proejct---
-                JSONObject nlProject = projectList.getJSONObject(i);
-                nlprojectpath= nlProject.getString("Project");
-                JSONArray scenarioList=nlProject.getJSONArray("Scenarios");
-                for(int j=0;j<scenarioList.length();j++)
+                JSONObject nlProject = (JSONObject) projectList.get(i);
+                nlprojectpath= (String) nlProject.get("Project");
+                JSONArray scenarioList= (JSONArray) nlProject.get("Scenarios");
+                for(int j=0;j<scenarioList.size();j++)
                 {
-                    String scenarioname=scenarioList.getString(j);
+                    String scenarioname= (String) scenarioList.get(j);
                     log.info(LINE_SEPARATOR);
                     log.info("Project : " + nlprojectpath);
                     log.info(LINE_SEPARATOR);
@@ -98,19 +99,19 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
             }
 
 
-        }
-        catch(NeoLoadException e) {
-            log.error(e.getMessage());
-            throw new MojoExecutionException(e.getMessage());
-        }
-        catch(InterruptedException e) {
-            log.error(e.getMessage());
-            throw new MojoExecutionException(e.getMessage());
-
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new MojoExecutionException(e.getMessage());
-
-        }
+//        }
+//        catch(NeoLoadException e) {
+//            log.error(e.getMessage());
+//            throw new MojoExecutionException(e.getMessage());
+//        }
+//        catch(InterruptedException e) {
+//            log.error(e.getMessage());
+//            throw new MojoExecutionException(e.getMessage());
+//
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//            throw new MojoExecutionException(e.getMessage());
+//
+//        }
     }
 }
