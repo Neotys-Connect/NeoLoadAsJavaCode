@@ -20,7 +20,7 @@ import static java.util.Arrays.asList;
 @Execute(goal = "neoload")
 public class NeoLoadMojo extends AbstractNeoLoadMojo {
 	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	public void execute() throws MojoExecutionException {
 		String line;
 		File ListofTest;
 		JSONObject neoloadJsonObj;
@@ -98,7 +98,6 @@ public class NeoLoadMojo extends AbstractNeoLoadMojo {
 					log.info(asList(command).toString());
 					Process p = Runtime.getRuntime()
 							.exec(command);
-					p.waitFor();
 					BufferedReader bri = new BufferedReader
 							(new InputStreamReader(p.getInputStream()));
 					BufferedReader bre = new BufferedReader
@@ -112,23 +111,18 @@ public class NeoLoadMojo extends AbstractNeoLoadMojo {
 						log.error(line + "\n");
 					}
 					bre.close();
-					p.waitFor();
-
+					final int exitStatus = p.waitFor();
+					if (exitStatus == 0)
+						log.info("Test success.");
+					else
+						log.error("Test failure");
 				}
 			}
 
 
-		} catch (NeoLoadException e) {
+		} catch (NeoLoadException | IOException | InterruptedException e) {
 			log.error(e.getMessage());
 			throw new MojoExecutionException(e.getMessage());
-		} catch (InterruptedException e) {
-			log.error(e.getMessage());
-			throw new MojoExecutionException(e.getMessage());
-
-		} catch (IOException e) {
-			log.error(e.getMessage());
-			throw new MojoExecutionException(e.getMessage());
-
 		}
 
 	}

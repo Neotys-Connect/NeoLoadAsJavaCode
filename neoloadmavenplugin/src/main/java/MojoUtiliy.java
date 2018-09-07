@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.SystemUtils;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,10 +9,10 @@ import java.time.Instant;
 /**
  * Created by hrexed on 29/06/18.
  */
-public final class MojoUtiliy {
-	private static final String SPACE = " ";
-	public static boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
+final class MojoUtiliy {
+	private static boolean IS_WINDOWS = SystemUtils.IS_OS_WINDOWS;
 	private static String neoLoadCmd = "NeoLoadCmd";
+
 	private MojoUtiliy() {
 	}
 
@@ -48,7 +50,7 @@ public final class MojoUtiliy {
 			cmdArray.add("-nlwebAPIURL");
 			cmdArray.add(nlWebUrl);
 
-			cmdArray.add("-nlwebToken ");
+			cmdArray.add("-nlwebToken");
 			cmdArray.add(nlapikey);
 
 		}
@@ -81,15 +83,12 @@ public final class MojoUtiliy {
 
 		// Create a filename from a format string.
 		// ... Apply date formatting codes.
-		String resultlastname = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal) + SPACE;
+		String resultlastname = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal);
 		cmdArray.add("-description");
 		cmdArray.add( projectPath + "_" + resultlastname);
 
-
 		cmdArray.add("-report");
 		cmdArray.add(resultFolder + fileSeperator + "report.xml," + resultFolder + fileSeperator + "report.pdf");
-
-
 
 		return cmdArray.toArray(new String[0]);
 
