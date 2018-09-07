@@ -20,16 +20,16 @@ public abstract class BaseNeoLoadDesign {
 	private final Map<String, Variable> variableByNames;
 
 	protected BaseNeoLoadDesign() {
-		serverByNames = new HashMap<String, Server>();
-		userPathByName = new HashMap<String, BaseNeoLoadUserPath>();
-		variableByNames = new HashMap<String, Variable>();
+		serverByNames = new HashMap<>();
+		userPathByName = new HashMap<>();
+		variableByNames = new HashMap<>();
 		init();
 	}
 
 	//---------------------------------------------------------
 	//--  init() : Method to initialize variables and servers
 	//-----------------------------------------------------
-	public void init() {
+	private void init() {
 		createVariables();
 		createServers();
 		createNeoLoadUserPaths();
@@ -45,6 +45,12 @@ public abstract class BaseNeoLoadDesign {
 		serverByNames.put(server.getName(), server);
 	}
 
+	public void addServers(final Server... servers) {
+		for (final Server server : servers) {
+			addServer(server);
+		}
+	}
+
 	public void addVariable(final Variable variable) {
 		variableByNames.put(variable.getName(), variable);
 	}
@@ -52,12 +58,6 @@ public abstract class BaseNeoLoadDesign {
 	public void addVariables(final Variable... variables) {
 		for (final Variable variable : variables) {
 			addVariable(variable);
-		}
-	}
-
-	public void addServers(final Server... servers) {
-		for (final Server server : servers) {
-			addServer(server);
 		}
 	}
 

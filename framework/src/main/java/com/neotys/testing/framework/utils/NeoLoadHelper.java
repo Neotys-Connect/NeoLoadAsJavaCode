@@ -30,7 +30,6 @@ public final class NeoLoadHelper {
 				.build();
 	}
 
-
 	public static Server createServer(final String host, final int port) {
 		return ImmutableServer.builder()
 				.name(host)
@@ -39,18 +38,9 @@ public final class NeoLoadHelper {
 				.build();
 	}
 
-//  TODO seems not to be mandatory, Variable should be sufficient
-// public static Server createServer(final ConstantVariable host, final ConstantVariable port) {
-//		return ImmutableServer.builder()
-//				.name(host.getName())
-//				.host("${" + host.getName() + "}")
-//				.port("${" + port.getName() + "}")
-//				.build();
-//	}
-
-	public static Server createServer(final Variable host, final Variable port) {
+	public static Server createServer(final String serverName, final Variable host, final Variable port) {
 		return ImmutableServer.builder()
-				.name(host.getName())
+				.name(serverName)
 				.host(variabilize(host))
 				.port(variabilize(port))
 				.build();
@@ -79,6 +69,10 @@ public final class NeoLoadHelper {
 				.policy(VariablePolicy.EACH_VUSER)
 				.scope(VariableScope.GLOBAL)
 				.build();
+	}
+
+	public static ConstantVariable createConstantVariable(final String variableName, final String value) {
+		return createConstantVariable(variableName, variableName, value);
 	}
 
 	public static RandomNumberVariable createRandomNumberVariable(final String name, final String description, final VariablePolicy changePolicy,
