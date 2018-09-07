@@ -35,8 +35,8 @@ public abstract class NeoLoadTest {
 
 	@Before
 	public void init() {
-		populations = new ArrayList<>();
-		scenarios = new ArrayList<>();
+		this.populations = new ArrayList<>();
+		this.scenarios = new ArrayList<>();
 		this.design = design();
 		this.projectName = projectName();
 		generateDefaultPopulation();
