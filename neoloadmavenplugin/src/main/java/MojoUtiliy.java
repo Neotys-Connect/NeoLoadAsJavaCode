@@ -38,19 +38,26 @@ public final class MojoUtiliy {
 		cmdArray.add(nlscenario);
 		cmdArray.add("-noGUI");
 
-		result.append(" -project " + "\"" + projectPath + "\"" + SPACE);
 		if (nlWebUrl != null) {
 			if (nlapikey == null) {
 				throw new NeoLoadException("NLWEB Error : The API cannot be empty");
 			}
-			result.append("-nlweb" + SPACE);
+			cmdArray.add("-nlweb");
 
-			result.append("-nlwebAPIURL " + "\"" + nlWebUrl + "\"" + SPACE);
-			result.append("-nlwebToken " + "\"" + nlapikey + "\"" + SPACE);
+			cmdArray.add("-nlwebAPIURL");
+			cmdArray.add(nlWebUrl);
+
+			cmdArray.add("-nlwebToken ");
+			cmdArray.add(nlapikey);
+
 		}
 
-		result.append("-SLAJUnitMapping \"pass\"" + SPACE);
-		result.append("-SLAJUnitResults \"" + resultFolder + fileSeperator + "junit.xml\"" + SPACE);
+		cmdArray.add("-SLAJUnitMapping");
+		cmdArray.add("pass");
+
+		cmdArray.add("-SLAJUnitResults");
+		cmdArray.add( resultFolder + fileSeperator + "junit.xml");
+
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Date.from(Instant.now()));
@@ -58,11 +65,14 @@ public final class MojoUtiliy {
 		// Create a filename from a format string.
 		// ... Apply date formatting codes.
 		String resultlastname = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal) + SPACE;
-		result.append("-description \"" + projectPath + "_" + resultlastname + "\"" + SPACE);
+		cmdArray.add("-description");
+		cmdArray.add( projectPath + "_" + resultlastname);
 
-		result.append("-report \"" + resultFolder + fileSeperator + "report.xml," + resultFolder + fileSeperator + "report.pdf\"" + SPACE);
-		result.append("-launch " + "\"" + nlscenario + "\"" + SPACE);
-		result.append("-noGUI");
+
+		cmdArray.add("-report");
+		cmdArray.add(resultFolder + fileSeperator + "report.xml," + resultFolder + fileSeperator + "report.pdf");
+
+
 
 		return cmdArray.toArray(new String[0]);
 
