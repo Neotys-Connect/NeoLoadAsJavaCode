@@ -1,5 +1,6 @@
 package com.neotys.testing.framework;
 
+import com.google.common.collect.ImmutableMap;
 import com.neotys.neoload.model.ImmutableProject;
 import com.neotys.neoload.model.Project;
 import com.neotys.neoload.model.repository.*;
@@ -127,6 +128,13 @@ public abstract class NeoLoadTest {
 		//---Add all the Variables IN the project--------
 		projectBuilder.addAllVariables(design.getVariables().values());
 
+		final List<File> files = design.getVariables().values().stream().filter(v -> v instanceof FileVariable)
+				.map(v -> (FileVariable) v)
+				.map(FileVariable::getFileName)
+				.map(path -> new File(path.get()))
+				.collect(Collectors.toList());
+
+
 		//--add all the servers in the project---------
 		projectBuilder.addAllServers(design.getServers().values());
 
@@ -145,8 +153,8 @@ public abstract class NeoLoadTest {
 
 		final String output = getOrCreateProjectFolder(project);
 		//-----creation of the project
-		NeoLoadWriter writer = new NeoLoadWriter(project, output, null);
-		writer.write(false);
+		NeoLoadWriter writer = new NeoLoadWriter(project, output, ImmutableMap.of("variables", files));
+		writer.write(true);
 
 		//------
 
