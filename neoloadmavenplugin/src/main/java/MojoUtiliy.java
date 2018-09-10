@@ -6,10 +6,15 @@ import io.swagger.client.model.RunTestDefinition;
 import io.swagger.client.model.ScenarioDefinition;
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.time.Instant;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by hrexed on 29/06/18.
@@ -21,7 +26,7 @@ final class MojoUtiliy {
 	private MojoUtiliy() {
 	}
 
-	public static List<String> executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL) throws ApiException, NeoLoadException {
+	public static List<String> executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL) throws ApiException, NeoLoadException, IOException {
 		//---open the Json File to get the List of project and scenarios to execute----
 		List<String> testresultsurl=new ArrayList<>();
 
@@ -38,17 +43,22 @@ final class MojoUtiliy {
 		String description = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal) ;
 		///----start the upload of the project----
 
-		ProjectDefinition projectDefinition=runtimeApi.postUploadProject(new File(projectPath));
-		String nlWebScenario=getScenarioFromdefinition(projectDefinition,scenarioName);
-		if(nlWebScenario!=null) {
-			RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME+" "+ scenarioName,projectDefinition.getProjectId(),nlWebScenario,TESTNAME +description,controllerID,lgzoneID,true);
-			testresultsurl.add(nlwebURL.toString()+"/#!trend/?scenario="+nlWebScenario+"&limit=-1&project="+projectDefinition.getProjectId());
-			testresultsurl.add(nlwebURL.toString()+"/#!result/"+runTestDefinition.getTestId()+"/overview");
-			return testresultsurl;
+		File nlcompressedfile=new File(compressNLProject(projectPath));
+		if(nlcompressedfile.exists()) {
+			ProjectDefinition projectDefinition = runtimeApi.postUploadProject(nlcompressedfile);
+			String nlWebScenario = getScenarioFromdefinition(projectDefinition, scenarioName);
+			if (nlWebScenario != null) {
+				RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME + " " + scenarioName, projectDefinition.getProjectId(), nlWebScenario, TESTNAME + description, controllerID, lgzoneID, true);
+				testresultsurl.add(nlwebURL.toString() + "/#!trend/?scenario=" + nlWebScenario + "&limit=-1&project=" + projectDefinition.getProjectId());
+				testresultsurl.add(nlwebURL.toString() + "/#!result/" + runTestDefinition.getTestId() + "/overview");
+				return testresultsurl;
+			} else {
+				throw new NeoLoadException(scenarioName + " is not found on the project upload on NLWEB");
+			}
 		}
-		else {
-			throw new NeoLoadException(scenarioName+" is not found on the project upload on NLWEB");
-		}
+		else
+			throw new NeoLoadException(nlcompressedfile.getAbsolutePath() + " does not exists");
+
 	}
 	private static String getScenarioFromdefinition(ProjectDefinition projectDefinition,String scenarioname)
 	{
@@ -61,6 +71,32 @@ final class MojoUtiliy {
 		}
 		else
 			return null;
+	}
+	private static String compressNLProject(String projectPath) throws IOException {
+		String sourcefolder=new File(projectPath).getParentFile().toString();
+		String nameofZipfile=new File(projectPath).getParentFile().getName();
+		String nameofZipfolder=new File(projectPath).getParentFile().getParentFile().toString();
+
+
+		String dist=nameofZipfolder+"/"+nameofZipfile+".zip";
+
+				Path p = Files.createFile(Paths.get(dist));
+		try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
+			Path pp = Paths.get(sourcefolder);
+			Files.walk(pp)
+					.filter(path -> !Files.isDirectory(path))
+					.forEach(path -> {
+						ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+						try {
+							zs.putNextEntry(zipEntry);
+							Files.copy(path, zs);
+							zs.closeEntry();
+						} catch (IOException e) {
+							System.err.println(e);
+						}
+					});
+		}
+		return dist;
 	}
 	public static String[] generateCmd(String projectPath, String neoLoadPath, String nlscenario, String resultFolder, String nlWebUrl, String nlapikey, URL ntsUrl, String ntsLogin, String ntsPassword, String ntsLicenseID,int ntsmaxVu,int ntsmaxhour) throws NeoLoadException {
 

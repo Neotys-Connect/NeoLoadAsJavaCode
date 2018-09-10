@@ -48,21 +48,13 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                 log.info("Performance tests are skipped.");
                 return;
             }
-            if (neoLoadWebAPIKey.isEmpty()) {
-                log.info("<neoLoadWebAPIKey>" + neoLoadWebAPIKey + "</neoLoadWebAPIKey> does not exist...");
-                log.info("Performance tests are skipped.");
-                return;
-            }
+
             if (neoloadWebControllerID.isEmpty()) {
                 log.info("<neoloadWebControllerID>" + neoloadWebControllerID + "</neoloadWebControllerID> does not exist...");
                 log.info("Performance tests are skipped.");
                 return;
             }
-            if (neoloadWeblgZonneID.isEmpty()) {
-                log.info("<neoloadWeblgZonneID>" + neoloadWeblgZonneID + "</neoloadWeblgZonneID> does not exist...");
-                log.info("Performance tests are skipped.");
-                return;
-            }
+
             if (neoLoadWebAPIKey.isEmpty()) {
                 log.info("<neoLoadWebAPIKey>" + neoLoadWebAPIKey + "</neoLoadWebAPIKey> does not exist...");
                 log.info("Performance tests are skipped.");
@@ -141,6 +133,9 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                         log.error("Issue with the upload of the project",e);
                         throw new MojoExecutionException("Error uploading the project "+e.getMessage());
 
+                    } catch (IOException e) {
+                        log.error("Issue generating the zip file",e);
+                        throw new MojoExecutionException("Issue generating the zip file",e);
                     }
 
                 }

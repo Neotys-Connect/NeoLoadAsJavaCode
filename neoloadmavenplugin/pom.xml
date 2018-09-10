@@ -6,7 +6,7 @@
 
     <groupId>com.neotys.neoload.mojo</groupId>
     <artifactId>neoload-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <description>neoload-maven-plugin</description>
     <packaging>maven-plugin</packaging>
 
@@ -69,6 +69,12 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-java-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>

@@ -23,10 +23,10 @@ public abstract class AbstractNeoLoadMojo  extends AbstractMojo {
     @Parameter( defaultValue = "c:\\Program Files\\NeoLoad", readonly = false )
     protected File neoLoadInstallationDirectory;
 
-    @Parameter
+    @Parameter(defaultValue = "https://neoload-rest.saas.neotys.com/")
     protected URL neoLoadWebAPIUrl;
 
-    @Parameter
+    @Parameter(defaultValue = "https://neoload.saas.neotys.com/")
     protected URL neoLoadWebUrl;
 
     @Parameter
