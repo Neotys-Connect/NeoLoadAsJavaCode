@@ -54,7 +54,12 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                 log.info("Performance tests are skipped.");
                 return;
             }
-
+            if(neoLoadWebUploadAPIUrl.toString().isEmpty())
+            {
+                log.info("<neoLoadWebUploadAPIUrl>" + neoLoadWebUploadAPIUrl + "</neoLoadWebUploadAPIUrl> does not exist...");
+                log.info("Performance tests are skipped.");
+                return;
+            }
             if (neoLoadWebAPIKey.isEmpty()) {
                 log.info("<neoLoadWebAPIKey>" + neoLoadWebAPIKey + "</neoLoadWebAPIKey> does not exist...");
                 log.info("Performance tests are skipped.");
@@ -113,7 +118,8 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                                 nlprojectpath,
                                 neoloadWebControllerID,
                                 neoloadWeblgZonneID,
-                                neoLoadWebUrl
+                                neoLoadWebUrl,
+                                neoLoadWebUploadAPIUrl
                         );
                         if(nltesturl !=null)
                         {

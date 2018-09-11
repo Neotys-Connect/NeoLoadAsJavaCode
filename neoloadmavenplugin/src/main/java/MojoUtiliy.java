@@ -26,13 +26,13 @@ final class MojoUtiliy {
 	private MojoUtiliy() {
 	}
 
-	public static List<String> executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL) throws ApiException, NeoLoadException, IOException {
+	public static List<String> executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL,URL neoLoadWebUploadAPIUrl) throws ApiException, NeoLoadException, IOException {
 		//---open the Json File to get the List of project and scenarios to execute----
 		List<String> testresultsurl=new ArrayList<>();
 
 		ApiClient nlWebApiClient=new ApiClient();
 		// Configure API key authorization: NeoloadAuthorizer
-		nlWebApiClient.setBasePath(nLwebAPIURL.toString());
+		nlWebApiClient.setBasePath(neoLoadWebUploadAPIUrl.toString());
 		nlWebApiClient.setApiKey(token);
 		RuntimeApi runtimeApi=new RuntimeApi(nlWebApiClient);
 		Calendar cal = Calendar.getInstance();
@@ -40,14 +40,18 @@ final class MojoUtiliy {
 
 		// Create a filename from a format string.
 		// ... Apply date formatting codes.
-		String description = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal) ;
+		String description = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp", cal) ;
 		///----start the upload of the project----
 
 		File nlcompressedfile=new File(compressNLProject(projectPath));
 		if(nlcompressedfile.exists()) {
 			ProjectDefinition projectDefinition = runtimeApi.postUploadProject(nlcompressedfile);
 			String nlWebScenario = getScenarioFromdefinition(projectDefinition, scenarioName);
-			if (nlWebScenario != null) {
+			if (nlWebScenario != null)
+			{
+				nlWebApiClient.setBasePath(nLwebAPIURL.toString());
+				nlWebApiClient.setApiKey(token);
+				runtimeApi=new RuntimeApi(nlWebApiClient);
 				RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME + " " + scenarioName, projectDefinition.getProjectId(), nlWebScenario, TESTNAME + description, controllerID, lgzoneID, true);
 				testresultsurl.add(nlwebURL.toString() + "/#!trend/?scenario=" + nlWebScenario + "&limit=-1&project=" + projectDefinition.getProjectId());
 				testresultsurl.add(nlwebURL.toString() + "/#!result/" + runTestDefinition.getTestId() + "/overview");
