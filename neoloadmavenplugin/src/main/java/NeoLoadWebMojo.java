@@ -1,5 +1,4 @@
 import io.swagger.client.ApiException;
-import io.swagger.client.model.ProjectDefinition;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -14,7 +13,6 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by hrexed on 10/07/18.
@@ -22,6 +20,7 @@ import java.util.List;
 @Mojo(name = "neoloadweb", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 @Execute(goal = "neoloadweb")
 public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
+    private static final String FAILED="FAILED";
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         String line;
@@ -111,7 +110,7 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
 
 
                     try {
-                        List<String> nltesturl=MojoUtiliy.executeTestOnNLWEB(
+                        NeoLoadWebTest nltesturl=MojoUtiliy.executeTestOnNLWEB(
                                 neoLoadWebAPIKey,
                                 neoLoadWebAPIUrl,
                                 scenarioname,
@@ -123,11 +122,19 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                         );
                         if(nltesturl !=null)
                         {
-                            if(nltesturl.size()>1)
-                            {
-                                log.info("Trending URL : " + nltesturl.get(0));
-                                log.info("Testing result url : "+nltesturl.get(1));
-                            }
+                                log.info("Trending URL : " + nltesturl.getTrendingurl());
+                                log.info("Testing result url : "+nltesturl.getTesturl());
+                                log.info("Test is currently running");
+                                NLWebTestStatus status=new NLWebTestStatus(neoLoadWebAPIUrl.toString(),neoLoadWebAPIKey,nltesturl.getTestid(),log);
+                                String teststatus=status.getFinalTestStatus();
+                                if(teststatus.equalsIgnoreCase(FAILED))
+                                {
+                                    log.info("Test has FAILED");
+                                    throw new MojoExecutionException("Test has FAILED");
+                                }
+                                else
+                                    log.info("Test has finished with sucess");
+
                         }
                         else
                             throw new MojoExecutionException("Impossible to launche the scenario "+scenarioname+" on the project "+ nlprojectpath);

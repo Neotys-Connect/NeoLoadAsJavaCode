@@ -8,9 +8,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.time.Instant;
 import java.util.zip.ZipEntry;
@@ -26,9 +24,8 @@ final class MojoUtiliy {
 	private MojoUtiliy() {
 	}
 
-	public static List<String> executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL,URL neoLoadWebUploadAPIUrl) throws ApiException, NeoLoadException, IOException {
+	public static NeoLoadWebTest executeTestOnNLWEB(String token, URL nLwebAPIURL, String scenarioName, String projectPath, String controllerID, String lgzoneID, URL nlwebURL,URL neoLoadWebUploadAPIUrl) throws ApiException, NeoLoadException, IOException {
 		//---open the Json File to get the List of project and scenarios to execute----
-		List<String> testresultsurl=new ArrayList<>();
 
 		ApiClient nlWebApiClient=new ApiClient();
 		// Configure API key authorization: NeoloadAuthorizer
@@ -53,9 +50,8 @@ final class MojoUtiliy {
 				nlWebApiClient.setApiKey(token);
 				runtimeApi=new RuntimeApi(nlWebApiClient);
 				RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME + " " + scenarioName, projectDefinition.getProjectId(), nlWebScenario, TESTNAME + description, controllerID, lgzoneID, true);
-				testresultsurl.add(nlwebURL.toString() + "/#!trend/?scenario=" + nlWebScenario + "&limit=-1&project=" + projectDefinition.getProjectId());
-				testresultsurl.add(nlwebURL.toString() + "/#!result/" + runTestDefinition.getTestId() + "/overview");
-				return testresultsurl;
+				NeoLoadWebTest result=new NeoLoadWebTest(runTestDefinition.getTestId(),nlwebURL.toString() + "/#!trend/?scenario=" + nlWebScenario + "&limit=-1&project=" + projectDefinition.getProjectId(),nlwebURL.toString() + "/#!result/" + runTestDefinition.getTestId() + "/overview");
+				return result;
 			} else {
 				throw new NeoLoadException(scenarioName + " is not found on the project upload on NLWEB");
 			}
@@ -80,11 +76,17 @@ final class MojoUtiliy {
 		String sourcefolder=new File(projectPath).getParentFile().toString();
 		String nameofZipfile=new File(projectPath).getParentFile().getName();
 		String nameofZipfolder=new File(projectPath).getParentFile().getParentFile().toString();
-
+		Path p;
 
 		String dist=nameofZipfolder+"/"+nameofZipfile+".zip";
 
-				Path p = Files.createFile(Paths.get(dist));
+		try {
+			p = Files.createFile(Paths.get(dist));
+		}
+		catch(FileAlreadyExistsException e)
+		{
+			p=Paths.get(dist);
+		}
 		try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
 			Path pp = Paths.get(sourcefolder);
 			Files.walk(pp)
