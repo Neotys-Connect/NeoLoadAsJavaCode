@@ -124,7 +124,7 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                         {
                                 log.info("Trending URL : " + nltesturl.getTrendingurl());
                                 log.info("Testing result url : "+nltesturl.getTesturl());
-                                log.info("Test is currently running");
+                                log.info("Init of the Test..... ");
                                 NLWebTestStatus status=new NLWebTestStatus(neoLoadWebAPIUrl.toString(),neoLoadWebAPIKey,nltesturl.getTestid(),log);
                                 String teststatus=status.getFinalTestStatus();
                                 if(teststatus.equalsIgnoreCase(FAILED))

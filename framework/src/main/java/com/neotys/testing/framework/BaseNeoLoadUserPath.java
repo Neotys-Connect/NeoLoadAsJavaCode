@@ -38,7 +38,30 @@ public abstract class BaseNeoLoadUserPath {
 				.value(parameterValue)
 				.build();
 	}
+	protected static RegexpValidator regexpValidator(final String validatorname,final String regexp,boolean hastocontain)
+	{
+		return ImmutableRegexpValidator.builder()
+				.name(validatorname)
+				.haveToContains(hastocontain)
+				.validationRegex(regexp)
+				.build();
+	}
+	protected static Header header(final String headerName,final String headervalue)
+	{
+		return ImmutableHeader.builder()
+				.headerName(headerName)
+				.headerValue(headervalue)
+				.build();
+	}
+	protected static VariableExtractor extractor(final String variableExtractorName, final String regexp,int occurence, boolean exitonerror) {
+		return ImmutableVariableExtractor.builder()
+				.name(variableExtractorName)
+				.regExp(regexp)
+				.nbOccur(occurence)
+				.exitOnError(exitonerror)
+				.build();
 
+	}
 	protected static Delay delay(final long duration) {
 		return delay(duration, "delay_" + DELAY_COUNTER.incrementAndGet(), false);
 	}
@@ -70,34 +93,76 @@ public abstract class BaseNeoLoadUserPath {
 				.endContainer(endContainer());
 	}
 
-	protected static ImmutablePostFormRequest.Builder postFormBuilder(final Server server, final String path, final Collection<Parameter> parameters, final Collection<Parameter> postParameters) {
+
+	protected static ImmutablePostFormRequest.Builder postFormBuilder(final Server server, final String path, final Collection<Parameter> parameters, final Collection<Parameter> postParameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
 		return ImmutablePostFormRequest.builder()
 				.name(path)
 				.path(path)
 				.server(server)
 				.httpMethod(Request.HttpMethod.POST)
 				.addAllPostParameters(postParameters)
-				.addAllParameters(parameters);
+				.addAllParameters(parameters)
+				.addAllExtractors(extractors)
+				.addAllValidators(validators);
 	}
 
-	protected static ImmutablePostTextRequest.Builder postTextBuilder(final Server server, final String path, final String data) {
+	protected static ImmutablePostFormRequest.Builder postFormBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<Parameter> parameters, final Collection<Parameter> postParameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		return ImmutablePostFormRequest.builder()
+				.name(path)
+				.path(path)
+				.server(server)
+				.httpMethod(Request.HttpMethod.POST)
+				.addAllPostParameters(postParameters)
+				.addAllParameters(parameters)
+				.addAllExtractors(extractors)
+				.addAllValidators(validators)
+				.addAllHeaders(headers);
+	}
+
+	protected static ImmutablePostTextRequest.Builder postTextBuilder(final Server server, final String path, final String data,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
 		return ImmutablePostTextRequest.builder()
 				.name(path)
 				.path(path)
 				.server(server)
 				.httpMethod(Request.HttpMethod.POST)
-				.data(data);
+				.data(data)
+				.addAllExtractors(extractors)
+				.addAllValidators(validators);
 	}
 
-	protected static ImmutableGetPlainRequest.Builder getBuilder(final Server server, final String path, final Collection<Parameter> parameters) {
+	protected static ImmutablePostTextRequest.Builder postTextBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final String data,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		return ImmutablePostTextRequest.builder()
+				.name(path)
+				.path(path)
+				.server(server)
+				.httpMethod(Request.HttpMethod.POST)
+				.data(data)
+				.addAllExtractors(extractors)
+				.addAllHeaders(headers)
+				.addAllValidators(validators);
+	}
+
+	protected static ImmutableGetPlainRequest.Builder getBuilder(final Server server, final String path, final Collection<Parameter> parameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
 		return ImmutableGetPlainRequest.builder()
 				.server(server)
 				.name(path)
 				.path(path)
 				.httpMethod(Request.HttpMethod.GET)
-				.addAllParameters(parameters);
+				.addAllParameters(parameters)
+				.addAllExtractors(extractors)
+				.addAllValidators(validators);
 	}
-
+	protected static ImmutableGetPlainRequest.Builder getBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<Parameter> parameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		return ImmutableGetPlainRequest.builder()
+				.server(server)
+				.name(path)
+				.path(path)
+				.httpMethod(Request.HttpMethod.GET)
+				.addAllParameters(parameters)
+				.addAllExtractors(extractors)
+				.addAllHeaders(headers)
+				.addAllValidators(validators);
+	}
 	protected static Container container(final String name, final Collection<Element> children) {
 		return ImmutableContainer.builder()
 				.name(name)

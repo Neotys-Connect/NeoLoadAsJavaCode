@@ -37,8 +37,8 @@ public class ApiUserPath extends BaseNeoLoadUserPath {
 				parameter("task", "report"),
 				parameter("incident_minute", "49")
 		);
-		final Request postRequest = postFormBuilder(server, "/api", emptyList(), postParameters).build();
-		final Request getRequest = getBuilder(server, "/main", emptyList()).build();
+		final Request postRequest = postFormBuilder(server, "/api", emptyList(), postParameters,emptyList(),emptyList()).build();
+		final Request getRequest = getBuilder(server, "/main", emptyList(),emptyList(),emptyList()).build();
 		final Delay delay1 = delay(800);
 		final Delay delay2 = thinkTime(1200);
 		final Container actionsContainer = actionsContainerBuilder()
