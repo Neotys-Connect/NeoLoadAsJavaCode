@@ -1,6 +1,8 @@
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.NeoLoadTest;
 
+import java.util.Optional;
+
 /**
  * Created by hrexed on 10/07/18.
  */
@@ -28,6 +30,6 @@ public class ApiLoadTest extends NeoLoadTest {
 
 	@Override
 	public void execute() {
-		createSimpleRampupLoadScenario("API test", "CreateReportAPI", 90, 1, 1, 5);
+		createSimpleRampupLoadScenario("API test", "CreateReportAPI", 90, 1, 1, Optional.empty(),5);
 	}
 }

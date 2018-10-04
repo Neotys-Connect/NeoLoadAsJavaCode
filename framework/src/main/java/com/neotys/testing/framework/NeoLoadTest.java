@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -219,8 +220,9 @@ public abstract class NeoLoadTest {
 		return neoloadDir.getAbsolutePath();
 	}
 
+	//#TODO limit the number of vu ( option)
 	protected void createSimpleRampupLoadScenario(final String scenarioName, final String userPathName, final int duration,
-	                                              final int initialNbVU, final int incrementNbVu, final int incrementTime) {
+												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		if (population != null) {
 			final Scenario scenario = ImmutableScenario.builder()
@@ -230,6 +232,7 @@ public abstract class NeoLoadTest {
 							.loadPolicy(ImmutableRampupLoadPolicy.builder().initialLoad(initialNbVU)
 									.incrementLoad(incrementNbVu)
 									.incrementTime(incrementTime)
+									.maximumLoad(maxvu)
 									.build())
 							.build())
 					.build();
