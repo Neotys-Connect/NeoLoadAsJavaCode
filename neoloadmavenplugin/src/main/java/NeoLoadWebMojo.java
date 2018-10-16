@@ -135,7 +135,6 @@ public class NeoLoadWebMojo extends AbstractNeoLoadMojo {
                                 else
                                     log.info("Test has finished with sucess");
 
-                                //#TODO show the global statistics----
                                  NlWebStatistics statistics=new NlWebStatistics(neoLoadWebAPIKey.toString(),neoLoadWebAPIUrl.toString(),nltesturl.getTestid());
                                  statistics.writeStatsinOutput(log);
 
