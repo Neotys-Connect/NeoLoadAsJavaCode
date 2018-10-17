@@ -14,7 +14,7 @@ NeoLoad maven plugin requires Maven >= 3.5.0 and is compatible with NeoLoad 6.6.
 This plugin requires a JDK between 8 and 10. 
 
 ## Junit Library
-###Add the Library in your project
+### Add the Library in your project
 Add the NeoLoad Junit library in the dependencies of your pom.xml file
 ```
         <dependency>
@@ -231,7 +231,7 @@ The plugin has too goals :
 - `neoload`  will run tests on a local NeoLoad Gui
 - `neoloadweb` will run the test from the NeoLoad Web Platform
 
-###Add the Plugin to your project
+### Add the Plugin to your project
 Add the plugin to the build section of your pom's project :
 ```
 <plugin>
@@ -249,16 +249,16 @@ Add the plugin to the build section of your pom's project :
     </configuration>
 </plugin>
 ```
-###NeoLoad Gui Configuration
+### NeoLoad Gui Configuration
 - NeoLoad Gui installation folder needs to be define on the parameter `<neoLoadInstallationDirectory>`
-##NeoLoad Web Configuration
+### NeoLoad Web Configuration
 - NeoLoad Web Platform url `<neoLoadWebUrl>`. If using [NeoLoad SaaS](https://neoload.saas.neotys.com/) platform the default value is : https://neoload.saas.neotys.com/
 - NeoLoad Web API url `<neoLoadWebUploadAPIUrl>`. If using NeoLoad Saas , the default value is : https://neoload-rest.saas.neotys.com/v1
 - NeoLoad Web Upload API url `<neoLoadWebUploadAPIUrl>`. If using NeoLoad Saas, the default value is : https://neoload-files.saas.neotys.com/v1
 - NeoLoad Web API key `<neoLoadWebAPIKey>`. To generate a NeoLoad API key follow the [online documentation](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#24621.htm)
 - Controller zoneId `<neoloadWebControllerID>`. This settings will define which controller zone will be use your the test. Here is a link to the [online documentation](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#27521.htm#o27522)
 - LoadGenerator zoneID `<neoloadWeblgZonneID>`. This parameter will define which Zone would be used for the test and the number of LoadGenerator required for the test. The value of this settings is zoneId:Number of LG. 
-##Licensing configuration
+### Licensing configuration
 The licensing configuration is optional and required if using NeoLoad Enterprise Licenses.
 - Neotys Team Server Url `<neotysTeamServerURL>`
 - Neotys Team Server Login `<neotysTeamServerLogin>`
@@ -266,8 +266,8 @@ The licensing configuration is optional and required if using NeoLoad Enterprise
 - LicenseId to use for this test `<neotysTeamServerLicenseID>`. The licenseID can be found in the [Neotys Team Server](https://www.neotys.com/documents/doc/nts/latest/en/html/#8728.htm)
 - Number of maximum Users required for the test `<neotysTeamMaxVuRequired>`
 - Maximum duration of the test `<neotysTeamMaxTestDuration>`
-###Run a Test
-####NeoLoad GUI
+### Run a Test
+#### NeoLoad GUI
 `mvn neoload:neoload`
-####NeoLoad Web
+#### NeoLoad Web
 `mvn neoload:neoloadweb`
