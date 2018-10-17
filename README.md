@@ -14,6 +14,16 @@ NeoLoad maven plugin requires Maven >= 3.5.0 and is compatible with NeoLoad 6.6.
 This plugin requires a JDK between 8 and 10. 
 
 ## Junit Library
+###Add the Library in your project
+Add the NeoLoad Junit library in the dependencies of your pom.xml file
+```
+        <dependency>
+            <groupId>com.neotys.ascode</groupId>
+            <artifactId>neoLoad-framework</artifactId>
+            <version>${neoload-maven-plugin.version}</version>
+            <scope>test</scope>
+        </dependency>      
+```
 
 Building a test case requires in minimum 3 classes :
   1. `BaseNeoLoadUserPath` that defines a NeoLoad [UserPath](https://www.neotys.com/documents/doc/neoload/latest/en/html/#787.htm) ( equivalent of testing script)
@@ -133,7 +143,7 @@ Several Helpers are available to :
 - Create servers :
     - `createServer`
 
-Examples of a Design :
+Example of a Design :
 ```java
 public class ApiTestDesign extends BaseNeoLoadDesign {
 
@@ -150,7 +160,6 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 	public void createVariables() {
 		final ConstantVariable server = createConstantVariable("sampledemo-host", "sampledemo.neotys.com");
 		final ConstantVariable port = createConstantVariable("sampledemo-port", "80");
-		//TODO take care about file path, perhaps we should use a mechanism to copy the source file to the NeoLoad project folder ?
 		final String pathFileName = Paths.get("src/test/resources/list_capital.csv").toAbsolutePath().toString();
 		final FileVariable location = createFileVariable("location", "Data Set for the location", pathFileName, true, ";", Variable.VariableScope.GLOBAL, Variable.VariableNoValuesLeftBehavior.CYCLE, Variable.VariableOrder.RANDOM, Variable.VariablePolicy.EACH_ITERATION, 1);
 
@@ -159,7 +168,6 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 
 	@Override
 	public void createServers() {
-		//TODO if variable not initialized => error
 		//use varname directly instead of getting var to use it
 		final Variable server = getVariableByName("sampledemo-host");
 		final Variable port = getVariableByName("sampledemo-port");
@@ -204,7 +212,6 @@ public class ApiLoadTest extends NeoLoadTest {
 	public void createComplexPopulation() {
 
 	}
-
 	@Override
 	public void createComplexScenario() {
 
@@ -219,3 +226,48 @@ public class ApiLoadTest extends NeoLoadTest {
 ```
 
 ## Maven Plugin
+The NeoLoad maven plugin allow you to run tests define from the NeoloadasCode Junit Library.
+The plugin has too goals :
+- `neoload`  will run tests on a local NeoLoad Gui
+- `neoloadweb` will run the test from the NeoLoad Web Platform
+
+###Add the Plugin to your project
+Add the plugin to the build section of your pom's project :
+```
+<plugin>
+    <groupId>com.neotys.neoload.mojo</groupId>
+    <artifactId>neoload-maven-plugin</artifactId>
+    <version>${neoload-maven-plugin.version}</version>
+    <configuration>
+        <neoLoadInstallationDirectory>/home/hrexed/Neoload6.6/</neoLoadInstallationDirectory>
+        <neoLoadWebUrl>https://neoload.saas.neotys.com/</neoLoadWebUrl>
+        <neoLoadWebAPIUrl>https://neoload-rest.saas.neotys.com/v1</neoLoadWebAPIUrl>
+        <neoLoadWebUploadAPIUrl>https://neoload-files.saas.neotys.com/v1</neoLoadWebUploadAPIUrl>
+        <neoloadWebControllerID>BdPRF</neoloadWebControllerID>
+        <neoloadWeblgZonneID>BdPRF:1</neoloadWeblgZonneID>
+        <neoLoadWebAPIKey>15304f743f34ca33c458927a40945b7424a2066b95563774</neoLoadWebAPIKey>
+    </configuration>
+</plugin>
+```
+###NeoLoad Gui Configuration
+- NeoLoad Gui installation folder needs to be define on the parameter `<neoLoadInstallationDirectory>`
+##NeoLoad Web Configuration
+- NeoLoad Web Platform url `<neoLoadWebUrl>`. If using [NeoLoad SaaS](https://neoload.saas.neotys.com/) platform the default value is : https://neoload.saas.neotys.com/
+- NeoLoad Web API url `<neoLoadWebUploadAPIUrl>`. If using NeoLoad Saas , the default value is : https://neoload-rest.saas.neotys.com/v1
+- NeoLoad Web Upload API url `<neoLoadWebUploadAPIUrl>`. If using NeoLoad Saas, the default value is : https://neoload-files.saas.neotys.com/v1
+- NeoLoad Web API key `<neoLoadWebAPIKey>`. To generate a NeoLoad API key follow the [online documentation](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#24621.htm)
+- Controller zoneId `<neoloadWebControllerID>`. This settings will define which controller zone will be use your the test. Here is a link to the [online documentation](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#27521.htm#o27522)
+- LoadGenerator zoneID `<neoloadWeblgZonneID>`. This parameter will define which Zone would be used for the test and the number of LoadGenerator required for the test. The value of this settings is zoneId:Number of LG. 
+##Licensing configuration
+The licensing configuration is optional and required if using NeoLoad Enterprise Licenses.
+- Neotys Team Server Url `<neotysTeamServerURL>`
+- Neotys Team Server Login `<neotysTeamServerLogin>`
+- Neotys Team Server encrypted password `<neotysTeamServerEncryptedPassword>`. To encrypt the password it's required to use [NeoLoad's password scramber](https://www.neotys.com/documents/doc/neoload/latest/en/html/#6418.htm)
+- LicenseId to use for this test `<neotysTeamServerLicenseID>`. The licenseID can be found in the [Neotys Team Server](https://www.neotys.com/documents/doc/nts/latest/en/html/#8728.htm)
+- Number of maximum Users required for the test `<neotysTeamMaxVuRequired>`
+- Maximum duration of the test `<neotysTeamMaxTestDuration>`
+###Run a Test
+####NeoLoad GUI
+`mvn neoload:neoload`
+####NeoLoad Web
+`mvn neoload:neoloadweb`
