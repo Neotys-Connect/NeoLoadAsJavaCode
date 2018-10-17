@@ -5,6 +5,7 @@ import com.neotys.neoload.model.repository.Variable.VariableNoValuesLeftBehavior
 import com.neotys.neoload.model.repository.Variable.VariableOrder;
 import com.neotys.neoload.model.repository.Variable.VariablePolicy;
 import com.neotys.neoload.model.repository.Variable.VariableScope;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,7 @@ public final class NeoLoadHelper {
 	public static CounterNumberVariable createCounterVariable(final String name, final String descritpion, final VariablePolicy changePolicy, final int startValue,
 	                                                          final int max, final int increment, final VariableScope scope,
 	                                                          final VariableNoValuesLeftBehavior noValueLeft) {
+
 		return ImmutableCounterNumberVariable.builder()
 				.description(descritpion)
 				.increment(increment)
@@ -100,6 +102,7 @@ public final class NeoLoadHelper {
 				.policy(changePolicy)
 				.build();
 	}
+
 
 	public static FileVariable createFileVariable(final String name, final String description, final String pathFileName, final boolean isFirstLineColumnName,
 	                                              final String columnDelimiter, final VariableScope scope,

@@ -220,7 +220,7 @@ public abstract class NeoLoadTest {
 		return neoloadDir.getAbsolutePath();
 	}
 
-	//#TODO limit the number of vu ( option)
+
 	protected void createSimpleRampupLoadScenario(final String scenarioName, final String userPathName, final int duration,
 												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
