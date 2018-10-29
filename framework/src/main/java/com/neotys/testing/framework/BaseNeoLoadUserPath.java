@@ -13,7 +13,9 @@ public abstract class BaseNeoLoadUserPath {
 
 	private static final AtomicInteger DELAY_COUNTER = new AtomicInteger(0);
 	private static final AtomicInteger THINK_TIME_COUNTER = new AtomicInteger(0);
-
+	public static final String HEADER="HEADER";
+	public static final String BODY="BODY";
+	public static final String BOTH="BOTH";
 	private final UserPath virtualUser;
 
 	public BaseNeoLoadUserPath(final BaseNeoLoadDesign design) {
@@ -53,11 +55,25 @@ public abstract class BaseNeoLoadUserPath {
 				.headerValue(headervalue)
 				.build();
 	}
-	protected static VariableExtractor extractor(final String variableExtractorName, final String regexp,int occurence, boolean exitonerror) {
+	protected static VariableExtractor extractor(final String variableExtractorName,final String from, final String regexp,int occurence, boolean exitonerror) {
+		VariableExtractor.ExtractType type;
+
+		switch(from)
+		{
+			case BODY:
+				type=VariableExtractor.ExtractType.BODY;
+				break;
+			case HEADER:
+				type=VariableExtractor.ExtractType.HEADERS;
+				break;
+			default:
+				type=VariableExtractor.ExtractType.BOTH;
+		}
 		return ImmutableVariableExtractor.builder()
 				.name(variableExtractorName)
 				.regExp(regexp)
 				.nbOccur(occurence)
+				.extractType(type)
 				.exitOnError(exitonerror)
 				.build();
 
