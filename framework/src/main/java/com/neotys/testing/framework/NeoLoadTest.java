@@ -97,11 +97,17 @@ public abstract class NeoLoadTest {
 	public void createSimpleConstantLoadScenario(final String scenarioName, final String userPathName, final int duration, final int maxUser, final int rampupTime) {
 		Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		if (population != null) {
-			Scenario scenario = ImmutableScenario.builder().name(scenarioName)
-					.putPopulations(population.getName(), ImmutableScenarioPolicies.builder()
-							.durationPolicy(ImmutableTimeDurationPolicy.builder().duration(duration).build())
-							.loadPolicy(ImmutableConstantLoadPolicy.builder().load(maxUser).build())
-							.build())
+			Scenario scenario = Scenario.builder().name(scenarioName)
+					.addPopulations(PopulationPolicy.builder()
+								.name(population.getName())
+								.loadPolicy(ConstantLoadPolicy.builder()
+									.duration(Duration.builder().value(duration).build())
+									.users(maxUser)
+									.rampup(rampupTime)
+									.build()
+								)
+								.build()
+							)
 					.build();
 
 			scenarios.add(scenario);
@@ -113,7 +119,7 @@ public abstract class NeoLoadTest {
 
 	@After
 	public void generateNlProject() {
-		final ImmutableProject.Builder projectBuilder = ImmutableProject.builder()
+		final Project.Builder projectBuilder = Project.builder()
 				.name(this.projectName);
 
 		final JSONObject jsonProject = new JSONObject();
@@ -225,18 +231,44 @@ public abstract class NeoLoadTest {
 												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		if (population != null) {
-			final Scenario scenario = ImmutableScenario.builder()
-					.name(scenarioName)
-					.putPopulations(population.getName(), ImmutableScenarioPolicies.builder()
-							.durationPolicy(ImmutableTimeDurationPolicy.builder().duration(duration).build())
-							.loadPolicy(ImmutableRampupLoadPolicy.builder().initialLoad(initialNbVU)
-									.incrementLoad(incrementNbVu)
-									.incrementTime(incrementTime)
-									.maximumLoad(maxvu)
-									.build())
-							.build())
-					.build();
 
+			final Scenario scenario ;
+			if(maxvu.isPresent())
+			{
+				scenario = Scenario.builder()
+						.name(scenarioName)
+						.addPopulations(PopulationPolicy.builder()
+								.name(population.getName())
+								.loadPolicy(RampupLoadPolicy.builder()
+										.duration(Duration.builder().value(duration).build())
+										.incrementUsers(incrementNbVu)
+										.incrementEvery(Duration.builder().value(incrementTime).build())
+										.minUsers(initialNbVU)
+										.maxUsers(maxvu.get())
+										.build()
+								)
+								.build()
+						)
+
+						.build();
+			}
+			else {
+				scenario = Scenario.builder()
+						.name(scenarioName)
+						.addPopulations(PopulationPolicy.builder()
+								.name(population.getName())
+								.loadPolicy(RampupLoadPolicy.builder()
+										.duration(Duration.builder().value(duration).build())
+										.incrementUsers(incrementNbVu)
+										.incrementEvery(Duration.builder().value(incrementTime).build())
+										.minUsers(initialNbVU)
+
+										.build()
+								)
+								.build()
+						)
+						.build();
+			}
 			scenarios.add(scenario);
 		}
 	}

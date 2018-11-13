@@ -22,16 +22,16 @@ public abstract class BaseNeoLoadUserPath {
 		virtualUser = createVirtualUser(design);
 	}
 
-	protected static ImmutableContainer endContainer() {
-		return ImmutableContainer.builder().name("End").build();
+	protected static ImmutableContainerForMulti endContainer() {
+		return ImmutableContainerForMulti.builder().name("End").tag("end-container").build();
 	}
 
-	protected static ImmutableContainer initContainer() {
-		return ImmutableContainer.builder().name("Init").build();
+	protected static ImmutableContainerForMulti initContainer() {
+		return ImmutableContainerForMulti.builder().name("Init").tag("init-container").build();
 	}
 
-	protected static ImmutableContainer.Builder actionsContainerBuilder() {
-		return ImmutableContainer.builder().name("Actions");
+	protected static ImmutableContainerForMulti.Builder actionsContainerBuilder() {
+		return ImmutableContainerForMulti.builder().name("Actions").tag("actions-container");
 	}
 
 	protected static Parameter parameter(final String parameterName, final String parameterValue) {

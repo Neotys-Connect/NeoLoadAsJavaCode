@@ -14,7 +14,7 @@
     </modules>
 
     <properties>
-        <neoload-models.version>1.0.2</neoload-models.version>
+        <neoload-models.version>2.0.5</neoload-models.version>
     </properties>
 
     <dependencyManagement>

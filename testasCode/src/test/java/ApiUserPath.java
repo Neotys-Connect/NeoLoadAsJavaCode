@@ -41,9 +41,10 @@ public class ApiUserPath extends BaseNeoLoadUserPath {
 		final Request getRequest = getBuilder(server, "/main", emptyList(),emptyList(),emptyList()).build();
 
 		final Delay delay1 = delay(800);
-		final Delay delay2 = thinkTime(1200);
-		final Container actionsContainer = actionsContainerBuilder()
-				.addChilds(container("Api", getRequest, delay1, postRequest, delay2))
+
+		final ContainerForMulti actionsContainer = actionsContainerBuilder()
+				.addChilds(container("Api", getRequest, thinkTime(1200) ),
+						container("Post",postRequest,thinkTime(1200)))
 				.build();
 
 		return userPathBuilder("CreateReportAPI")
