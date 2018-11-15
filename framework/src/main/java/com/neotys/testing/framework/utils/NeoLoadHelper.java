@@ -104,6 +104,7 @@ public final class NeoLoadHelper {
 	}
 
 
+
 	public static FileVariable createFileVariable(final String name, final String description, final String pathFileName, final boolean isFirstLineColumnName,
 	                                              final String columnDelimiter, final VariableScope scope,
 	                                              final VariableNoValuesLeftBehavior noValueLeft, final VariableOrder order,
