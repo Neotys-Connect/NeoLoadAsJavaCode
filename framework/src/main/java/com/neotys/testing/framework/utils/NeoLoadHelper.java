@@ -1,14 +1,23 @@
 package com.neotys.testing.framework.utils;
 
+import com.google.common.collect.ImmutableList;
 import com.neotys.neoload.model.repository.*;
 import com.neotys.neoload.model.repository.Variable.VariableNoValuesLeftBehavior;
 import com.neotys.neoload.model.repository.Variable.VariableOrder;
 import com.neotys.neoload.model.repository.Variable.VariablePolicy;
 import com.neotys.neoload.model.repository.Variable.VariableScope;
+import com.neotys.neoload.model.writers.RegExpUtils;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by hrexed on 11/07/18.
@@ -104,23 +113,61 @@ public final class NeoLoadHelper {
 	}
 
 
+	static List<String> getColumnsFromFile(String fileName, String columnsDelimiter) throws IOException {
+		try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+			return getColumsFromFirstLine(stream.findFirst(), columnsDelimiter);
+		}
+	}
+
+	static List<String> getColumsFromFirstLine(Optional<String> firstLine, String columnsDelimiter) {
+		if(!firstLine.isPresent()) return ImmutableList.of();
+		return Arrays.stream(firstLine.get().split(RegExpUtils.escape(columnsDelimiter))).map(s -> s.trim()).collect(Collectors.toList());
+	}
 
 	public static FileVariable createFileVariable(final String name, final String description, final String pathFileName, final boolean isFirstLineColumnName,
 	                                              final String columnDelimiter, final VariableScope scope,
 	                                              final VariableNoValuesLeftBehavior noValueLeft, final VariableOrder order,
 	                                              final VariablePolicy changePolicy, final int numOfFirstRowData) {
-		return ImmutableFileVariable.builder()
-				.description(description)
-				.name(name)
-				.fileName(pathFileName)
-				.firstLineIsColumnName(isFirstLineColumnName)
-				.policy(changePolicy)
-				.columnsDelimiter(columnDelimiter)
-				.scope(scope)
-				.numOfFirstRowData(numOfFirstRowData)
-				.noValuesLeftBehavior(noValueLeft)
-				.order(order)
-				.build();
+		if(isFirstLineColumnName)
+		{
+			try {
+				List<String> colunName = getColumnsFromFile(pathFileName, columnDelimiter);
+
+				return ImmutableFileVariable.builder()
+						.description(description)
+						.name(name)
+						.fileName(pathFileName)
+						.firstLineIsColumnName(isFirstLineColumnName)
+						.policy(changePolicy)
+						.columnsDelimiter(columnDelimiter)
+						.columnsNames(colunName)
+						.scope(scope)
+						.numOfFirstRowData(numOfFirstRowData)
+						.noValuesLeftBehavior(noValueLeft)
+						.order(order)
+						.build();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+		else {
+			return ImmutableFileVariable.builder()
+					.description(description)
+					.name(name)
+					.fileName(pathFileName)
+					.firstLineIsColumnName(isFirstLineColumnName)
+					.policy(changePolicy)
+					.columnsDelimiter(columnDelimiter)
+
+					.scope(scope)
+					.numOfFirstRowData(numOfFirstRowData)
+					.noValuesLeftBehavior(noValueLeft)
+					.order(order)
+					.build();
+		}
+		return null;
 	}
 
 	public static FileVariable createFileVariable(final String name, final String description, final String[][] data, final boolean isFirstLineColumnName,

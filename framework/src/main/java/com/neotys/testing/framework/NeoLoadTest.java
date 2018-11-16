@@ -258,11 +258,10 @@ public abstract class NeoLoadTest {
 						.addPopulations(PopulationPolicy.builder()
 								.name(population.getName())
 								.loadPolicy(RampupLoadPolicy.builder()
-										.duration(Duration.builder().value(duration).build())
+										.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
 										.incrementUsers(incrementNbVu)
-										.incrementEvery(Duration.builder().value(incrementTime).build())
+										.incrementEvery(Duration.builder().type(Duration.Type.TIME).value(incrementTime).build())
 										.minUsers(initialNbVU)
-
 										.build()
 								)
 								.build()
