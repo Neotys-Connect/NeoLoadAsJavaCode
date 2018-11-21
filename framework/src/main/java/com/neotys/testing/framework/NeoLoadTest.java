@@ -6,6 +6,8 @@ import com.neotys.neoload.model.Project;
 import com.neotys.neoload.model.repository.*;
 import com.neotys.neoload.model.scenario.*;
 import com.neotys.neoload.model.writers.neoload.NeoLoadWriter;
+import com.neotys.testing.framework.apm.DynatraceIntegration;
+import com.neotys.testing.framework.apm.NewRelicIntegration;
 import com.neotys.testing.framework.utils.NeoloadFileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,10 +19,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +28,10 @@ import java.util.stream.Collectors;
 public abstract class NeoLoadTest {
 
 	private static final Path NEO_LOAD_TARGET_PATH = NeoloadFileUtils.getNeoLoadTargetPath();
+	private final static String APPDYNAMICS="APPDYNAMICS";
+	private final static String DYNATRACE="DYNATRACE";
+	private final static String NEWRELIC="NEWRELIC";
+
 
 	private BaseNeoLoadDesign design;
 	private List<Population> populations;
@@ -94,24 +97,113 @@ public abstract class NeoLoadTest {
 
 	public abstract void createComplexScenario();
 
+	public Population getAPMpopulation()
+	{
+		//---test for dynatrace
+		Population population = getPopulationFromName(defaultPopulationNameForUserPath(DynatraceIntegration.DYNATRACE_USERPATH_NAME));
+		if(population !=null)
+			return population;
+		else
+		{
+			//----test for newrelic
+			population=getPopulationFromName(defaultPopulationNameForUserPath(NewRelicIntegration.NEWRELIC_USERPATH_NAME));
+			if(population!=null)
+				return population;
+			else
+			{
+				//----test for Appd
+				/*getPopulationFromName(defaultPopulationNameForUserPath(DynatraceIntegration.DYNATRACE_USERPATH_NAME));
+				if(population!=null)
+					return population;
+					*/
+			}
+		}
+		return null;
+	}
+
+	public String getAPMProductsUsed()
+	{
+		Population apm=getAPMpopulation();
+		if(apm!=null)
+		{
+			if(apm.getName().contains(DynatraceIntegration.DYNATRACE_USERPATH_NAME))
+				return DYNATRACE;
+			else
+			{
+				if(apm.getName().contains(NewRelicIntegration.NEWRELIC_USERPATH_NAME))
+					return NEWRELIC;
+				//#TODO : add Appd
+//				if(apm.getName().contains())
+					//return APPDYNAMICS;
+			}
+		}
+
+
+		return null;
+
+	}
+
 	public void createSimpleConstantLoadScenario(final String scenarioName, final String userPathName, final int duration, final int maxUser, final int rampupTime) {
 		Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
+		Population apm;
 		if (population != null) {
-			Scenario scenario = Scenario.builder().name(scenarioName)
+			apm=getAPMpopulation();
+			Scenario.Builder scenario = Scenario.builder().name(scenarioName)
 					.addPopulations(PopulationPolicy.builder()
-								.name(population.getName())
-								.loadPolicy(ConstantLoadPolicy.builder()
+							.name(population.getName())
+							.loadPolicy(ConstantLoadPolicy.builder()
 									.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
 									.users(maxUser)
 									.rampup(rampupTime)
 									.build()
-								)
-								.build()
 							)
-					.build();
+							.build()
+					);
+			if(apm!=null)
+			{
+				scenario.addPopulations(PopulationPolicy.builder()
+				.name(apm.getName())
+				.loadPolicy(ConstantLoadPolicy.builder()
+					.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+					.users(1)
+					.rampup(0)
+					.build())
+				.build()
+				);
+			}
 
-			scenarios.add(scenario);
+
+			scenarios.add(scenario.build());
 		}
+	}
+
+	private void addAPMSettings(final Project.Builder project)
+	{
+		String apm;
+		HashMap<String,String> apmsettings=new HashMap<>();
+		apm=getAPMProductsUsed();
+		if(apm!=null)
+		{
+			switch (apm)
+			{
+				case DYNATRACE:
+					apmsettings.put("dynatrace.enabled","true");
+					apmsettings.put("dynatrace.logicalnames.enabled","true");
+					break;
+				case APPDYNAMICS:
+					apmsettings.put("appdynamics.enabled","true");
+					//apmsettings.put("dynatrace.logicalnames.enabled","true");
+
+					break;
+			}
+		}
+
+		if(!apmsettings.isEmpty())
+		{
+			project.projectSettings(apmsettings);
+		}
+
+
 	}
 
 	@Test
@@ -155,7 +247,8 @@ public abstract class NeoLoadTest {
 			projectBuilder.addScenarios(scenario);
 			jsonScenarios.add(scenario.getName());
 		}
-
+		//---add the project settings required for the apm integration
+		addAPMSettings(projectBuilder);
 		final Project project = projectBuilder.build();
 
 		final String output = getOrCreateProjectFolder(project);
@@ -230,9 +323,12 @@ public abstract class NeoLoadTest {
 	protected void createSimpleRampupLoadScenario(final String scenarioName, final String userPathName, final int duration,
 												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
-		if (population != null) {
+		Population apm;
 
-			final Scenario scenario ;
+		if (population != null) {
+			apm=getAPMpopulation();
+
+			final Scenario.Builder scenario ;
 			if(maxvu.isPresent())
 			{
 				scenario = Scenario.builder()
@@ -248,9 +344,7 @@ public abstract class NeoLoadTest {
 										.build()
 								)
 								.build()
-						)
-
-						.build();
+						);
 			}
 			else {
 				scenario = Scenario.builder()
@@ -265,10 +359,21 @@ public abstract class NeoLoadTest {
 										.build()
 								)
 								.build()
-						)
-						.build();
+						);
 			}
-			scenarios.add(scenario);
+			if(apm!=null)
+			{
+				scenario.addPopulations(PopulationPolicy.builder()
+				.name(apm.getName())
+				.loadPolicy(ConstantLoadPolicy.builder()
+						.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+						.users(1)
+						.rampup(0)
+						.build())
+				.build()
+				);
+			}
+			scenarios.add(scenario.build());
 		}
 	}
 

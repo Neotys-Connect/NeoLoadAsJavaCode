@@ -2,6 +2,7 @@ import com.neotys.neoload.model.repository.ConstantVariable;
 import com.neotys.neoload.model.repository.FileVariable;
 import com.neotys.neoload.model.repository.Variable;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
+import com.neotys.testing.framework.apm.DynatraceIntegration;
 
 import java.nio.file.Paths;
 
@@ -19,6 +20,7 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 	@Override
 	public void createNeoLoadUserPaths() {
 		this.addVirtualUser(new ApiUserPath(this));
+		this.addVirtualUser(new DynatraceIntegration(this));
 	}
 
 	@Override
