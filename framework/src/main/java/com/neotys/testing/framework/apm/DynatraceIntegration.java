@@ -16,7 +16,6 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
     private String dynatraceId;
     private Optional<String> tags;
     private Optional<String> dynatraceManagedHostname;
-    private static final long duration=30000;
     public static final String DYNATRACE_USERPATH_NAME="Dynatrace_Integration";
 
     public DynatraceIntegration(BaseNeoLoadDesign design) {
@@ -37,8 +36,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
 
 
     @Override
-    public UserPath createVirtualUser(BaseNeoLoadDesign design) {
-        super.initProperties();
+    public UserPath createAPMVirtualUser() {
 
         ImmutableCustomAction.Builder dynatracEvents;
         ImmutableCustomAction.Builder dynatracMonitoring;

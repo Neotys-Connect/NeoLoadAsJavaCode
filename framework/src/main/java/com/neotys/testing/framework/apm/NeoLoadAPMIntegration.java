@@ -14,6 +14,7 @@ public abstract class NeoLoadAPMIntegration extends BaseNeoLoadUserPath {
     Optional<String> dataExchangeApiKey;
     Optional<String> proxyName;
     String customActionPath;
+    public static final long duration=30000;
 
 
     public NeoLoadAPMIntegration(BaseNeoLoadDesign design) {
@@ -51,6 +52,11 @@ public abstract class NeoLoadAPMIntegration extends BaseNeoLoadUserPath {
     }
 
     @Override
-    public abstract UserPath createVirtualUser(BaseNeoLoadDesign design);
+    public  UserPath createVirtualUser(BaseNeoLoadDesign design)
+    {
+        initProperties();
+        return createAPMVirtualUser();
+    };
 
+    public abstract UserPath createAPMVirtualUser();
 }

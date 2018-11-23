@@ -6,6 +6,7 @@ import com.neotys.neoload.model.Project;
 import com.neotys.neoload.model.repository.*;
 import com.neotys.neoload.model.scenario.*;
 import com.neotys.neoload.model.writers.neoload.NeoLoadWriter;
+import com.neotys.testing.framework.apm.AppDynamicsIntegration;
 import com.neotys.testing.framework.apm.DynatraceIntegration;
 import com.neotys.testing.framework.apm.NewRelicIntegration;
 import com.neotys.testing.framework.utils.NeoloadFileUtils;
@@ -112,10 +113,10 @@ public abstract class NeoLoadTest {
 			else
 			{
 				//----test for Appd
-				/*getPopulationFromName(defaultPopulationNameForUserPath(DynatraceIntegration.DYNATRACE_USERPATH_NAME));
+				getPopulationFromName(defaultPopulationNameForUserPath(AppDynamicsIntegration.APPD_USERPATH_NAME));
 				if(population!=null)
 					return population;
-					*/
+
 			}
 		}
 		return null;
@@ -132,9 +133,9 @@ public abstract class NeoLoadTest {
 			{
 				if(apm.getName().contains(NewRelicIntegration.NEWRELIC_USERPATH_NAME))
 					return NEWRELIC;
-				//#TODO : add Appd
-//				if(apm.getName().contains())
-					//return APPDYNAMICS;
+
+				if(apm.getName().contains(AppDynamicsIntegration.APPD_USERPATH_NAME))
+					return APPDYNAMICS;
 			}
 		}
 

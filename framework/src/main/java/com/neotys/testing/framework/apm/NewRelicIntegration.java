@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class NewRelicIntegration extends NeoLoadAPMIntegration {
-    private static final long duration=30000;
     public static final String NEWRELIC_USERPATH_NAME="NewRelic_Integration";
     private String newRelicAPIKey;
     private String newRelicApplicationName;
@@ -26,9 +25,8 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
     }
 
     @Override
-    public UserPath createVirtualUser(BaseNeoLoadDesign design) {
-        super.initProperties();
-        ImmutableCustomAction.Builder newrelic;
+    public UserPath createAPMVirtualUser() {
+       ImmutableCustomAction.Builder newrelic;
 
         newrelic=ImmutableCustomAction.builder()
                 .isHit(false)
@@ -97,6 +95,24 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
             newrelic.addParameters(ImmutableCustomActionParameter.builder()
                     .name("newRelicRelevantMetricValues")
                     .value(newRelicRelevantMetricValues.get())
+                    .type(CustomActionParameter.Type.TEXT)
+                    .build());
+        }
+
+        if(proxyName.isPresent())
+        {
+            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+                    .name("proxyName")
+                    .value(proxyName.get())
+                    .type(CustomActionParameter.Type.TEXT)
+                    .build());
+        }
+
+        if(dataExchangeApiKey.isPresent())
+        {
+            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+                    .name("dataExchangeApiKey")
+                    .value(dataExchangeApiKey.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build());
         }
