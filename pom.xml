@@ -61,6 +61,7 @@
 
     <properties>
         <neoload-models.version>2.0.6</neoload-models.version>
+        <gpg.passphrase>${env.PGP_PASSPHRASE}</gpg.passphrase>
     </properties>
 
     <dependencyManagement>
