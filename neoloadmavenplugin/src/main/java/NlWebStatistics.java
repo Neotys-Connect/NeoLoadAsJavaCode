@@ -1,8 +1,10 @@
-import io.swagger.client.ApiClient;
-import io.swagger.client.ApiException;
-import io.swagger.client.api.ResultsApi;
-import io.swagger.client.model.TestDefinition;
-import io.swagger.client.model.TestStatistics;
+import com.neotys.ascode.swagger.client.ApiClient;
+import com.neotys.ascode.swagger.client.ApiException;
+import com.neotys.ascode.swagger.client.api.ResultsApi;
+import com.neotys.ascode.swagger.client.model.TestDefinition;
+import com.neotys.ascode.swagger.client.model.TestStatistics;
+import com.neotys.ascode.swagger.client.api.ResultsApi;
+import com.neotys.ascode.swagger.client.model.TestStatistics;
 import org.apache.maven.plugin.logging.Log;
 import stats.NLmetric;
 

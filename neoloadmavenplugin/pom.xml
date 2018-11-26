@@ -38,7 +38,7 @@
                 <version>${commons-exec.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.swagger</groupId>
+                <groupId>com.neotys.ascode</groupId>
                 <artifactId>swagger-java-client</artifactId>
                 <version>1.0.0</version>
                 <scope>compile</scope>
@@ -69,12 +69,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
 
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-java-client</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>
@@ -104,6 +99,10 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.neotys.ascode</groupId>
+            <artifactId>swagger-java-client</artifactId>
         </dependency>
     </dependencies>
     <build>

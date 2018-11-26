@@ -1,9 +1,10 @@
-import io.swagger.client.ApiClient;
-import io.swagger.client.ApiException;
-import io.swagger.client.api.RuntimeApi;
-import io.swagger.client.model.ProjectDefinition;
-import io.swagger.client.model.RunTestDefinition;
-import io.swagger.client.model.ScenarioDefinition;
+
+import com.neotys.ascode.swagger.client.ApiClient;
+import com.neotys.ascode.swagger.client.ApiException;
+import com.neotys.ascode.swagger.client.api.RuntimeApi;
+import com.neotys.ascode.swagger.client.model.ProjectDefinition;
+import com.neotys.ascode.swagger.client.model.RunTestDefinition;
+import com.neotys.ascode.swagger.client.model.ScenarioDefinition;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;

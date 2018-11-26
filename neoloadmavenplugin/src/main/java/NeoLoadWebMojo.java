@@ -1,4 +1,5 @@
-import io.swagger.client.ApiException;
+
+import com.neotys.ascode.swagger.client.ApiException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
