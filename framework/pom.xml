@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.neotys.ascode</groupId>
     <artifactId>neoLoad-framework</artifactId>
-    <version>1.1-SNAPSHOT</version>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
