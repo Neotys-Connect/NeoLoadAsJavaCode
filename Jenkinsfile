@@ -48,7 +48,7 @@ pipeline {
             project: "$WORKSPACE/target/neoload/ApiLoad/ApiLoad.nlp",
             testName: 'Pipeline API Limit Test (build ${BUILD_NUMBER})',
             testDescription: 'WeatherCrisis API Limit Testing ( Rest API) through pipeline',
-            commandLineOption: "-nlweb -loadGenerators $WORKSPACE/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
+            commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
             scenario: 'API test', sharedLicense: [server: 'NeoLoad Demo License', duration: 2, vuCount: 50],
             trendGraphs: [
                 [name: 'API Response time', curve: ['CreateReportAPI>Actions>Api'], statistic: 'average']
@@ -76,7 +76,7 @@ pipeline {
             project: "$WORKSPACE/CPVWeatherCrisis.nlp",
             testName: 'Pipeline Post Test (build ${BUILD_NUMBER})',
             testDescription: 'WeatherCrisis API Testing (Mysql + Rest API) through pipeline',
-            commandLineOption: "-nlweb -loadGenerators $WORKSPACE/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
+            commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
             scenario: 'post', sharedLicense: [server: 'NeoLoad Demo License', duration: 2, vuCount: 50],
             trendGraphs: [
                 'ErrorRate'
