@@ -29,7 +29,7 @@ pipeline {
   stage('Start NeoLoad infrastructure') {
         agent { label 'master' }
         steps {
-             git  'docker-compose -f infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
+             sh  'docker-compose -f infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
              stash includes: 'infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
              stash includes: 'infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
         }
