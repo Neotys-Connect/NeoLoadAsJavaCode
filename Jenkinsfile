@@ -23,7 +23,7 @@ pipeline {
     stage('Build') {
             agent { label 'master' }
             steps {
-                   mvn install
+                   sh 'mvn install'
                   }
           }
   stage('Start NeoLoad infrastructure') {
