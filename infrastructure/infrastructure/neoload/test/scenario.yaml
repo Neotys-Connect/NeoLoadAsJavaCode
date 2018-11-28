@@ -1,0 +1,39 @@
+scenarios:
+- name: API Limit Test
+  description: API limit test with Pipeline as Code and NeoLoad as Code
+  populations:
+  - name: API
+    rampup_load:
+      min_users: 10
+      max_users: 50
+      increment_users: 10
+      increment_every: 1m
+      duration: 6m
+      increment_rampup: 10s
+- name: API Nominal Test
+  description: API load test with Pipeline as Code and NeoLoad as Code
+  populations:
+  - name: API
+    constant_load:
+      users: 10
+      duration: 3m
+      rampup: 10s
+- name: Post Limit Test
+  description: Post Limit Test using Pipeline and NL as Code
+  populations:
+  - name: Post
+    rampup_load:
+      min_users: 10
+      max_users: 50
+      increment_users: 10
+      increment_every: 1m
+      duration: 6m
+      increment_rampup: 10s
+- name: Post Nominal Test
+  description: Post load test with Pipeline as Code and NeoLoad as Code
+  populations:
+  - name: Post
+    constant_load:
+      users: 10
+      duration: 3m
+      rampup: 10s
