@@ -4,14 +4,14 @@ pipeline {
   stage('Checkout') {
           agent { label 'master' }
           steps {
-               git  https://github.com/NeotysLab/DevOpsDemo.git,branch :'master'
-
+               git  url:'https://github.com/NeotysLab/DevOpsDemo.git',
+               branch :'master'
           }
         }
     stage('Build') {
             agent { label 'master' }
             steps {
-                    mvn install
+                   sh 'mvn install'
                   }
           }
   stage('Start NeoLoad infrastructure') {
