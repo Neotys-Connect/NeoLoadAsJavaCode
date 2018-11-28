@@ -1,5 +1,5 @@
 pipeline {
-  agent none
+  agent any
   tools {
       maven 'Maven 3.6.0'
       jdk 'jdk8'
@@ -23,7 +23,7 @@ pipeline {
     stage('Build') {
             agent { label 'master' }
             steps {
-                   sh 'mvn install'
+                   mvn install
                   }
           }
   stage('Start NeoLoad infrastructure') {
