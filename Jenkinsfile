@@ -51,8 +51,19 @@ pipeline {
             commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
             scenario: 'API test', sharedLicense: [server: 'NeoLoad Demo License', duration: 2, vuCount: 50],
             trendGraphs: [
-                [name: 'API Response time', curve: ['CreateReportAPI>Actions>Api'], statistic: 'average']
-                ]
+                [
+                    name: 'API Response time',
+                    curve: ['CreateReportAPI>Actions>Api'],
+                    statistic: 'average'
+                ],
+                 [
+                    name: 'User Load',
+                    curve: ['Controller/User Load'],
+                    statistic: 'average'
+                  ],
+                 'AvgResponseTime',
+                 'ErrorRate'
+            ]
 
           }
 
@@ -79,8 +90,32 @@ pipeline {
             commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
             scenario: 'post', sharedLicense: [server: 'NeoLoad Demo License', duration: 2, vuCount: 50],
             trendGraphs: [
+                [
+                    name: 'Transactions Response Time',
+                    curve: [
+                                                    'Post>Actions>HomePage',
+                                                    'Post>Actions>Post',
+                                                    'Post>Actions>Submit',
+                                                    'Post>Actions>Map'
+                                                ],
+                    statistic: 'average'
+                ],
+                [
+                    name: 'User Load',
+                    curve: ['Controller/User Load'],
+                    statistic: 'average'
+                ],
+                                        [
+                    name: 'MySQL monitor',
+                    curve: [
+                                                    'mysql-ushahidi/mysql/IO Requests/bytes received',
+                                                    'mysql-ushahidi/mysql/IO Requests/bytes sent'
+                                                ],
+                    statistic: 'average'
+                ],
+                'AvgResponseTime',
                 'ErrorRate'
-                ]
+            ],
           }
       }
     }
