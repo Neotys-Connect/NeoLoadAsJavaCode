@@ -41,7 +41,7 @@ public class ApiUserPath extends BaseNeoLoadUserPath {
 		final Request getRequest = getBuilder(server, "/main", emptyList(),emptyList(),emptyList()).build();
 
 		final Delay delay1 = delay(800);
-		final Delay delay2 = thinkTime(1200);
+		final Delay delay2 = thinkTime(250);
 		final ImmutableContainerForMulti actionsContainer = actionsContainerBuilder()
 				.addChilds(container("Api", getRequest, delay1))
 				.addChilds(container("Post",postRequest, delay2))
