@@ -76,7 +76,7 @@ pipeline {
             project: "$WORKSPACE/CPVWeatherCrisis.nlp",
             testName: 'Pipeline Post Test (build ${BUILD_NUMBER})',
             testDescription: 'WeatherCrisis API Testing (Mysql + Rest API) through pipeline',
-            commandLineOption: "-variables sampledemo-host=35.180.30.230 -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
+            commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken 15304f743f34ca33c458927a40945b7424a2066b95563774",
             scenario: 'post', sharedLicense: [server: 'NeoLoad Demo License', duration: 2, vuCount: 50],
             trendGraphs: [
                 'ErrorRate'
