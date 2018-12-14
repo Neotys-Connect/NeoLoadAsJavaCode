@@ -1,9 +1,8 @@
-package com.neotys.testing.framework.apm;
+package com.neotys.testing.framework.plugin.apm;
 
 import com.neotys.neoload.model.repository.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.util.Optional;
 import java.util.Properties;

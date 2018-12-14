@@ -1,19 +1,19 @@
-package com.neotys.testing.framework.apm;
+package com.neotys.testing.framework.plugin.apm;
 
 import com.neotys.neoload.model.repository.UserPath;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.BaseNeoLoadUserPath;
+import com.neotys.testing.framework.plugin.NeoloadIntegration;
 
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.Properties;
 
-public abstract class NeoLoadAPMIntegration extends BaseNeoLoadUserPath {
+public abstract class NeoLoadAPMIntegration extends NeoloadIntegration {
 
     String dataExchangeApiUrl;
     Optional<String> dataExchangeApiKey;
     Optional<String> proxyName;
-    String customActionPath;
     public static final long duration=30000;
 
 
@@ -32,27 +32,12 @@ public abstract class NeoLoadAPMIntegration extends BaseNeoLoadUserPath {
         dataExchangeApiKey=getOptionnalProperty("dataExchangeApiKey");
         proxyName=getOptionnalProperty("proxyName");
         dataExchangeApiUrl=props.getProperty("dataExchangeApiUrl");
-        customActionPath=props.getProperty("customActionPath");
         init();
     }
-    public void setCustomActionPath(String customActionPath) {
-        this.customActionPath = customActionPath;
-    }
 
-    public Optional<String> getOptionnalProperty(String key)
-    {
-
-        Properties props = System.getProperties();
-        String temp;
-        temp=props.getProperty(key);
-        if(temp==null)
-            return Optional.empty();
-        else
-            return Optional.of(temp);
-    }
 
     @Override
-    public  UserPath createVirtualUser(BaseNeoLoadDesign design)
+    public  UserPath createPluginUserPath()
     {
         initProperties();
         return createAPMVirtualUser();

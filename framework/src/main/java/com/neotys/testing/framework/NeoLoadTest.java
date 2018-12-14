@@ -1,14 +1,14 @@
 package com.neotys.testing.framework;
 
 import com.google.common.collect.ImmutableMap;
-import com.neotys.neoload.model.ImmutableProject;
 import com.neotys.neoload.model.Project;
 import com.neotys.neoload.model.repository.*;
 import com.neotys.neoload.model.scenario.*;
 import com.neotys.neoload.model.writers.neoload.NeoLoadWriter;
-import com.neotys.testing.framework.apm.AppDynamicsIntegration;
-import com.neotys.testing.framework.apm.DynatraceIntegration;
-import com.neotys.testing.framework.apm.NewRelicIntegration;
+import com.neotys.testing.framework.plugin.apm.AppDynamicsIntegration;
+import com.neotys.testing.framework.plugin.apm.DynatraceIntegration;
+import com.neotys.testing.framework.plugin.apm.NewRelicIntegration;
+import com.neotys.testing.framework.plugin.apm.sanityCheck.DynatraceSanityCheck;
 import com.neotys.testing.framework.utils.NeoloadFileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -32,7 +32,7 @@ public abstract class NeoLoadTest {
 	private final static String APPDYNAMICS="APPDYNAMICS";
 	private final static String DYNATRACE="DYNATRACE";
 	private final static String NEWRELIC="NEWRELIC";
-
+	private final static String DYNATRACE_SANITYCHECK="DYNATRACE_SANITYCHECK";
 
 	private BaseNeoLoadDesign design;
 	private List<Population> populations;
@@ -47,6 +47,7 @@ public abstract class NeoLoadTest {
 		this.projectName = projectName();
 		generateDefaultPopulation();
 	}
+
 
 	protected abstract BaseNeoLoadDesign design();
 
@@ -121,7 +122,27 @@ public abstract class NeoLoadTest {
 		}
 		return null;
 	}
+	public Population getSanityCheckpopulation()
+	{
+		//---test for dynatrace
+		Population population = getPopulationFromName(defaultPopulationNameForUserPath(DynatraceSanityCheck.DYNATRACE_USERPATH_NAME));
+		if(population !=null)
+			return population;
+		else
+		{
+			//----test for other type of sanityCheck
 
+		}
+		return null;
+	}
+	public void createSanityCheckScenario()
+	{
+		Population sanitycheck=getSanityCheckpopulation();
+		if(sanitycheck!=null)
+		{
+			createSimpleConstantIterationScenario(DYNATRACE_SANITYCHECK,DynatraceSanityCheck.DYNATRACE_USERPATH_NAME,1,1,0);
+		}
+	}
 	public String getAPMProductsUsed()
 	{
 		Population apm=getAPMpopulation();
@@ -136,6 +157,23 @@ public abstract class NeoLoadTest {
 
 				if(apm.getName().contains(AppDynamicsIntegration.APPD_USERPATH_NAME))
 					return APPDYNAMICS;
+			}
+		}
+
+
+		return null;
+
+	}
+	public String getSanityCheckProductsUsed()
+	{
+		Population senitycheck=getSanityCheckpopulation();
+		if(senitycheck!=null)
+		{
+			if(senitycheck.getName().contains(DynatraceSanityCheck.DYNATRACE_USERPATH_NAME))
+				return DYNATRACE;
+			else
+			{
+				//----test for other sanitycheck
 			}
 		}
 
@@ -320,7 +358,43 @@ public abstract class NeoLoadTest {
 		return neoloadDir.getAbsolutePath();
 	}
 
+	protected void createSimpleConstantIterationScenario(final String scenarioName, final String userPathName, final int incremenNumber, final int maxUser, final int rampupTime) {
+		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
+		Population apm;
 
+		if (population != null) {
+			apm = getAPMpopulation();
+
+			final Scenario.Builder scenario;
+
+			scenario = Scenario.builder()
+					.name(scenarioName)
+					.addPopulations(PopulationPolicy.builder()
+							.name(population.getName())
+							.loadPolicy(ConstantLoadPolicy.builder()
+									.duration(Duration.builder().type(Duration.Type.ITERATION).value(incremenNumber).build())
+									.users(maxUser)
+									.rampup(rampupTime)
+									.build()
+							)
+							.build()
+					);
+
+
+			if (apm != null) {
+				scenario.addPopulations(PopulationPolicy.builder()
+						.name(apm.getName())
+						.loadPolicy(ConstantLoadPolicy.builder()
+								.duration(Duration.builder().type(Duration.Type.ITERATION).value(incremenNumber).build())
+								.users(1)
+								.rampup(0)
+								.build())
+						.build()
+				);
+			}
+			scenarios.add(scenario.build());
+		}
+	}
 	protected void createSimpleRampupLoadScenario(final String scenarioName, final String userPathName, final int duration,
 												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));

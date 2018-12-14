@@ -1,4 +1,4 @@
-package com.neotys.testing.framework.apm;
+package com.neotys.testing.framework.plugin.apm;
 
 import com.neotys.neoload.model.repository.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;

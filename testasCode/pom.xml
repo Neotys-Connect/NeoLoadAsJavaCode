@@ -9,13 +9,13 @@
     <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <neoload-maven-plugin.version>1.0.0</neoload-maven-plugin.version>
+        <neoload-maven-plugin.version>1.0.1</neoload-maven-plugin.version>
 
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.neotys.neoload.mojo</groupId>
+            <groupId>com.neotys.ascode</groupId>
             <artifactId>neoload-maven-plugin</artifactId>
             <version>${neoload-maven-plugin.version}</version>
             <scope>test</scope>
@@ -32,7 +32,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.neotys.neoload.mojo</groupId>
+                    <groupId>com.neotys.ascode</groupId>
                     <artifactId>neoload-maven-plugin</artifactId>
                     <version>${neoload-maven-plugin.version}</version>
                     <!--<scope>test</scope>-->
@@ -53,7 +53,9 @@
                     <configuration>
                         <systemPropertyVariables>
                             <dataExchangeApiUrl>http://localhost:7400/DataExchange/v1/Service.svc/</dataExchangeApiUrl>
-                              <dynatraceId>pjk26067</dynatraceId>
+                            <customActionPath>/home/hrexed/EngyteFolder/Dynatrace/target/DynatraceIntegration-3.0.1-SNAPSHOT.jar</customActionPath>
+                            <dynatraceApiKey>t3FNohlfQNiuNPm0ILGLU</dynatraceApiKey>
+                            <dynatraceId>pjk26067</dynatraceId>
                             <tags>easytravel</tags>
                         </systemPropertyVariables>
                     </configuration>
@@ -74,7 +76,7 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>com.neotys.neoload.mojo</groupId>
+                <groupId>com.neotys.ascode</groupId>
                 <artifactId>neoload-maven-plugin</artifactId>
                 <version>${neoload-maven-plugin.version}</version>
             </plugin>

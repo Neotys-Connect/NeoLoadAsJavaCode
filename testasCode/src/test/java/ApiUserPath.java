@@ -37,6 +37,7 @@ public class ApiUserPath extends BaseNeoLoadUserPath {
 				parameter("task", "report"),
 				parameter("incident_minute", "49")
 		);
+
 		final Request postRequest = postFormBuilder(server, "/api", emptyList(), postParameters,emptyList(),emptyList()).build();
 		final Request getRequest = getBuilder(server, "/main", emptyList(),emptyList(),emptyList()).build();
 
