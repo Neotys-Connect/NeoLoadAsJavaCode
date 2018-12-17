@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+   nts:
+     container_name: nts
+     image: neotys/cpv-nts:1.7.0-apm
+     restart: always
+     ports:
+        - "8888:8080"
+     networks:
+       - cpv
+
+networks:
+  cpv:
+    external:
+      name: cpv

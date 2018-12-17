@@ -1,0 +1,8 @@
+infrastructures:
+  - name: On-Prem
+    type: ON_PREMISE_LOAD_GENERATOR
+    zones:
+    - name: Docker
+      machines:
+      - docker-lg1
+      - docker-lg2

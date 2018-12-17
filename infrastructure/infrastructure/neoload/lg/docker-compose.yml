@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  docker-lg1:
+    container_name: docker-lg1
+    image: neotys/neoload-loadgenerator:6.7.0
+    networks:
+      - cpv
+  docker-lg2:
+    container_name: docker-lg2
+    image: neotys/neoload-loadgenerator:6.7.0
+    networks:
+       - cpv
+
+networks:
+  cpv:
+    external:
+      name: cpv

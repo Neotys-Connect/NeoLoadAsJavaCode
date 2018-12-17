@@ -4,212 +4,84 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.neotys.ascode</groupId>
-    <artifactId>neoload-testing-framework</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
-
-    <name>neoload-testing-framework</name>
-    <url>https://github.com/NeotysLab/NeoLoadAsCode</url>
-    <description>Generate a NeoLoad Project from Code</description>
-
-    <prerequisites>
-        <maven>2.2.0</maven>
-    </prerequisites>
-
-    <licenses>
-        <license>
-            <name>Unlicense</name>
-            <url>http://unlicense.org</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>Henrik Rexed</name>
-            <email>henrik.rexed@neotys.com</email>
-            <organization>Neotys</organization>
-            <organizationUrl>http://Www.neotys.com</organizationUrl>
-        </developer>
-    </developers>
-    <scm>
-        <connection>scm:git:git@github.com:NeotysLab/NeoLoadAsCode.git</connection>
-        <developerConnection>scm:git:git@github.com:NeotysLab/NeoLoadAsCode.git</developerConnection>
-        <url>https://github.com/NeotysLab/NeoLoadAsCode</url>
-    </scm>
-    <modules>
-        <module>javaclient</module>
-        <module>framework</module>
-        <module>neoloadmavenplugin</module>
-    </modules>
-
-    <profiles>
-        <profile>
-            <id>signed-artifact</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
+    <groupId>com.neotys.maven</groupId>
+    <artifactId>testasCode</artifactId>
+    <version>1.0.0</version>
     <properties>
-        <neoload-models.version>2.0.6</neoload-models.version>
-        <gpg.passphrase>${env.PGP_PASSPHRASE}</gpg.passphrase>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <neoload-maven-plugin.version>1.0.1</neoload-maven-plugin.version>
+
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.neotys.neoload</groupId>
-                <artifactId>neoload-models</artifactId>
-                <version>${neoload-models.version}</version>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>com.neotys.neoload</groupId>
-                <artifactId>neoload-project</artifactId>
-                <version>${neoload-models.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.neotys.neoload</groupId>
-                <artifactId>neoload-writer</artifactId>
-                <version>${neoload-models.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.neotys.ascode</groupId>
+            <artifactId>neoload-maven-plugin</artifactId>
+            <version>${neoload-maven-plugin.version}</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>com.neotys.ascode</groupId>
+            <artifactId>neoLoad-framework</artifactId>
+            <version>${neoload-maven-plugin.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>com.neotys.ascode</groupId>
+                    <artifactId>neoload-maven-plugin</artifactId>
+                    <version>${neoload-maven-plugin.version}</version>
+                    <!--<scope>test</scope>-->
+                    <configuration>
+                        <neoLoadInstallationDirectory>/home/hrexed/Neoload6.6/</neoLoadInstallationDirectory>
+                        <neoLoadWebUrl>https://neoload.saas.neotys.com/</neoLoadWebUrl>
+                        <neoLoadWebAPIUrl>https://neoload-rest.saas.neotys.com/v1</neoLoadWebAPIUrl>
+                        <neoLoadWebUploadAPIUrl>https://neoload-files.saas.neotys.com/v1</neoLoadWebUploadAPIUrl>
+                        <neoloadWebControllerID>BdPRF</neoloadWebControllerID>
+                        <neoloadWeblgZonneID>BdPRF:1</neoloadWeblgZonneID>
+                        <neoLoadWebAPIKey>15304f743f34ca33c458927a40945b7424a2066b95563774</neoLoadWebAPIKey>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9</version>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <configuration>
-                                <additionalparam>-Xdoclint:none</additionalparam>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <dataExchangeApiUrl>http://localhost:7400/DataExchange/v1/Service.svc/</dataExchangeApiUrl>
+                            <customActionPath>lib/DynatraceIntegration-2.0.11-SNAPSHOT.jar</customActionPath>
+                            <dynatraceApiKey>aZMHwCI3QKe7YhK7MmEGC</dynatraceApiKey>
+                            <dynatraceId>vwv51099</dynatraceId>
+                            <tags>neotys-cpt</tags>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <optimize>true</optimize>
+                        <verbose>true</verbose>
+                        <fork>true</fork>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>com.neotys.ascode</groupId>
+                <artifactId>neoload-maven-plugin</artifactId>
+                <version>${neoload-maven-plugin.version}</version>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <optimize>true</optimize>
-                    <verbose>true</verbose>
-                    <compilerArgs>
-                        <arg>-XDignore.symbol.file</arg>
-                    </compilerArgs>
-                    <fork>true</fork>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.sonatype.aether</groupId>
-                        <artifactId>aether-api</artifactId>
-                        <version>1.13.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <!--<plugin>-->
-                <!--<groupId>com.googlecode.addjars-maven-plugin</groupId>-->
-                <!--<artifactId>addjars-maven-plugin</artifactId>-->
-                <!--<version>1.0.5</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>generate-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>add-jars</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/lib</directory>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
+
     </build>
+
 </project>
