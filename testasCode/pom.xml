@@ -53,7 +53,7 @@
                     <configuration>
                         <systemPropertyVariables>
                             <dataExchangeApiUrl>http://localhost:7400/DataExchange/v1/Service.svc/</dataExchangeApiUrl>
-                            <customActionPath>/home/hrexed/EngyteFolder/Dynatrace/target/DynatraceIntegration-3.0.1-SNAPSHOT.jar</customActionPath>
+                            <customActionPath>/home/hrexed/EngyteFolder/Dynatrace/target/DynatraceIntegration-3.0.1.jar</customActionPath>
                             <dynatraceApiKey>t3FNohlfQNiuNPm0ILGLU</dynatraceApiKey>
                             <dynatraceId>pjk26067</dynatraceId>
                             <tags>easytravel</tags>
