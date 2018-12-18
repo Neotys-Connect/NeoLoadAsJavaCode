@@ -27,6 +27,7 @@ public class DynatraceSanityCheck extends NeoloadIntegration {
         dynatraceId=props.getProperty("dynatraceId");
         tags=getOptionnalProperty("tags");
         outPutReferenceFile=props.getProperty("outPutReferenceFile");
+        proxyName=getOptionnalProperty("proxyName");
         dynatraceManagedHostname=getOptionnalProperty("dynatraceManagedHostname");
     }
 

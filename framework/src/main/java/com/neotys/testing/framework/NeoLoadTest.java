@@ -140,8 +140,28 @@ public abstract class NeoLoadTest {
 		Population sanitycheck=getSanityCheckpopulation();
 		if(sanitycheck!=null)
 		{
-			createSimpleConstantIterationScenario(DYNATRACE_SANITYCHECK,DynatraceSanityCheck.DYNATRACE_USERPATH_NAME,1,1,0);
+
+				final Scenario.Builder scenario;
+
+				scenario = Scenario.builder()
+						.name(getSanityCheckProductsUsed())
+						.addPopulations(PopulationPolicy.builder()
+								.name(sanitycheck.getName())
+								.loadPolicy(ConstantLoadPolicy.builder()
+										.duration(Duration.builder().type(Duration.Type.ITERATION).value(1).build())
+										.users(1)
+										.rampup(0)
+										.build()
+								)
+								.build()
+						);
+
+
+
+				scenarios.add(scenario.build());
+
 		}
+
 	}
 	public String getAPMProductsUsed()
 	{
@@ -170,7 +190,7 @@ public abstract class NeoLoadTest {
 		if(senitycheck!=null)
 		{
 			if(senitycheck.getName().contains(DynatraceSanityCheck.DYNATRACE_USERPATH_NAME))
-				return DYNATRACE;
+				return DYNATRACE_SANITYCHECK;
 			else
 			{
 				//----test for other sanitycheck
@@ -362,7 +382,8 @@ public abstract class NeoLoadTest {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 
-		if (population != null) {
+		if (population != null)
+		{
 			apm = getAPMpopulation();
 
 			final Scenario.Builder scenario;

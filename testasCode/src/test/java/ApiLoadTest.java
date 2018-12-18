@@ -30,6 +30,8 @@ public class ApiLoadTest extends NeoLoadTest {
 
 	@Override
 	public void execute() {
+
 		createSimpleRampupLoadScenario("API test", "CreateReportAPI", 90, 1, 1, Optional.empty(),5);
+		createSanityCheckScenario();
 	}
 }
