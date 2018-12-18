@@ -199,12 +199,6 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
                         .value(tags.get())
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
-                )
-                .addParameters(ImmutableCustomActionParameter.builder()
-                        .name("dataExchangeApiUrl")
-                        .type(CustomActionParameter.Type.TEXT)
-                        .value(dataExchangeApiUrl)
-                        .build()
                 );
 
         dynatracConfiguration = ImmutableCustomAction.builder()
@@ -282,6 +276,14 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
                     .type(CustomActionParameter.Type.TEXT)
                     .build()
             );
+        }
+        if(dataExchangeApiUrl.isPresent())
+        {
+            dynatracMonitoring.addParameters(ImmutableCustomActionParameter.builder()
+                    .name("dataExchangeApiUrl")
+                    .type(CustomActionParameter.Type.TEXT)
+                    .value(dataExchangeApiUrl.get())
+                    .build());
         }
 
         ImmutableContainerForMulti.Builder init=ImmutableContainerForMulti.builder()

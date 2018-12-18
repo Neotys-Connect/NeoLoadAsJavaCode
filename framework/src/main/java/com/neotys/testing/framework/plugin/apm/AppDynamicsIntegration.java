@@ -51,12 +51,6 @@ public class AppDynamicsIntegration extends NeoLoadAPMIntegration {
                         .value(appDynamicsApplicationName)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
-                )
-                .addParameters(ImmutableCustomActionParameter.builder()
-                        .name("dataExchangeApiUrl")
-                        .type(CustomActionParameter.Type.TEXT)
-                        .value(dataExchangeApiUrl)
-                        .build()
                 );
 
         if(proxyName.isPresent())
@@ -75,6 +69,14 @@ public class AppDynamicsIntegration extends NeoLoadAPMIntegration {
                     .value(dataExchangeApiKey.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build());
+        }
+        if(dataExchangeApiUrl.isPresent())
+        {
+            appd.addParameters(ImmutableCustomActionParameter.builder()
+                .name("dataExchangeApiUrl")
+                .type(CustomActionParameter.Type.TEXT)
+                .value(dataExchangeApiUrl.get())
+                .build());
         }
 
         if(appDynamicsAccountName.isPresent())

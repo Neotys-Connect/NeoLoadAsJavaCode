@@ -49,12 +49,6 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
                         .value(sendNLWebDataToNewRelic)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
-                )
-                .addParameters(ImmutableCustomActionParameter.builder()
-                        .name("dataExchangeApiUrl")
-                        .type(CustomActionParameter.Type.TEXT)
-                        .value(dataExchangeApiUrl)
-                        .build()
                 );
 
         if(newRelicLicenseKey.isPresent())
@@ -64,6 +58,14 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
                     .value(newRelicLicenseKey.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build());
+        }
+        if(dataExchangeApiUrl.isPresent())
+        {
+            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+                .name("dataExchangeApiUrl")
+                .type(CustomActionParameter.Type.TEXT)
+                .value(dataExchangeApiUrl.get())
+                .build());
         }
         if(newRelicAccountId.isPresent())
         {

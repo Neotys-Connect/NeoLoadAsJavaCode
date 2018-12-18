@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public abstract class NeoLoadAPMIntegration extends NeoloadIntegration {
 
-    String dataExchangeApiUrl;
+    Optional<String> dataExchangeApiUrl;
     Optional<String> dataExchangeApiKey;
     Optional<String> proxyName;
     public static final long duration=30000;
@@ -31,7 +31,7 @@ public abstract class NeoLoadAPMIntegration extends NeoloadIntegration {
         Properties props = System.getProperties();
         dataExchangeApiKey=getOptionnalProperty("dataExchangeApiKey");
         proxyName=getOptionnalProperty("proxyName");
-        dataExchangeApiUrl=props.getProperty("dataExchangeApiUrl");
+        dataExchangeApiUrl=getOptionnalProperty("dataExchangeApiUrl");
         init();
     }
 
