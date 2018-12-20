@@ -1,6 +1,7 @@
 package com.neotys.testing.framework.plugin.apm;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.neotys.neoload.model.repository.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.plugin.apm.data.DynatraceAnomalie;
@@ -8,6 +9,8 @@ import com.neotys.testing.framework.plugin.apm.data.DynatraceAnomalie;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
     private Optional<String> dynatraceManagedHostname;
     public static final String DYNATRACE_USERPATH_NAME="Dynatrace_Integration";
     private Optional<String> jsonAnomalieDetection;
+    private Optional<String> jsonAnomalieDetectionFile;
     public DynatraceIntegration(BaseNeoLoadDesign design) {
 
         super(design);
@@ -35,76 +39,98 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
         dynatraceId=props.getProperty("dynatraceId");
         tags=getOptionnalProperty("tags");
         jsonAnomalieDetection=getOptionnalProperty("jsonAnomalieDetection");
+        jsonAnomalieDetectionFile=getOptionnalProperty("jsonAnomalieDetectionFile");
         dynatraceManagedHostname=getOptionnalProperty("dynatraceManagedHostname");
     }
 
-    private List<ImmutableCustomAction> getAnomaliesDetectionActions() throws ParseException {
-        List<ImmutableCustomAction> customActionList =new ArrayList<>();
-        if(jsonAnomalieDetection.isPresent())
+    private DynatraceAnomalie getDynatraceAnomalie() throws FileNotFoundException {
+        DynatraceAnomalie dynatraceAnomalies;
+        Gson gson=new Gson();
+
+        if(jsonAnomalieDetectionFile.isPresent())
         {
-            Gson gson=new Gson();
-            DynatraceAnomalie dynatraceAnomalies =gson.fromJson(jsonAnomalieDetection.get(), DynatraceAnomalie.class);
-            customActionList=dynatraceAnomalies.getDynatraceAnomalieList().stream().map(dynatraceAnomalies1 -> {
-                ImmutableCustomAction.Builder custoBuilder= ImmutableCustomAction.builder()
-                        .name("DynatraceSetAnomalieDetection")
-                        .type("DynatraceSetAnomalieDetection")
-                        .isHit(false)
-                        .libraryPath(new File(customActionPath).toPath())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                            .name("dynatraceApiKey")
-                            .value(dynatraceApiKey)
-                            .type(CustomActionParameter.Type.TEXT)
-                            .build())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                                .name("dynatraceId")
-                                .value(dynatraceId)
-                                .type(CustomActionParameter.Type.TEXT)
-                                .build())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                                .name("tags")
-                                .value(tags.get())
-                                .type(CustomActionParameter.Type.TEXT)
-                                .build())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                                .name("dynatraceMetricName")
-                                .value(dynatraceAnomalies1.getDynatraceMetricName())
-                                .type(CustomActionParameter.Type.TEXT)
-                                .build())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                                .name("operator")
-                                .value(dynatraceAnomalies1.getOperator())
-                                .type(CustomActionParameter.Type.TEXT)
-                                .build())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                                .name("value")
-                                .value(dynatraceAnomalies1.getValue())
-                                .type(CustomActionParameter.Type.TEXT)
-                                .build())
-                        .addParameters(ImmutableCustomActionParameter.builder()
-                                .name("typeOfAnomalie")
-                                .value(dynatraceAnomalies1.getTypeOfAnomalie())
+            JsonReader reader = new JsonReader(new FileReader(jsonAnomalieDetectionFile.get()));
+            return dynatraceAnomalies=gson.fromJson(reader,DynatraceAnomalie.class);
+        }
+        else
+        {
+            if(jsonAnomalieDetection.isPresent())
+            {
+                return  dynatraceAnomalies =gson.fromJson(jsonAnomalieDetection.get(), DynatraceAnomalie.class);
+
+            }
+        }
+        return null;
+
+    }
+
+    private List<ImmutableCustomAction> getAnomaliesDetectionActions() throws ParseException, FileNotFoundException {
+        List<ImmutableCustomAction> customActionList =new ArrayList<>();
+        if(jsonAnomalieDetection.isPresent() || jsonAnomalieDetectionFile.isPresent())
+        {
+
+            DynatraceAnomalie dynatraceAnomalies =getDynatraceAnomalie();
+            if(dynatraceAnomalies!=null) {
+                customActionList = dynatraceAnomalies.getDynatraceAnomalieList().stream().map(dynatraceAnomalies1 -> {
+                    ImmutableCustomAction.Builder custoBuilder = ImmutableCustomAction.builder()
+                            .name("DynatraceSetAnomalieDetection")
+                            .type("DynatraceSetAnomalieDetection")
+                            .isHit(false)
+                            .libraryPath(new File(customActionPath).toPath())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("dynatraceApiKey")
+                                    .value(dynatraceApiKey)
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("dynatraceId")
+                                    .value(dynatraceId)
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("tags")
+                                    .value(tags.get())
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("dynatraceMetricName")
+                                    .value(dynatraceAnomalies1.getDynatraceMetricName())
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("operator")
+                                    .value(dynatraceAnomalies1.getOperator())
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("value")
+                                    .value(dynatraceAnomalies1.getValue())
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build())
+                            .addParameters(ImmutableCustomActionParameter.builder()
+                                    .name("typeOfAnomalie")
+                                    .value(dynatraceAnomalies1.getTypeOfAnomalie())
+                                    .type(CustomActionParameter.Type.TEXT)
+                                    .build());
+                    if (proxyName.isPresent()) {
+                        custoBuilder.addParameters(ImmutableCustomActionParameter.builder()
+                                .name("proxyName")
+                                .value(proxyName.get())
                                 .type(CustomActionParameter.Type.TEXT)
                                 .build());
-                if(proxyName.isPresent())
-                {
-                    custoBuilder.addParameters(ImmutableCustomActionParameter.builder()
-                            .name("proxyName")
-                            .value(proxyName.get())
-                            .type(CustomActionParameter.Type.TEXT)
-                            .build());
-                }
-                if(dynatraceManagedHostname.isPresent())
-                {
-                    custoBuilder.addParameters(ImmutableCustomActionParameter.builder()
-                            .name("dynatraceManagedHostname")
-                            .value(dynatraceManagedHostname.get())
-                            .type(CustomActionParameter.Type.TEXT)
-                            .build());
-                }
-                return custoBuilder.build();
-            }).collect(Collectors.toList());
+                    }
+                    if (dynatraceManagedHostname.isPresent()) {
+                        custoBuilder.addParameters(ImmutableCustomActionParameter.builder()
+                                .name("dynatraceManagedHostname")
+                                .value(dynatraceManagedHostname.get())
+                                .type(CustomActionParameter.Type.TEXT)
+                                .build());
+                    }
+                    return custoBuilder.build();
+                }).collect(Collectors.toList());
 
-            return customActionList;
+                return customActionList;
+            }
         }
         return customActionList;
     }
@@ -292,7 +318,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
                 .addChilds(dynatracConfiguration.build());
 
         List<ImmutableCustomAction> customActionList;
-        if(jsonAnomalieDetection.isPresent())
+        if(jsonAnomalieDetection.isPresent() || jsonAnomalieDetectionFile.isPresent())
         {
             try {
                 customActionList=getAnomaliesDetectionActions();
@@ -301,6 +327,9 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
                     init.addAllChilds(customActionList);
                 }
             } catch (ParseException e) {
+                customActionList=new ArrayList<>();
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
                 customActionList=new ArrayList<>();
                 e.printStackTrace();
             }
