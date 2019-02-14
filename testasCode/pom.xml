@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <neoload-maven-plugin.version>1.0.2</neoload-maven-plugin.version>
+        <neoload-maven-plugin.version>1.0.5</neoload-maven-plugin.version>
 
     </properties>
 

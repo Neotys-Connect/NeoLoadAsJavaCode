@@ -111,17 +111,18 @@ final class MojoUtiliy {
 
 		StringBuilder result = new StringBuilder();
 		String fileSeperator = "/";
-
+		String extension="";
 		if (IS_WINDOWS) {
 			result.append(neoLoadPath + "\\bin");
-			neoLoadCmd += ".exe";
+			extension += ".exe";
+
 			fileSeperator = "\\";
 		} else {
 			result.append(neoLoadPath + "/bin");
 		}
 
 
-		result.append(fileSeperator + neoLoadCmd);
+		result.append(fileSeperator + neoLoadCmd+extension);
 
 		cmdArray.add(result.toString());
 		cmdArray.add("-project");
