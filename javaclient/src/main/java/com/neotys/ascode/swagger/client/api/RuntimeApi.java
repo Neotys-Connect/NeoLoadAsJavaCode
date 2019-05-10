@@ -61,56 +61,66 @@ public class RuntimeApi {
         this.apiClient = apiClient;
     }
 
-    
     /**
      * Build call for getTestsRun
      * @param name The name of the test (required)
      * @param projectId The project Id of the test (required)
      * @param scenarioName The scenario name of the test (required)
      * @param description The description of the test (optional)
+     * @param asCode The comma-separated as-code files to use for the test. Those files must be part of the uploaded project. (optional)
+     * @param reservationId The reservation identifier to use for the test that can be retrieved from the NeoLoad Web reservation calendar URL. If the reservation mode is enabled and \&quot;reservationId\&quot; value is defined, \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot; and \&quot;reservationSAPVUs\&quot; values will be ignored, otherwise if the reservation mode is disabled the value will be ignored. (optional)
+     * @param reservationDuration The duration of the reservation for the test. If the reservation mode is enabled, this value or \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot;, \&quot;reservationSAPVUs\&quot; must be defined, otherwise if the reservation mode is disabled the value will be ignored. The value (in seconds) is optional when the reservation mode is enabled and ignored when reservationId value is defined or if the reservation mode is disabled. The default value is the selected scenario duration + 1200 seconds (20 minutes). All reserved resources will be released when the test ends. (optional)
+     * @param reservationWebVUs The number of Web Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
+     * @param reservationSAPVUs The number of SAP Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
      * @param controllerZoneId The controller zone Id. If empty, the default zone will be used. (optional)
      * @param lgZones The LG zones with the number of the LGs. Example: \&quot;ZoneId1:10,ZoneId2:5\&quot;. If empty, the default zone will be used with one LG. (optional)
-     * @param publishTestResult When \&quot;true\&quot; and the project is an collaborative project (other than git) then the test result is published onto the server. If empty, the default value is \&quot;false\&quot;. (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
-        
      */
-    public com.squareup.okhttp.Call getTestsRunCall(String name, String projectId, String scenarioName, String description, String controllerZoneId, String lgZones, Boolean publishTestResult, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getTestsRunCall(String name, String projectId, String scenarioName, String description, String asCode, String reservationId, Long reservationDuration, Integer reservationWebVUs, Integer reservationSAPVUs, String controllerZoneId, String lgZones, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
-        
+
         // create path and map variables
         String localVarPath = "/projects/{projectId}/run"
-            .replaceAll("\\{" + "projectId" + "\\}", apiClient.escapeString(projectId.toString()));
+                .replaceAll("\\{" + "projectId" + "\\}", apiClient.escapeString(projectId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
         if (name != null)
-        localVarQueryParams.addAll(apiClient.parameterToPair("name", name));
+            localVarQueryParams.addAll(apiClient.parameterToPair("name", name));
         if (description != null)
-        localVarQueryParams.addAll(apiClient.parameterToPair("description", description));
+            localVarQueryParams.addAll(apiClient.parameterToPair("description", description));
+        if (asCode != null)
+            localVarQueryParams.addAll(apiClient.parameterToPair("asCode", asCode));
         if (scenarioName != null)
-        localVarQueryParams.addAll(apiClient.parameterToPair("scenarioName", scenarioName));
+            localVarQueryParams.addAll(apiClient.parameterToPair("scenarioName", scenarioName));
+        if (reservationId != null)
+            localVarQueryParams.addAll(apiClient.parameterToPair("reservationId", reservationId));
+        if (reservationDuration != null)
+            localVarQueryParams.addAll(apiClient.parameterToPair("reservationDuration", reservationDuration));
+        if (reservationWebVUs != null)
+            localVarQueryParams.addAll(apiClient.parameterToPair("reservationWebVUs", reservationWebVUs));
+        if (reservationSAPVUs != null)
+            localVarQueryParams.addAll(apiClient.parameterToPair("reservationSAPVUs", reservationSAPVUs));
         if (controllerZoneId != null)
-        localVarQueryParams.addAll(apiClient.parameterToPair("controllerZoneId", controllerZoneId));
+            localVarQueryParams.addAll(apiClient.parameterToPair("controllerZoneId", controllerZoneId));
         if (lgZones != null)
-        localVarQueryParams.addAll(apiClient.parameterToPair("lgZones", lgZones));
-        if (publishTestResult != null)
-        localVarQueryParams.addAll(apiClient.parameterToPair("publishTestResult", publishTestResult));
+            localVarQueryParams.addAll(apiClient.parameterToPair("lgZones", lgZones));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "application/json"
+                "application/json"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
 
         final String[] localVarContentTypes = {
-            
+
         };
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
@@ -121,8 +131,8 @@ public class RuntimeApi {
                 public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
                     com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
-                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                    .build();
+                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                            .build();
                 }
             });
         }
@@ -130,36 +140,29 @@ public class RuntimeApi {
         String[] localVarAuthNames = new String[] { "NeoloadAuthorizer" };
         return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
-    
+
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getTestsRunValidateBeforeCall(String name, String projectId, String scenarioName, String description, String controllerZoneId, String lgZones, Boolean publishTestResult, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
+    private com.squareup.okhttp.Call getTestsRunValidateBeforeCall(String name, String projectId, String scenarioName, String description, String asCode, String reservationId, Long reservationDuration, Integer reservationWebVUs, Integer reservationSAPVUs, String controllerZoneId, String lgZones, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         // verify the required parameter 'name' is set
         if (name == null) {
             throw new ApiException("Missing the required parameter 'name' when calling getTestsRun(Async)");
         }
-        
         // verify the required parameter 'projectId' is set
         if (projectId == null) {
             throw new ApiException("Missing the required parameter 'projectId' when calling getTestsRun(Async)");
         }
-        
         // verify the required parameter 'scenarioName' is set
         if (scenarioName == null) {
             throw new ApiException("Missing the required parameter 'scenarioName' when calling getTestsRun(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = getTestsRunCall(name, projectId, scenarioName, description, controllerZoneId, lgZones, publishTestResult, progressListener, progressRequestListener);
+
+        com.squareup.okhttp.Call call = getTestsRunCall(name, projectId, scenarioName, description, asCode, reservationId, reservationDuration, reservationWebVUs, reservationSAPVUs, controllerZoneId, lgZones, progressListener, progressRequestListener);
         return call;
 
-        
-        
-        
-        
-        
-        
+
+
+
+
     }
 
     /**
@@ -169,15 +172,18 @@ public class RuntimeApi {
      * @param projectId The project Id of the test (required)
      * @param scenarioName The scenario name of the test (required)
      * @param description The description of the test (optional)
+     * @param asCode The comma-separated as-code files to use for the test. Those files must be part of the uploaded project. (optional)
+     * @param reservationId The reservation identifier to use for the test that can be retrieved from the NeoLoad Web reservation calendar URL. If the reservation mode is enabled and \&quot;reservationId\&quot; value is defined, \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot; and \&quot;reservationSAPVUs\&quot; values will be ignored, otherwise if the reservation mode is disabled the value will be ignored. (optional)
+     * @param reservationDuration The duration of the reservation for the test. If the reservation mode is enabled, this value or \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot;, \&quot;reservationSAPVUs\&quot; must be defined, otherwise if the reservation mode is disabled the value will be ignored. The value (in seconds) is optional when the reservation mode is enabled and ignored when reservationId value is defined or if the reservation mode is disabled. The default value is the selected scenario duration + 1200 seconds (20 minutes). All reserved resources will be released when the test ends. (optional)
+     * @param reservationWebVUs The number of Web Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
+     * @param reservationSAPVUs The number of SAP Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
      * @param controllerZoneId The controller zone Id. If empty, the default zone will be used. (optional)
      * @param lgZones The LG zones with the number of the LGs. Example: \&quot;ZoneId1:10,ZoneId2:5\&quot;. If empty, the default zone will be used with one LG. (optional)
-     * @param publishTestResult When \&quot;true\&quot; and the project is an collaborative project (other than git) then the test result is published onto the server. If empty, the default value is \&quot;false\&quot;. (optional)
      * @return RunTestDefinition
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-        
      */
-    public RunTestDefinition getTestsRun(String name, String projectId, String scenarioName, String description, String controllerZoneId, String lgZones, Boolean publishTestResult) throws ApiException {
-        ApiResponse<RunTestDefinition> resp = getTestsRunWithHttpInfo(name, projectId, scenarioName, description, controllerZoneId, lgZones, publishTestResult);
+    public RunTestDefinition getTestsRun(String name, String projectId, String scenarioName, String description, String asCode, String reservationId, Long reservationDuration, Integer reservationWebVUs, Integer reservationSAPVUs, String controllerZoneId, String lgZones) throws ApiException {
+        ApiResponse<RunTestDefinition> resp = getTestsRunWithHttpInfo(name, projectId, scenarioName, description, asCode, reservationId, reservationDuration, reservationWebVUs, reservationSAPVUs, controllerZoneId, lgZones);
         return resp.getData();
     }
 
@@ -188,15 +194,18 @@ public class RuntimeApi {
      * @param projectId The project Id of the test (required)
      * @param scenarioName The scenario name of the test (required)
      * @param description The description of the test (optional)
+     * @param asCode The comma-separated as-code files to use for the test. Those files must be part of the uploaded project. (optional)
+     * @param reservationId The reservation identifier to use for the test that can be retrieved from the NeoLoad Web reservation calendar URL. If the reservation mode is enabled and \&quot;reservationId\&quot; value is defined, \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot; and \&quot;reservationSAPVUs\&quot; values will be ignored, otherwise if the reservation mode is disabled the value will be ignored. (optional)
+     * @param reservationDuration The duration of the reservation for the test. If the reservation mode is enabled, this value or \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot;, \&quot;reservationSAPVUs\&quot; must be defined, otherwise if the reservation mode is disabled the value will be ignored. The value (in seconds) is optional when the reservation mode is enabled and ignored when reservationId value is defined or if the reservation mode is disabled. The default value is the selected scenario duration + 1200 seconds (20 minutes). All reserved resources will be released when the test ends. (optional)
+     * @param reservationWebVUs The number of Web Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
+     * @param reservationSAPVUs The number of SAP Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
      * @param controllerZoneId The controller zone Id. If empty, the default zone will be used. (optional)
      * @param lgZones The LG zones with the number of the LGs. Example: \&quot;ZoneId1:10,ZoneId2:5\&quot;. If empty, the default zone will be used with one LG. (optional)
-     * @param publishTestResult When \&quot;true\&quot; and the project is an collaborative project (other than git) then the test result is published onto the server. If empty, the default value is \&quot;false\&quot;. (optional)
      * @return ApiResponse&lt;RunTestDefinition&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-        
      */
-    public ApiResponse<RunTestDefinition> getTestsRunWithHttpInfo(String name, String projectId, String scenarioName, String description, String controllerZoneId, String lgZones, Boolean publishTestResult) throws ApiException {
-        com.squareup.okhttp.Call call = getTestsRunValidateBeforeCall(name, projectId, scenarioName, description, controllerZoneId, lgZones, publishTestResult, null, null);
+    public ApiResponse<RunTestDefinition> getTestsRunWithHttpInfo(String name, String projectId, String scenarioName, String description, String asCode, String reservationId, Long reservationDuration, Integer reservationWebVUs, Integer reservationSAPVUs, String controllerZoneId, String lgZones) throws ApiException {
+        com.squareup.okhttp.Call call = getTestsRunValidateBeforeCall(name, projectId, scenarioName, description, asCode, reservationId, reservationDuration, reservationWebVUs, reservationSAPVUs, controllerZoneId, lgZones, null, null);
         Type localVarReturnType = new TypeToken<RunTestDefinition>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -208,15 +217,18 @@ public class RuntimeApi {
      * @param projectId The project Id of the test (required)
      * @param scenarioName The scenario name of the test (required)
      * @param description The description of the test (optional)
+     * @param asCode The comma-separated as-code files to use for the test. Those files must be part of the uploaded project. (optional)
+     * @param reservationId The reservation identifier to use for the test that can be retrieved from the NeoLoad Web reservation calendar URL. If the reservation mode is enabled and \&quot;reservationId\&quot; value is defined, \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot; and \&quot;reservationSAPVUs\&quot; values will be ignored, otherwise if the reservation mode is disabled the value will be ignored. (optional)
+     * @param reservationDuration The duration of the reservation for the test. If the reservation mode is enabled, this value or \&quot;reservationDuration\&quot;, \&quot;reservationWebVUs\&quot;, \&quot;reservationSAPVUs\&quot; must be defined, otherwise if the reservation mode is disabled the value will be ignored. The value (in seconds) is optional when the reservation mode is enabled and ignored when reservationId value is defined or if the reservation mode is disabled. The default value is the selected scenario duration + 1200 seconds (20 minutes). All reserved resources will be released when the test ends. (optional)
+     * @param reservationWebVUs The number of Web Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
+     * @param reservationSAPVUs The number of SAP Virtual Users to be reserved for the test. The value is optional when the reservation mode is enabled and ignored when \&quot;reservationId\&quot; value is defined or if the reservation mode is disabled. (optional)
      * @param controllerZoneId The controller zone Id. If empty, the default zone will be used. (optional)
      * @param lgZones The LG zones with the number of the LGs. Example: \&quot;ZoneId1:10,ZoneId2:5\&quot;. If empty, the default zone will be used with one LG. (optional)
-     * @param publishTestResult When \&quot;true\&quot; and the project is an collaborative project (other than git) then the test result is published onto the server. If empty, the default value is \&quot;false\&quot;. (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-        
      */
-    public com.squareup.okhttp.Call getTestsRunAsync(String name, String projectId, String scenarioName, String description, String controllerZoneId, String lgZones, Boolean publishTestResult, final ApiCallback<RunTestDefinition> callback) throws ApiException {
+    public com.squareup.okhttp.Call getTestsRunAsync(String name, String projectId, String scenarioName, String description, String asCode, String reservationId, Long reservationDuration, Integer reservationWebVUs, Integer reservationSAPVUs, String controllerZoneId, String lgZones, final ApiCallback<RunTestDefinition> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -237,12 +249,11 @@ public class RuntimeApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getTestsRunValidateBeforeCall(name, projectId, scenarioName, description, controllerZoneId, lgZones, publishTestResult, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getTestsRunValidateBeforeCall(name, projectId, scenarioName, description, asCode, reservationId, reservationDuration, reservationWebVUs, reservationSAPVUs, controllerZoneId, lgZones, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<RunTestDefinition>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
-    
     /**
      * Build call for postUploadProject
      * @param progressListener Progress listener
