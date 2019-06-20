@@ -13,7 +13,7 @@
 package com.neotys.ascode.swagger.client.model;
 
 import java.util.Objects;
-import io.swagger.client.model.SLAPerIntervalDefinition;
+import com.neotys.ascode.swagger.client.model.SLAPerIntervalDefinition;
 import java.util.ArrayList;
 import java.util.List;
 

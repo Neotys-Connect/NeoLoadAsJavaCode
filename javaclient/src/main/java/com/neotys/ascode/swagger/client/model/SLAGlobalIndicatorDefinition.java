@@ -18,9 +18,9 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.client.model.SLAKPIDefinition;
-import io.swagger.client.model.SLAStatusDefinition;
-import io.swagger.client.model.ThresholdDefinition;
+import com.neotys.ascode.swagger.client.model.SLAKPIDefinition;
+import com.neotys.ascode.swagger.client.model.SLAStatusDefinition;
+import com.neotys.ascode.swagger.client.model.ThresholdDefinition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.IOException;
 

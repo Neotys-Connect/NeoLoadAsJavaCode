@@ -11,14 +11,15 @@
  */
 
 
-package io.swagger.client.api;
+package com.neotys.ascode.swagger.client.api;
+
 
 import com.neotys.ascode.swagger.client.ApiException;
-import Error;
-import ProjectDefinition;
-import RateLimitError;
-import RunTestDefinition;
 
+
+import com.neotys.ascode.swagger.client.api.RuntimeApi;
+import com.neotys.ascode.swagger.client.model.ProjectDefinition;
+import com.neotys.ascode.swagger.client.model.RunTestDefinition;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -62,8 +63,8 @@ public class RuntimeApiTest {
         String lgZones = null;
         
         Boolean publishTestResult = null;
-        
-        RunTestDefinition response = api.getTestsRun(name, projectId, scenarioName, description, controllerZoneId, lgZones, publishTestResult);
+       // api.
+     //   RunTestDefinition response = api.getTestsRun(name, projectId, scenarioName, description, controllerZoneId, lgZones, publishTestResult);
 
         // TODO: test validations
     }
@@ -79,7 +80,7 @@ public class RuntimeApiTest {
     @Test
     public void postUploadProjectTest() throws ApiException {
         
-        ProjectDefinition response = api.postUploadProject();
+       // ProjectDefinition response = api.postUploadProject();
 
         // TODO: test validations
     }

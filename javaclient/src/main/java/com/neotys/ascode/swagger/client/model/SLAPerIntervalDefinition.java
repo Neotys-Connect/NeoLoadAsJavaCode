@@ -21,7 +21,7 @@ import com.google.gson.stream.JsonWriter;
 import com.neotys.ascode.swagger.client.model.SLAElementDefinition;
 import com.neotys.ascode.swagger.client.model.SLAKPIDefinition;
 import com.neotys.ascode.swagger.client.model.SLAStatusDefinition;
-import io.swagger.client.model.ThresholdDefinition;
+import com.neotys.ascode.swagger.client.model.ThresholdDefinition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.IOException;
 
