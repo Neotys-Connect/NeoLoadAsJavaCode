@@ -1,6 +1,6 @@
 package com.neotys.testing.framework.plugin.apm.sanityCheck;
 
-import com.neotys.neoload.model.repository.*;
+import com.neotys.neoload.model.v3.project.userpath.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.plugin.NeoloadIntegration;
 
@@ -36,30 +36,30 @@ public class DynatraceSanityCheck extends NeoloadIntegration {
     @Override
     public UserPath createPluginUserPath() {
         ImmutableCustomAction.Builder dynatraceSanityCheck;
-        dynatraceSanityCheck = ImmutableCustomAction.builder()
-                .isHit(false)
+        dynatraceSanityCheck = CustomAction.builder()
+                .asRequest(false)
                 .type("DynatraceSanityCheck")
                 .libraryPath(new File(customActionPath).toPath())
                 .name("DynatraceSanityCheck")
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceApiKey")
                         .value(dynatraceApiKey)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceId")
                         .value(dynatraceId)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("tags")
                         .value(tags.get())
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("outPutReferenceFile")
                         .value(outPutReferenceFile)
                         .type(CustomActionParameter.Type.TEXT)
@@ -67,7 +67,7 @@ public class DynatraceSanityCheck extends NeoloadIntegration {
                 );
 
         if (proxyName.isPresent()) {
-            dynatraceSanityCheck.addParameters(ImmutableCustomActionParameter.builder()
+            dynatraceSanityCheck.addParameters(CustomActionParameter.builder()
                     .name("proxyName")
                     .value(proxyName.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -75,7 +75,7 @@ public class DynatraceSanityCheck extends NeoloadIntegration {
             );
         }
         if (dynatraceManagedHostname.isPresent()) {
-            dynatraceSanityCheck.addParameters(ImmutableCustomActionParameter.builder()
+            dynatraceSanityCheck.addParameters(CustomActionParameter.builder()
                     .name("dynatraceManagedHostname")
                     .value(dynatraceManagedHostname.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -83,28 +83,19 @@ public class DynatraceSanityCheck extends NeoloadIntegration {
             );
         }
 
-        ImmutableContainerForMulti init = ImmutableContainerForMulti.builder()
-                .name("Init")
-                .tag("init-container")
-                .build();
 
-        ImmutableContainerForMulti end = ImmutableContainerForMulti.builder()
-                .name("End")
-                .tag("end-container")
-                .build();
 
-        ImmutableContainerForMulti action = ImmutableContainerForMulti.builder()
+        Container action = Container.builder()
                 .name("Actions")
-                .tag("actions-container")
-                .addChilds(dynatraceSanityCheck.build())
+                .addSteps(dynatraceSanityCheck.build())
                 .build();
 
 
-        return ImmutableUserPath.builder()
+        return UserPath.builder()
                 .name(DYNATRACE_USERPATH_NAME)
-                .initContainer(init)
-                .actionsContainer(action)
-                .endContainer(end)
+                .init(Optional.empty())
+                .actions(action)
+                .end(Optional.empty())
                 .build();
 
     }

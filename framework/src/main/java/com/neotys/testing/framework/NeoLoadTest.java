@@ -1,10 +1,12 @@
 package com.neotys.testing.framework;
 
 import com.google.common.collect.ImmutableMap;
-import com.neotys.neoload.model.Project;
-import com.neotys.neoload.model.repository.*;
-import com.neotys.neoload.model.scenario.*;
-import com.neotys.neoload.model.writers.neoload.NeoLoadWriter;
+import com.neotys.neoload.model.v3.project.Project;
+import com.neotys.neoload.model.v3.project.population.*;
+import com.neotys.neoload.model.v3.project.scenario.*;
+import com.neotys.neoload.model.v3.project.userpath.UserPath;
+import com.neotys.neoload.model.v3.project.variable.FileVariable;
+import com.neotys.neoload.model.v3.writers.neoload.NeoLoadWriter;
 import com.neotys.testing.framework.plugin.apm.AppDynamicsIntegration;
 import com.neotys.testing.framework.plugin.apm.DynatraceIntegration;
 import com.neotys.testing.framework.plugin.apm.NewRelicIntegration;
@@ -19,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,12 +58,13 @@ public abstract class NeoLoadTest {
 
 	private void generateDefaultPopulation() {
 		design.getUserPaths().forEach((name, userPath) -> {
-			final ImmutablePopulation pop = ImmutablePopulation.builder()
+			final ImmutablePopulation pop = Population.builder()
 					.name(defaultPopulationNameForUserPath(name))
 					.description(name)
-					.addSplits(ImmutablePopulationSplit.builder()
-							.userPath(name)
-							.percentage(100)
+					.addUserPaths(UserPathPolicy.builder()
+							.distribution(100)
+							.name(userPath.getName())
+							 .description(name)
 							.build())
 					.build();
 			addPopulation(pop);
@@ -148,7 +152,7 @@ public abstract class NeoLoadTest {
 						.addPopulations(PopulationPolicy.builder()
 								.name(sanitycheck.getName())
 								.loadPolicy(ConstantLoadPolicy.builder()
-										.duration(Duration.builder().type(Duration.Type.ITERATION).value(1).build())
+										.duration(LoadDuration.builder().type(LoadDuration.Type.ITERATION).value(1).build())
 										.users(1)
 										.rampup(0)
 										.build()
@@ -202,7 +206,7 @@ public abstract class NeoLoadTest {
 
 	}
 
-	public void createSimpleConstantLoadScenario(final String scenarioName, final String userPathName, final int duration, final int maxUser, final int rampupTime) {
+	public void createSimpleConstantLoadScenario(final String scenarioName, final String userPathName, final int duration, final int maxUser, final int rampupTime,Optional<String> slaprofile) {
 		Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 		if (population != null) {
@@ -211,19 +215,19 @@ public abstract class NeoLoadTest {
 					.addPopulations(PopulationPolicy.builder()
 							.name(population.getName())
 							.loadPolicy(ConstantLoadPolicy.builder()
-									.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+									.duration(LoadDuration.builder().type(LoadDuration.Type.TIME).value(duration).build())
 									.users(maxUser)
 									.rampup(rampupTime)
 									.build()
 							)
 							.build()
-					);
+					).slaProfile(slaprofile);
 			if(apm!=null)
 			{
 				scenario.addPopulations(PopulationPolicy.builder()
 				.name(apm.getName())
 				.loadPolicy(ConstantLoadPolicy.builder()
-					.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+					.duration(LoadDuration.builder().type(LoadDuration.Type.TIME).value(duration).build())
 					.users(1)
 					.rampup(0)
 					.build())
@@ -248,6 +252,7 @@ public abstract class NeoLoadTest {
 				case DYNATRACE:
 					apmsettings.put("dynatrace.enabled","true");
 					apmsettings.put("dynatrace.logicalnames.enabled","true");
+					apmsettings.put("dynatrace.header","X-Dynatrace-Test");
 					break;
 				case APPDYNAMICS:
 					apmsettings.put("appdynamics.enabled","true");
@@ -282,14 +287,14 @@ public abstract class NeoLoadTest {
 				.map(BaseNeoLoadUserPath::getVirtualUser)
 				.collect(Collectors.toList());
 		projectBuilder.addAllUserPaths(userPaths);
-
+		//---Add SLA---------------------------------------
+		projectBuilder.addAllSlaProfiles(design.getSlaProfiles());
 		//---Add all the Variables IN the project--------
 		projectBuilder.addAllVariables(design.getVariables().values());
 
 		final List<File> files = design.getVariables().values().stream().filter(v -> v instanceof FileVariable)
 				.map(v -> (FileVariable) v)
-				.map(FileVariable::getFileName)
-				.map(path -> new File(path.get()))
+				.map(path -> new File(path.getPath()))
 				.collect(Collectors.toList());
 
 
@@ -364,7 +369,7 @@ public abstract class NeoLoadTest {
 	}
 
 	private String getOrCreateProjectFolder(final Project project) {
-		final File neoloadDir = NeoloadFileUtils.getNeoLoadProjectPath(project.getName()).toFile();
+		final File neoloadDir = NeoloadFileUtils.getNeoLoadProjectPath(project.getName().get()).toFile();
 		if (!neoloadDir.exists()) {
 			try {
 				neoloadDir.mkdir();
@@ -378,7 +383,7 @@ public abstract class NeoLoadTest {
 		return neoloadDir.getAbsolutePath();
 	}
 
-	protected void createSimpleConstantIterationScenario(final String scenarioName, final String userPathName, final int incremenNumber, final int maxUser, final int rampupTime) {
+	protected void createSimpleConstantIterationScenario(final String scenarioName, final String userPathName, final int incremenNumber, final int maxUser, final int rampupTime,final Optional<String> slaprofilename) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 
@@ -393,20 +398,20 @@ public abstract class NeoLoadTest {
 					.addPopulations(PopulationPolicy.builder()
 							.name(population.getName())
 							.loadPolicy(ConstantLoadPolicy.builder()
-									.duration(Duration.builder().type(Duration.Type.ITERATION).value(incremenNumber).build())
+									.duration(LoadDuration.builder().type(LoadDuration.Type.ITERATION).value(incremenNumber).build())
 									.users(maxUser)
 									.rampup(rampupTime)
 									.build()
 							)
 							.build()
-					);
+					).slaProfile(slaprofilename);
 
 
 			if (apm != null) {
 				scenario.addPopulations(PopulationPolicy.builder()
 						.name(apm.getName())
 						.loadPolicy(ConstantLoadPolicy.builder()
-								.duration(Duration.builder().type(Duration.Type.ITERATION).value(incremenNumber).build())
+								.duration(LoadDuration.builder().type(LoadDuration.Type.ITERATION).value(incremenNumber).build())
 								.users(1)
 								.rampup(0)
 								.build())
@@ -417,7 +422,7 @@ public abstract class NeoLoadTest {
 		}
 	}
 	protected void createSimpleRampupLoadScenario(final String scenarioName, final String userPathName, final int duration,
-												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime) {
+												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime,final Optional<String> slaprofile) {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 
@@ -432,9 +437,9 @@ public abstract class NeoLoadTest {
 						.addPopulations(PopulationPolicy.builder()
 								.name(population.getName())
 								.loadPolicy(RampupLoadPolicy.builder()
-										.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+										.duration(LoadDuration.builder().type(LoadDuration.Type.TIME).value(duration).build())
 										.incrementUsers(incrementNbVu)
-										.incrementEvery(Duration.builder().type(Duration.Type.TIME).value(incrementTime).build())
+										.incrementEvery(LoadDuration.builder().type(LoadDuration.Type.TIME).value(incrementTime).build())
 										.minUsers(initialNbVU)
 										.maxUsers(maxvu.get())
 										.build()
@@ -448,9 +453,9 @@ public abstract class NeoLoadTest {
 						.addPopulations(PopulationPolicy.builder()
 								.name(population.getName())
 								.loadPolicy(RampupLoadPolicy.builder()
-										.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+										.duration(LoadDuration.builder().type(LoadDuration.Type.TIME).value(duration).build())
 										.incrementUsers(incrementNbVu)
-										.incrementEvery(Duration.builder().type(Duration.Type.TIME).value(incrementTime).build())
+										.incrementEvery(LoadDuration.builder().type(LoadDuration.Type.TIME).value(incrementTime).build())
 										.minUsers(initialNbVU)
 										.build()
 								)
@@ -462,13 +467,14 @@ public abstract class NeoLoadTest {
 				scenario.addPopulations(PopulationPolicy.builder()
 				.name(apm.getName())
 				.loadPolicy(ConstantLoadPolicy.builder()
-						.duration(Duration.builder().type(Duration.Type.TIME).value(duration).build())
+						.duration(LoadDuration.builder().type(LoadDuration.Type.TIME).value(duration).build())
 						.users(1)
 						.rampup(0)
 						.build())
 				.build()
 				);
 			}
+			scenario.slaProfile(slaprofile);
 			scenarios.add(scenario.build());
 		}
 	}

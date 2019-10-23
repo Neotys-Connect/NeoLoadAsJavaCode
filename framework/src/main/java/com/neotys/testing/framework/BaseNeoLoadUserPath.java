@@ -1,9 +1,16 @@
 package com.neotys.testing.framework;
 
-import com.neotys.neoload.model.core.Element;
-import com.neotys.neoload.model.repository.*;
+
+
+import com.neotys.neoload.model.v3.project.server.Server;
+import com.neotys.neoload.model.v3.project.userpath.*;
+import com.neotys.neoload.model.v3.project.variable.Variable;
+import com.neotys.neoload.model.v3.util.Parameter;
+
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,59 +29,58 @@ public abstract class BaseNeoLoadUserPath {
 		virtualUser = createVirtualUser(design);
 	}
 
-	protected static ImmutableContainerForMulti endContainer() {
-		return ImmutableContainerForMulti.builder().name("End").tag("end-container").build();
+	protected static UserPath.Builder endContainer(UserPath.Builder builder,List<Step> initsteps) {
+		return builder.init(Container.builder().addAllSteps(initsteps).name("init").build());
 	}
 
-	protected static ImmutableContainerForMulti initContainer() {
-		return ImmutableContainerForMulti.builder().name("Init").tag("init-container").build();
+	protected static UserPath.Builder initContainer(UserPath.Builder builder,List<Step> endsteps) {
+		return builder.end(Container.builder().addAllSteps(endsteps).name("end").build());
 	}
 
-	protected static ImmutableContainerForMulti.Builder actionsContainerBuilder() {
-		return ImmutableContainerForMulti.builder().name("Actions").tag("actions-container");
+	protected static Container.Builder actionsContainerBuilder() {
+		return Container.builder().name("Actions");
 	}
 
-	protected static Parameter parameter(final String parameterName, final String parameterValue) {
-		return ImmutableParameter.builder()
-				.name(parameterName)
-				.value(parameterValue)
-				.build();
+	protected static String parameter(final String parameterName, final String parameterValue) {
+		return parameterName+"="+parameterValue;
 	}
-	protected static RegexpValidator regexpValidator(final String validatorname,final String regexp,boolean hastocontain)
+	/*protected static Validator regexpValidator(final String validatorname, final String regexp, boolean hastocontain)
 	{
-		return ImmutableRegexpValidator.builder()
+
+		return ImmutableValidator Validator.builder()
 				.name(validatorname)
 				.haveToContains(hastocontain)
 				.validationRegex(regexp)
 				.build();
-	}
-	protected static Header header(final String headerName,final String headervalue)
+	}*/
+	protected static Header header(final String headerName, final String headervalue)
 	{
-		return ImmutableHeader.builder()
-				.headerName(headerName)
-				.headerValue(headervalue)
+		return Header.builder()
+				.name(headerName)
+				.value(headervalue)
 				.build();
 	}
-	protected static VariableExtractor extractor(final String variableExtractorName,final String from, final String regexp,int occurence, boolean exitonerror) {
-		VariableExtractor.ExtractType type;
-
+	protected static VariableExtractor extractor(final String variableExtractorName, final String from, final String regexp, int occurence, boolean exitonerror, Optional<String> xpath,Optional<String> jsonpath) {
+		VariableExtractor.From type;
 		switch(from)
 		{
 			case BODY:
-				type=VariableExtractor.ExtractType.BODY;
+				type=VariableExtractor.From.BODY;
 				break;
 			case HEADER:
-				type=VariableExtractor.ExtractType.HEADERS;
+				type=VariableExtractor.From.HEADER;
 				break;
 			default:
-				type=VariableExtractor.ExtractType.BOTH;
+				type=VariableExtractor.From.BOTH;
 		}
-		return ImmutableVariableExtractor.builder()
+		return VariableExtractor.builder()
 				.name(variableExtractorName)
-				.regExp(regexp)
-				.nbOccur(occurence)
-				.extractType(type)
-				.exitOnError(exitonerror)
+				.regexp(regexp)
+				.matchNumber(occurence)
+				.from(type)
+				.throwAssertionError(exitonerror)
+				.xpath(xpath)
+				.jsonPath(jsonpath)
 				.build();
 
 	}
@@ -82,15 +88,22 @@ public abstract class BaseNeoLoadUserPath {
 		return delay(duration, "delay_" + DELAY_COUNTER.incrementAndGet(), false);
 	}
 
-	protected static Delay thinkTime(final long duration) {
-		return delay(duration, "think_time_" + THINK_TIME_COUNTER.incrementAndGet(), true);
+	protected static ThinkTime thinkTime(final long duration) {
+		return createthinkTime(duration, "think_time_" + THINK_TIME_COUNTER.incrementAndGet(), true);
+	}
+
+	private static ThinkTime createthinkTime(final long duration, final String name, final boolean isThinkTime) {
+		return ThinkTime.builder()
+				.name(name)
+				.value(String.valueOf(duration))
+				.description(Optional.empty())
+				.build();
 	}
 
 	private static Delay delay(final long duration, final String name, final boolean isThinkTime) {
-		return ImmutableDelay.builder()
+		return Delay.builder()
 				.name(name)
-				.isThinkTime(isThinkTime)
-				.delay(String.valueOf(duration))
+				.value(String.valueOf(duration))
 				.build();
 	}
 
@@ -102,94 +115,153 @@ public abstract class BaseNeoLoadUserPath {
 		return "${" + variableName + "}";
 	}
 
-	protected static ImmutableUserPath.Builder userPathBuilder(final String name) {
-		return ImmutableUserPath.builder()
-				.name(name)
-				.initContainer(initContainer())
-				.endContainer(endContainer());
+	protected static UserPath.Builder userPathBuilder(final String name) {
+		return UserPath.builder()
+				.name(name);
+
+
 	}
 
 
-	protected static ImmutablePostFormRequest.Builder postFormBuilder(final Server server, final String path, final Collection<Parameter> parameters, final Collection<Parameter> postParameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
-		return ImmutablePostFormRequest.builder()
+//	protected static ImmutableRequest.Builder postFormBuilder(final Server server, final String path, final Collection<String> parameters, final Collection<String> postParameters, final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+protected static ImmutableRequest.Builder postFormBuilder(final Server server, final String path, final Collection<String> parameters, final Collection<String> postParameters, final Collection<VariableExtractor> extractors,final Optional<String> slaprofilename) {
+
+		String body=String.join("&",postParameters);
+		String uri = path;
+		if(parameters!=null) {
+			if(parameters.size()>0) {
+				String url = String.join("&", parameters);
+				uri += "?" + url;
+			}
+		}
+		return Request.builder()
 				.name(path)
-				.path(path)
-				.server(server)
-				.httpMethod(Request.HttpMethod.POST)
-				.addAllPostParameters(postParameters)
-				.addAllParameters(parameters)
-				.addAllExtractors(extractors)
-				.addAllValidators(validators);
+				.url(uri)
+				.slaProfile(slaprofilename)
+				.server(server.getName())
+				.method(Request.Method.POST.toString())
+				.body(body)
+				//.addAllValidators(validators)
+				.addAllExtractors(extractors);
 	}
 
-	protected static ImmutablePostFormRequest.Builder postFormBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<Parameter> parameters, final Collection<Parameter> postParameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
-		return ImmutablePostFormRequest.builder()
+ 	protected static ImmutableRequest.Builder postFormBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<String> parameters, final Collection<String> postParameters,final Collection<VariableExtractor> extractors,final Optional<String> slaprofilename) {
+
+	//protected static ImmutableRequest.Builder postFormBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<String> parameters, final Collection<String> postParameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		String uri = path;
+		if(parameters!=null) {
+			if(parameters.size()>0) {
+				String url = String.join("&", parameters);
+				uri += "?" + url;
+			}
+		}
+		return Request.builder()
 				.name(path)
-				.path(path)
-				.server(server)
-				.httpMethod(Request.HttpMethod.POST)
-				.addAllPostParameters(postParameters)
-				.addAllParameters(parameters)
+				.slaProfile(slaprofilename)
+				.url(uri)
+				.server(server.getName())
+				.method(Request.Method.POST.toString())
+				.body(String.join("&",postParameters))
 				.addAllExtractors(extractors)
-				.addAllValidators(validators)
+				//.addAllValidators(validators)
 				.addAllHeaders(headers);
 	}
 
-	protected static ImmutablePostTextRequest.Builder postTextBuilder(final Server server, final String path, final String data,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
-		return ImmutablePostTextRequest.builder()
+	protected static ImmutableRequest.Builder postTextBuilder(final Server server, final String path,final Collection<String> parameters, final String data, final Collection<VariableExtractor> extractors,Optional<String> slaprofilename) {
+
+//	protected static ImmutableRequest.Builder postTextBuilder(final Server server, final String path,final Collection<String> parameters, final String data, final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		String uri = path;
+		if(parameters!=null) {
+			if(parameters.size()>0) {
+				String url = String.join("&", parameters);
+				uri += "?" + url;
+			}
+		}
+		return Request.builder()
 				.name(path)
-				.path(path)
-				.server(server)
-				.httpMethod(Request.HttpMethod.POST)
-				.data(data)
-				.addAllExtractors(extractors)
-				.addAllValidators(validators);
+				.slaProfile(slaprofilename)
+				.url(uri)
+				.server(server.getName())
+				.method(Request.Method.POST.toString())
+				.body(data)
+				.addAllExtractors(extractors);
+				//.addAllValidators(validators);
 	}
 
-	protected static ImmutablePostTextRequest.Builder postTextBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final String data,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
-		return ImmutablePostTextRequest.builder()
+	protected static ImmutableRequest.Builder postTextBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<String> parameters, final String data,final Collection<VariableExtractor> extractors,final Optional<String> slaprofile) {
+
+//	protected static ImmutableRequest.Builder postTextBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<String> parameters, final String data,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		String uri = path;
+		if(parameters!=null) {
+			if(parameters.size()>0) {
+				String url = String.join("&", parameters);
+				uri += "?" + url;
+			}
+		}
+		return Request.builder()
 				.name(path)
-				.path(path)
-				.server(server)
-				.httpMethod(Request.HttpMethod.POST)
-				.data(data)
+				.slaProfile(slaprofile)
+				.url(uri)
+				.server(server.getName())
+				.method(Request.Method.POST.toString())
+				.body(data)
 				.addAllExtractors(extractors)
-				.addAllHeaders(headers)
-				.addAllValidators(validators);
+				.addAllHeaders(headers);
+				//.addAllValidators(validators)
+
 	}
 
-	protected static ImmutableGetPlainRequest.Builder getBuilder(final Server server, final String path, final Collection<Parameter> parameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
-		return ImmutableGetPlainRequest.builder()
-				.server(server)
+	protected static ImmutableRequest.Builder getBuilder(final Server server, final String path, final Collection<String> parameters, final Collection<VariableExtractor> extractors, final Optional<String> slaprofile) {
+
+//	protected static ImmutableRequest.Builder getBuilder(final Server server, final String path, final Collection<String> parameters, final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		String uri = path;
+		if(parameters!=null) {
+			if(parameters.size()>0) {
+				String url = String.join("&", parameters);
+				uri += "?" + url;
+			}
+		}
+		return Request.builder()
+				.server(server.getName())
+				.slaProfile(slaprofile)
 				.name(path)
-				.path(path)
-				.httpMethod(Request.HttpMethod.GET)
-				.addAllParameters(parameters)
-				.addAllExtractors(extractors)
-				.addAllValidators(validators);
+				.url(uri)
+				.method(Request.Method.GET.toString())
+				.addAllExtractors(extractors);
+				//.addAllValidators(validators);
 	}
-	protected static ImmutableGetPlainRequest.Builder getBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<Parameter> parameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
-		return ImmutableGetPlainRequest.builder()
-				.server(server)
+	protected static ImmutableRequest.Builder getBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<String> parameters,final Collection<VariableExtractor> extractors,final Optional<String> slaprofile) {
+
+//		protected static ImmutableRequest.Builder getBuilderWithHeaders(final Server server,final Collection<Header> headers, final String path, final Collection<String> parameters,final Collection<VariableExtractor> extractors, final Collection<RegexpValidator> validators) {
+		String uri = path;
+		if(parameters!=null) {
+			if(parameters.size()>0) {
+				String url = String.join("&", parameters);
+				uri += "?" + url;
+			}
+		}
+		return Request.builder()
+				.slaProfile(slaprofile)
+				.server(server.getName())
 				.name(path)
-				.path(path)
-				.httpMethod(Request.HttpMethod.GET)
-				.addAllParameters(parameters)
-				.addAllExtractors(extractors)
-				.addAllHeaders(headers)
-				.addAllValidators(validators);
+				.url(uri)
+				.method(Request.Method.GET.toString())
+				.addAllExtractors(extractors);
+				//.addAllValidators(validators);
 	}
-	protected static Container container(final String name, final Collection<Element> children) {
-		return ImmutableContainer.builder()
+	protected static Container container(final String name, final Collection<Step> children,Optional<String> slaprofile) {
+		return Container.builder()
 				.name(name)
-				.addAllChilds(children)
+				.slaProfile(slaprofile)
+				.addAllSteps(children)
 				.build();
 	}
 
-	protected static Container container(final String name, final Element... children) {
-		return ImmutableContainer.builder()
+	protected static Container container(final String name,final Optional<String> slaprofile, final Step... children) {
+		return Container.builder()
 				.name(name)
-				.addChilds(children)
+				.slaProfile(slaprofile)
+				.addSteps(children)
 				.build();
 	}
 

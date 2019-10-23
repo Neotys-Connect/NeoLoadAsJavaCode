@@ -3,13 +3,22 @@ package com.neotys.testing.framework; /**
  */
 
 import com.google.common.collect.ImmutableMap;
-import com.neotys.neoload.model.repository.FileVariable;
-import com.neotys.neoload.model.repository.Server;
-import com.neotys.neoload.model.repository.Variable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+import com.neotys.neoload.model.v3.project.server.*;
+import com.neotys.neoload.model.v3.project.sla.SlaProfile;
+import com.neotys.neoload.model.v3.project.sla.SlaThreshold;
+import com.neotys.neoload.model.v3.project.sla.SlaThresholdCondition;
+import com.neotys.neoload.model.v3.project.variable.*;
+import com.neotys.testing.framework.utils.datamodel.SlaProfiles;
+import net.dongliu.gson.GsonJava8TypeAdapterFactory;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -18,8 +27,10 @@ public abstract class BaseNeoLoadDesign {
 	private final Map<String, BaseNeoLoadUserPath> userPathByName;
 	private final Map<String, Server> serverByNames;
 	private final Map<String, Variable> variableByNames;
-
-	protected BaseNeoLoadDesign() {
+	private List<SlaProfile> slaProfiles;
+	private final Optional<String> jsonSLAProfile;
+	protected BaseNeoLoadDesign(Optional<String> jsonSLAProfile) throws FileNotFoundException {
+		this.jsonSLAProfile = jsonSLAProfile;
 		serverByNames = new HashMap<>();
 		userPathByName = new HashMap<>();
 		variableByNames = new HashMap<>();
@@ -29,10 +40,15 @@ public abstract class BaseNeoLoadDesign {
 	//---------------------------------------------------------
 	//--  init() : Method to initialize variables and servers
 	//-----------------------------------------------------
-	private void init() {
+	private void init() throws FileNotFoundException {
 		createVariables();
 		createServers();
 		createNeoLoadUserPaths();
+		slaProfiles = new ArrayList<>();
+		if(jsonSLAProfile.isPresent())
+		{
+			createSLAProfiles(jsonSLAProfile.get());
+		}
 	}
 
 	public abstract void createNeoLoadUserPaths();
@@ -60,6 +76,11 @@ public abstract class BaseNeoLoadDesign {
 			addVariable(variable);
 		}
 	}
+
+	public List<SlaProfile> getSlaProfiles() {
+		return slaProfiles;
+	}
+
 
 	public void addVirtualUser(final BaseNeoLoadUserPath userPath) {
 		userPathByName.put(userPath.getName(), userPath);
@@ -94,7 +115,7 @@ public abstract class BaseNeoLoadDesign {
 		checkState(var != null, "Variable %s is not defined in this design.", fileVariableName);
 		checkState(var instanceof FileVariable, "Variable %s is not a FileVariable.", fileVariableName);
 		final FileVariable file = (FileVariable) var;
-		final List<String> columnNames = file.getColumnsNames();
+		final List<String> columnNames = file.getColumnNames();
 		String variableName = file.getName();
 		for (final String name : columnNames) {
 			if (columnName.equalsIgnoreCase(name))
@@ -103,4 +124,60 @@ public abstract class BaseNeoLoadDesign {
 		return null;
 	}
 
+
+	//---json file for SLAprofileDefinition----
+	//format :
+	//  sla_profile:
+	//[
+	//	{
+	//		name: ,
+	//      description :
+	//		thresholds:
+	//		[
+	//			{
+	//				indicators:,
+	//				severity: ,
+	//				operator: ,
+	//				value: ,
+	//				unit: ,
+	//				scope: ,
+	//			},
+	//			{
+	//
+	//			}
+	//	}
+	//]
+	//------------------------------------------
+	protected void createSLAProfiles(String jsonFile) throws FileNotFoundException {
+		SlaProfiles slaNeoLoadProfile;
+		Gson gson = new GsonBuilder().registerTypeAdapterFactory(new GsonJava8TypeAdapterFactory()).create();
+
+
+		JsonReader reader = new JsonReader(new FileReader(jsonFile));
+		slaNeoLoadProfile = gson.fromJson(reader, SlaProfiles.class);
+
+		//----remove sla having a wrong definition-----
+		slaNeoLoadProfile.removeCleanSla();
+		//---------------------------------------
+
+		slaNeoLoadProfile.getSla_profile().stream().forEach(profile -> {
+			slaProfiles.add(SlaProfile.builder()
+					.name(profile.getName())
+					.description(profile.getDescription())
+					.addAllThresholds(profile.getThresholds().stream().map(threshold -> {
+						return SlaThreshold.builder()
+								.scope(SlaThreshold.Scope.of(threshold.getScope()))
+								.addConditions(SlaThresholdCondition.builder()
+										.operator(SlaThresholdCondition.Operator.of(threshold.getOperator()))
+										.value(threshold.getValue())
+										.severity(SlaThresholdCondition.Severity.of(threshold.getSeverity()))
+										.build()
+								).kpi(SlaThreshold.KPI.valueOf(threshold.getKpiName()))
+								.percent(threshold.getPercentile() == null ? Optional.empty() : threshold.getPercentile())
+								.build();
+					}).collect(Collectors.toList()))
+					.build());
+
+		});
+	}
 }

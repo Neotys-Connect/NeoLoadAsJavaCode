@@ -1,11 +1,12 @@
-import com.neotys.neoload.model.repository.ConstantVariable;
-import com.neotys.neoload.model.repository.FileVariable;
-import com.neotys.neoload.model.repository.Variable;
+import com.neotys.neoload.model.v3.project.server.Server;
+import com.neotys.neoload.model.v3.project.variable.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.plugin.apm.DynatraceIntegration;
 import com.neotys.testing.framework.plugin.apm.sanityCheck.DynatraceSanityCheck;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static com.neotys.testing.framework.utils.NeoLoadHelper.*;
 
@@ -14,15 +15,15 @@ import static com.neotys.testing.framework.utils.NeoLoadHelper.*;
  */
 public class ApiTestDesign extends BaseNeoLoadDesign {
 
-	ApiTestDesign() {
-		super();
+	ApiTestDesign() throws FileNotFoundException {
+		super(Optional.of("src/test/resources/slaprofile.json"));
 	}
 
 	@Override
 	public void createNeoLoadUserPaths() {
 		this.addVirtualUser(new ApiUserPath(this));
 		this.addVirtualUser(new DynatraceIntegration(this));
-		this.addVirtualUser(new DynatraceSanityCheck(this));
+	//	this.addVirtualUser(new DynatraceSanityCheck(this));
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 		final ConstantVariable port = createConstantVariable("sampledemo-port", "80");
 		//TODO take care about file path, perhaps we should use a mechanism to copy the source file to the NeoLoad project folder ?
 		final String pathFileName = Paths.get("src/test/resources/list_capital.csv").toAbsolutePath().toString();
-		final FileVariable location = createFileVariable("location", "Data Set for the location", pathFileName, true, ";", Variable.VariableScope.GLOBAL, Variable.VariableNoValuesLeftBehavior.CYCLE, Variable.VariableOrder.RANDOM, Variable.VariablePolicy.EACH_ITERATION, 1);
+		final FileVariable location = createFileVariable("location", "Data Set for the location", pathFileName, true, ";", Variable.Scope.GLOBAL, Variable.OutOfValue.CYCLE, Variable.Order.RANDOM, Variable.ChangePolicy.EACH_ITERATION, 1);
 
 		this.addVariables(server, port, location);
 	}
@@ -42,6 +43,6 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 		//use varname directly instead of getting var to use it
 		final Variable server = getVariableByName("sampledemo-host");
 		final Variable port = getVariableByName("sampledemo-port");
-		this.addServer(createServer("sampledemo", server, port));
+		this.addServer(createServer("sampledemo", server, port, Server.Scheme.HTTP,Optional.empty()));
 	}
 }

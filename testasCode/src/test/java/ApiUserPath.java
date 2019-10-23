@@ -1,9 +1,11 @@
 import com.google.common.collect.ImmutableList;
-import com.neotys.neoload.model.repository.*;
+import com.neotys.neoload.model.v3.project.server.Server;
+import com.neotys.neoload.model.v3.project.userpath.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.BaseNeoLoadUserPath;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
@@ -23,7 +25,7 @@ public class ApiUserPath extends BaseNeoLoadUserPath {
 		final String latitude = design.getVariableAndColumnFromFileVariable("location", "latitude");
 		final Server server = design.getServerByName("sampledemo");
 
-		final List<Parameter> postParameters = ImmutableList.of(
+		final List<String> postParameters = ImmutableList.of(
 				parameter("incident_ampm", "am"),
 				parameter("resp", "json"),
 				parameter("incident_description", "API testing"),
@@ -38,18 +40,21 @@ public class ApiUserPath extends BaseNeoLoadUserPath {
 				parameter("incident_minute", "49")
 		);
 
-		final Request postRequest = postFormBuilder(server, "/api", emptyList(), postParameters,emptyList(),emptyList()).build();
-		final Request getRequest = getBuilder(server, "/main", emptyList(),emptyList(),emptyList()).build();
+		final Request postRequest = postFormBuilder(server, "/api", emptyList(),postParameters,emptyList(),Optional.of("slaprofile_2")).build();
+		final Request getRequest = getBuilder(server, "/main", emptyList(),emptyList(),Optional.of("slaprofile_2")).build();
 
 		final Delay delay1 = delay(800);
-		final Delay delay2 = thinkTime(1200);
-		final ImmutableContainerForMulti actionsContainer = actionsContainerBuilder()
-				.addChilds(container("Api", getRequest, delay1))
-				.addChilds(container("Post",postRequest, delay2))
+		final ThinkTime delay2 = thinkTime(1200);
+		final Container actionsContainer = actionsContainerBuilder()
+				.name("API Workflow")
+				.addSteps(container("Api", Optional.empty(), getRequest, delay1))
+				.addSteps(container("Post",Optional.empty(),postRequest, delay2))
 				.build();
 
 		return userPathBuilder("CreateReportAPI")
-				.actionsContainer(actionsContainer)
+				.init(Optional.empty())
+				.actions(actionsContainer)
+				.end(Optional.empty())
 				.build();
 	}
 

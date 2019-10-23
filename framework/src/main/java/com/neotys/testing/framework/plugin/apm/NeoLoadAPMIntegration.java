@@ -1,11 +1,9 @@
 package com.neotys.testing.framework.plugin.apm;
 
-import com.neotys.neoload.model.repository.UserPath;
+import com.neotys.neoload.model.v3.project.userpath.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
-import com.neotys.testing.framework.BaseNeoLoadUserPath;
 import com.neotys.testing.framework.plugin.NeoloadIntegration;
 
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -43,5 +41,5 @@ public abstract class NeoLoadAPMIntegration extends NeoloadIntegration {
         return createAPMVirtualUser();
     };
 
-    public abstract UserPath createAPMVirtualUser();
+    public abstract com.neotys.neoload.model.v3.project.userpath.UserPath createAPMVirtualUser();
 }

@@ -1,11 +1,15 @@
 package com.neotys.testing.framework.utils;
 
 import com.google.common.collect.ImmutableList;
-import com.neotys.neoload.model.repository.*;
+import com.neotys.neoload.model.repository.CounterNumberVariable;
+import com.neotys.neoload.model.repository.ImmutableCounterNumberVariable;
+import com.neotys.neoload.model.v3.project.*;
 import com.neotys.neoload.model.repository.Variable.VariableNoValuesLeftBehavior;
 import com.neotys.neoload.model.repository.Variable.VariableOrder;
 import com.neotys.neoload.model.repository.Variable.VariablePolicy;
 import com.neotys.neoload.model.repository.Variable.VariableScope;
+import com.neotys.neoload.model.v3.project.server.*;
+import com.neotys.neoload.model.v3.project.variable.*;
 import com.neotys.neoload.model.writers.RegExpUtils;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
@@ -24,6 +28,10 @@ import java.util.stream.Stream;
  */
 public final class NeoLoadHelper {
 
+	public final static String NTML="NTML";
+	public final static String BASIC="BASIC";
+	public final static String NEGOCIATE="NEGOCIATE";
+
 	public static Server getServerFromList(final Map<String, Server> serverByNames, final String serverName) {
 		return serverByNames.get(serverName);
 	}
@@ -33,24 +41,88 @@ public final class NeoLoadHelper {
 	}
 
 	public static Server createServer(final String host, final String port) {
-		return ImmutableServer.builder()
+		return Server.builder()
 				.name(host)
 				.host(host)
 				.port(port)
 				.build();
 	}
 
-	public static Server createServer(final String host, final int port) {
-		return ImmutableServer.builder()
-				.name(host)
+	public static Authentication createAuthentification(String type,Variable username,Variable pwd,Optional<String> domain)
+	{
+		switch(type)
+		{
+			case NTML:
+				return NtlmAuthentication.builder()
+						.domain(domain)
+						.login(variabilize(username))
+						.password(variabilize(pwd))
+						.build();
+
+			case BASIC:
+				return BasicAuthentication.builder()
+						.login(variabilize(username))
+						.password(variabilize(pwd))
+						.realm(domain)
+						.build();
+			case NEGOCIATE:
+				return NegotiateAuthentication.builder()
+						.login(variabilize(username))
+						.password(variabilize(pwd))
+						.domain(domain)
+						.build();
+			default:
+				return null;
+
+		}
+	}
+
+
+	public static Authentication createAuthentification(String type,String username,String pwd,Optional<String> domain)
+	{
+		switch(type)
+		{
+			case NTML:
+				return NtlmAuthentication.builder()
+						.domain(domain)
+						.login(username)
+						.password(pwd)
+						.build();
+
+			case BASIC:
+				return BasicAuthentication.builder()
+						.login(username)
+						.password(pwd)
+						.realm(domain)
+						.build();
+			case NEGOCIATE:
+				 return NegotiateAuthentication.builder()
+						 .login(username)
+						 .password(pwd)
+						 .domain(domain)
+						 .build();
+			 default:
+			 	return null;
+
+		}
+
+	}
+
+	public static Server createServer(final String servername, final String host, final int port, Server.Scheme scheme,Optional<Authentication> auth) {
+		return Server.builder()
+				.name(servername)
 				.host(host)
+				.scheme(scheme)
+				.authentication(auth)
 				.port(Integer.toString(port))
 				.build();
 	}
 
-	public static Server createServer(final String serverName, final Variable host, final Variable port) {
-		return ImmutableServer.builder()
+	public static Server createServer(final String serverName, final Variable host, final Variable port, Server.Scheme scheme,Optional<Authentication> auth) {
+		return Server.builder()
 				.name(serverName)
+				.scheme(scheme)
+				.authentication(auth)
 				.host(variabilize(host))
 				.port(variabilize(port))
 				.build();
@@ -61,7 +133,7 @@ public final class NeoLoadHelper {
 	}
 
 	public static String getVariableAndColumnFromFileVariable(final FileVariable file, final String columnName) {
-		final List<String> columnNames = file.getColumnsNames();
+		final List<String> columnNames = file.getColumnNames();
 		String variableName = file.getName();
 		for (String name : columnNames) {
 			if (columnName.equalsIgnoreCase(name))
@@ -70,14 +142,15 @@ public final class NeoLoadHelper {
 		return null;
 	}
 
+
+
 	public static ConstantVariable createConstantVariable(final String variableName, final String description, final String value) {
-		return ImmutableConstantVariable.builder()
-				.constantValue(value)
+		return ConstantVariable.builder()
+				.value(value)
 				.description(description)
 				.name(variableName)
-				.constantValue(value)
-				.policy(VariablePolicy.EACH_VUSER)
-				.scope(VariableScope.GLOBAL)
+				.changePolicy(Variable.ChangePolicy.EACH_USER)
+				.scope(Variable.Scope.GLOBAL)
 				.build();
 	}
 
@@ -85,30 +158,30 @@ public final class NeoLoadHelper {
 		return createConstantVariable(variableName, variableName, value);
 	}
 
-	public static RandomNumberVariable createRandomNumberVariable(final String name, final String description, final VariablePolicy changePolicy,
-	                                                              final int min, final int max) {
-		return  ImmutableRandomNumberVariable.builder()
+	public static RandomNumberVariable createRandomNumberVariable(final String name, final String description, final Variable.ChangePolicy changePolicy,
+																  final int min, final int max) {
+		return  RandomNumberVariable.builder()
 				.description(description)
 				.name(name)
-				.minValue(min)
-				.maxValue(max)
-				.policy(changePolicy)
+				.min(min)
+				.max(max)
+				.changePolicy(changePolicy)
 				.build();
 	}
 
-	public static CounterNumberVariable createCounterVariable(final String name, final String descritpion, final VariablePolicy changePolicy, final int startValue,
-	                                                          final int max, final int increment, final VariableScope scope,
-	                                                          final VariableNoValuesLeftBehavior noValueLeft) {
+	public static CounterVariable createCounterVariable(final String name, final String descritpion, final Variable.ChangePolicy changePolicy, final int startValue,
+															  final int max, final int increment, final Variable.Scope  scope,
+															  final Variable.OutOfValue noValueLeft) {
 
-		return ImmutableCounterNumberVariable.builder()
+		return CounterVariable.builder()
 				.description(descritpion)
 				.increment(increment)
 				.name(name)
-				.maxValue(max)
-				.startValue(startValue)
+				.end(max)
+				.start(startValue)
 				.scope(scope)
-				.noValuesLeftBehavior(noValueLeft)
-				.policy(changePolicy)
+				.outOfValue(noValueLeft)
+				.changePolicy(changePolicy)
 				.build();
 	}
 
@@ -125,25 +198,25 @@ public final class NeoLoadHelper {
 	}
 
 	public static FileVariable createFileVariable(final String name, final String description, final String pathFileName, final boolean isFirstLineColumnName,
-	                                              final String columnDelimiter, final VariableScope scope,
-	                                              final VariableNoValuesLeftBehavior noValueLeft, final VariableOrder order,
-	                                              final VariablePolicy changePolicy, final int numOfFirstRowData) {
+	                                              final String columnDelimiter, final Variable.Scope scope,
+	                                              final Variable.OutOfValue noValueLeft, final Variable.Order order,
+	                                              final Variable.ChangePolicy changePolicy, final int numOfFirstRowData) {
 		if(isFirstLineColumnName)
 		{
 			try {
 				List<String> colunName = getColumnsFromFile(pathFileName, columnDelimiter);
 
-				return ImmutableFileVariable.builder()
+				return FileVariable.builder()
 						.description(description)
 						.name(name)
-						.fileName(pathFileName)
-						.firstLineIsColumnName(isFirstLineColumnName)
-						.policy(changePolicy)
-						.columnsDelimiter(columnDelimiter)
-						.columnsNames(colunName)
+						.path(pathFileName)
+						.isFirstLineColumnNames(isFirstLineColumnName)
+						.changePolicy(changePolicy)
+						.delimiter(columnDelimiter)
+						.addAllColumnNames(colunName)
 						.scope(scope)
-						.numOfFirstRowData(numOfFirstRowData)
-						.noValuesLeftBehavior(noValueLeft)
+						.startFromLine(numOfFirstRowData)
+						.outOfValue(noValueLeft)
 						.order(order)
 						.build();
 
@@ -153,38 +226,21 @@ public final class NeoLoadHelper {
 
 		}
 		else {
-			return ImmutableFileVariable.builder()
+			return FileVariable.builder()
 					.description(description)
 					.name(name)
-					.fileName(pathFileName)
-					.firstLineIsColumnName(isFirstLineColumnName)
-					.policy(changePolicy)
-					.columnsDelimiter(columnDelimiter)
-
+					.path(pathFileName)
+					.isFirstLineColumnNames(isFirstLineColumnName)
+					.changePolicy(changePolicy)
+					.delimiter(columnDelimiter)
 					.scope(scope)
-					.numOfFirstRowData(numOfFirstRowData)
-					.noValuesLeftBehavior(noValueLeft)
+					.startFromLine(numOfFirstRowData)
+					.outOfValue(noValueLeft)
 					.order(order)
 					.build();
 		}
 		return null;
 	}
 
-	public static FileVariable createFileVariable(final String name, final String description, final String[][] data, final boolean isFirstLineColumnName,
-	                                              final String columnDelimiter, final VariableScope scope, final VariableNoValuesLeftBehavior noValueLeft,
-	                                              final VariableOrder order, final VariablePolicy changePolicy, final int numOfFirstRowData) {
 
-		return ImmutableFileVariable.builder()
-				.description(description)
-				.name(name)
-				.data(data)
-				.firstLineIsColumnName(isFirstLineColumnName)
-				.policy(changePolicy)
-				.columnsDelimiter(columnDelimiter)
-				.scope(scope)
-				.numOfFirstRowData(numOfFirstRowData)
-				.noValuesLeftBehavior(noValueLeft)
-				.order(order)
-				.build();
-	}
 }

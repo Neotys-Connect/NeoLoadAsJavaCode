@@ -1,6 +1,6 @@
 package com.neotys.testing.framework.plugin;
 
-import com.neotys.neoload.model.repository.UserPath;
+import com.neotys.neoload.model.v3.project.userpath.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.BaseNeoLoadUserPath;
 

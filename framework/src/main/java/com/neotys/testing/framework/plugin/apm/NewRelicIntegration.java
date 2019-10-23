@@ -1,6 +1,7 @@
 package com.neotys.testing.framework.plugin.apm;
 
-import com.neotys.neoload.model.repository.*;
+import com.neotys.neoload.model.v3.project.Element;
+import com.neotys.neoload.model.v3.project.userpath.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 
 import java.io.File;
@@ -27,24 +28,24 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
     public UserPath createAPMVirtualUser() {
        ImmutableCustomAction.Builder newrelic;
 
-        newrelic=ImmutableCustomAction.builder()
-                .isHit(false)
+        newrelic= CustomAction.builder()
+                .asRequest(false)
                 .type("NewRelicMonitoringAction")
                 .libraryPath(new File(customActionPath).toPath())
                 .name("NewRelic Monitoring")
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("newRelicAPIKey")
                         .value(newRelicAPIKey)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("newRelicApplicationName")
                         .value(newRelicApplicationName)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("sendNLWebDataToNewRelic")
                         .value(sendNLWebDataToNewRelic)
                         .type(CustomActionParameter.Type.TEXT)
@@ -53,7 +54,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
 
         if(newRelicLicenseKey.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("newRelicLicenseKey")
                     .value(newRelicLicenseKey.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -61,7 +62,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
         }
         if(dataExchangeApiUrl.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                 .name("dataExchangeApiUrl")
                 .type(CustomActionParameter.Type.TEXT)
                 .value(dataExchangeApiUrl.get())
@@ -69,7 +70,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
         }
         if(newRelicAccountId.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("newRelicAccountId")
                     .value(newRelicAccountId.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -77,7 +78,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
         }
         if(newRelicInsightsAPIKey.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("newRelicInsightsAPIKey")
                     .value(newRelicInsightsAPIKey.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -85,7 +86,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
         }
         if(newRelicRelevantMetricNames.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("newRelicRelevantMetricNames")
                     .value(newRelicRelevantMetricNames.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -93,7 +94,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
         }
         if(newRelicRelevantMetricValues.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("newRelicRelevantMetricValues")
                     .value(newRelicRelevantMetricValues.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -102,7 +103,7 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
 
         if(proxyName.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("proxyName")
                     .value(proxyName.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -111,40 +112,29 @@ public class NewRelicIntegration extends NeoLoadAPMIntegration {
 
         if(dataExchangeApiKey.isPresent())
         {
-            newrelic.addParameters(ImmutableCustomActionParameter.builder()
+            newrelic.addParameters(CustomActionParameter.builder()
                     .name("dataExchangeApiKey")
                     .value(dataExchangeApiKey.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build());
         }
 
-        ImmutableContainerForMulti init=ImmutableContainerForMulti.builder()
-                .name("Init")
-                .tag("init-container")
-                .build();
 
-        ImmutableContainerForMulti end=ImmutableContainerForMulti.builder()
-                .name("End")
-                .tag("end-container")
-                .build();
-
-        ImmutableContainerForMulti action=ImmutableContainerForMulti.builder()
+        Container action=Container.builder()
                 .name("Actions")
-                .tag("actions-container")
-                .addChilds(newrelic.build())
-                .addChilds(ImmutableDelay.builder()
+                .addSteps(newrelic.build())
+                .addSteps(Delay.builder()
                         .name("delay_monitoring")
-                        .isThinkTime(false)
-                        .delay(String.valueOf(duration))
+                        .value(String.valueOf(duration))
                         .build())
                 .build();
 
 
-        return  ImmutableUserPath.builder()
+        return  UserPath.builder()
                 .name(NEWRELIC_USERPATH_NAME)
-                .initContainer(init)
-                .actionsContainer(action)
-                .endContainer(end)
+                .init(Optional.empty())
+                .actions(action)
+                .end(Optional.empty())
                 .build();
     }
 

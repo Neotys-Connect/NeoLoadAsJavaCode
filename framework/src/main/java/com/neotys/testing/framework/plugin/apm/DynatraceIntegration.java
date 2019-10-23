@@ -2,7 +2,7 @@ package com.neotys.testing.framework.plugin.apm;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import com.neotys.neoload.model.repository.*;
+import com.neotys.neoload.model.v3.project.userpath.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.plugin.apm.data.DynatraceAnomalie;
 
@@ -72,55 +72,55 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
             DynatraceAnomalie dynatraceAnomalies =getDynatraceAnomalie();
             if(dynatraceAnomalies!=null) {
                 customActionList = dynatraceAnomalies.getDynatraceAnomalieList().stream().map(dynatraceAnomalies1 -> {
-                    ImmutableCustomAction.Builder custoBuilder = ImmutableCustomAction.builder()
+                    ImmutableCustomAction.Builder custoBuilder = CustomAction.builder()
                             .name("DynatraceSetAnomalieDetection")
                             .type("DynatraceSetAnomalieDetection")
-                            .isHit(false)
+                            .asRequest(false)
                             .libraryPath(new File(customActionPath).toPath())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("dynatraceApiKey")
                                     .value(dynatraceApiKey)
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("dynatraceId")
                                     .value(dynatraceId)
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("tags")
                                     .value(tags.get())
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("dynatraceMetricName")
                                     .value(dynatraceAnomalies1.getDynatraceMetricName())
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("operator")
                                     .value(dynatraceAnomalies1.getOperator())
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("value")
                                     .value(dynatraceAnomalies1.getValue())
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build())
-                            .addParameters(ImmutableCustomActionParameter.builder()
+                            .addParameters(CustomActionParameter.builder()
                                     .name("typeOfAnomalie")
                                     .value(dynatraceAnomalies1.getTypeOfAnomalie())
                                     .type(CustomActionParameter.Type.TEXT)
                                     .build());
                     if (proxyName.isPresent()) {
-                        custoBuilder.addParameters(ImmutableCustomActionParameter.builder()
+                        custoBuilder.addParameters(CustomActionParameter.builder()
                                 .name("proxyName")
                                 .value(proxyName.get())
                                 .type(CustomActionParameter.Type.TEXT)
                                 .build());
                     }
                     if (dynatraceManagedHostname.isPresent()) {
-                        custoBuilder.addParameters(ImmutableCustomActionParameter.builder()
+                        custoBuilder.addParameters(CustomActionParameter.builder()
                                 .name("dynatraceManagedHostname")
                                 .value(dynatraceManagedHostname.get())
                                 .type(CustomActionParameter.Type.TEXT)
@@ -136,17 +136,17 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
     }
     private ImmutableCustomAction getDeleteAnomalieAction()
     {
-        ImmutableCustomAction.Builder deleteaction=ImmutableCustomAction.builder()
+        ImmutableCustomAction.Builder deleteaction= CustomAction.builder()
                 .name("DynatraceDeleteAnomalieDetection")
                 .type("DynatraceDeleteAnomalieDetection")
-                .isHit(false)
+                .asRequest(false)
                 .libraryPath(new File(customActionPath).toPath())
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceApiKey")
                         .value(dynatraceApiKey)
                         .type(CustomActionParameter.Type.TEXT)
                         .build())
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceId")
                         .value(dynatraceId)
                         .type(CustomActionParameter.Type.TEXT)
@@ -154,7 +154,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
 
         if(proxyName.isPresent())
         {
-            deleteaction.addParameters(ImmutableCustomActionParameter.builder()
+            deleteaction.addParameters(CustomActionParameter.builder()
                     .name("proxyName")
                     .value(proxyName.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -162,7 +162,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
         }
         if(dynatraceManagedHostname.isPresent())
         {
-            deleteaction.addParameters(ImmutableCustomActionParameter.builder()
+            deleteaction.addParameters(CustomActionParameter.builder()
                     .name("dynatraceManagedHostname")
                     .value(dynatraceManagedHostname.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -172,79 +172,79 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
         return deleteaction.build();
     }
     @Override
-    public UserPath createAPMVirtualUser() {
+    public com.neotys.neoload.model.v3.project.userpath.UserPath createAPMVirtualUser() {
 
         ImmutableCustomAction.Builder dynatracEvents;
         ImmutableCustomAction.Builder dynatracMonitoring;
         ImmutableCustomAction.Builder dynatracConfiguration;
 
         //---Handle required parameters------
-        dynatracEvents = ImmutableCustomAction.builder()
-                .isHit(false)
+        dynatracEvents = CustomAction.builder()
+                .asRequest(false)
                 .type("DynatraceEventAction")
                 .libraryPath(new File(customActionPath).toPath())
                 .name("DynatraceEvents")
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceApiKey")
                         .value(dynatraceApiKey)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceId")
                         .value(dynatraceId)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("tags")
                         .value(tags.get())
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 );
 
-        dynatracMonitoring = ImmutableCustomAction.builder()
-                .isHit(false)
+        dynatracMonitoring = CustomAction.builder()
+                .asRequest(false)
                 .type("DynatraceMonitoringAction")
                 .libraryPath(new File(customActionPath).toPath())
                 .name("DynatraceMonitoring")
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceApiKey")
                         .value(dynatraceApiKey)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceId")
                         .value(dynatraceId)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("tags")
                         .value(tags.get())
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 );
 
-        dynatracConfiguration = ImmutableCustomAction.builder()
-                .isHit(false)
+        dynatracConfiguration = CustomAction.builder()
+                .asRequest(false)
                 .type("DynatraceConfiguration")
                 .libraryPath(new File(customActionPath).toPath())
                 .name("DynatraceConfiguration")
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceApiKey")
                         .value(dynatraceApiKey)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("dynatraceId")
                         .value(dynatraceId)
                         .type(CustomActionParameter.Type.TEXT)
                         .build()
                 )
-                .addParameters(ImmutableCustomActionParameter.builder()
+                .addParameters(CustomActionParameter.builder()
                         .name("tags")
                         .value(tags.get())
                         .type(CustomActionParameter.Type.TEXT)
@@ -254,19 +254,19 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
 
 
         if (proxyName.isPresent()) {
-            dynatracConfiguration.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracConfiguration.addParameters(CustomActionParameter.builder()
                     .name("proxyName")
                     .value(proxyName.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build()
             );
-            dynatracEvents.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracEvents.addParameters(CustomActionParameter.builder()
                     .name("proxyName")
                     .value(proxyName.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build()
             );
-            dynatracMonitoring.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracMonitoring.addParameters(CustomActionParameter.builder()
                     .name("proxyName")
                     .value(proxyName.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -274,19 +274,19 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
             );
         }
         if (dynatraceManagedHostname.isPresent()) {
-            dynatracConfiguration.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracConfiguration.addParameters(CustomActionParameter.builder()
                     .name("dynatraceManagedHostname")
                     .value(dynatraceManagedHostname.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build()
             );
-            dynatracEvents.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracEvents.addParameters(CustomActionParameter.builder()
                     .name("dynatraceManagedHostname")
                     .value(dynatraceManagedHostname.get())
                     .type(CustomActionParameter.Type.TEXT)
                     .build()
             );
-            dynatracMonitoring.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracMonitoring.addParameters(CustomActionParameter.builder()
                     .name("dynatraceManagedHostname")
                     .value(dynatraceManagedHostname.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -296,7 +296,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
         }
 
         if (dataExchangeApiKey.isPresent()) {
-            dynatracMonitoring.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracMonitoring.addParameters(CustomActionParameter.builder()
                     .name("dataExchangeApiKey")
                     .value(dataExchangeApiKey.get())
                     .type(CustomActionParameter.Type.TEXT)
@@ -305,17 +305,16 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
         }
         if(dataExchangeApiUrl.isPresent())
         {
-            dynatracMonitoring.addParameters(ImmutableCustomActionParameter.builder()
+            dynatracMonitoring.addParameters(CustomActionParameter.builder()
                     .name("dataExchangeApiUrl")
                     .type(CustomActionParameter.Type.TEXT)
                     .value(dataExchangeApiUrl.get())
                     .build());
         }
 
-        ImmutableContainerForMulti.Builder init=ImmutableContainerForMulti.builder()
+        Container.Builder init=Container.builder()
                 .name("Init")
-                .tag("init-container")
-                .addChilds(dynatracConfiguration.build());
+                .addSteps(dynatracConfiguration.build());
 
         List<ImmutableCustomAction> customActionList;
         if(jsonAnomalieDetection.isPresent() || jsonAnomalieDetectionFile.isPresent())
@@ -324,7 +323,7 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
                 customActionList=getAnomaliesDetectionActions();
                 if(customActionList.size()>0)
                 {
-                    init.addAllChilds(customActionList);
+                    init.addAllSteps(customActionList);
                 }
             } catch (ParseException e) {
                 customActionList=new ArrayList<>();
@@ -339,33 +338,30 @@ public class DynatraceIntegration extends NeoLoadAPMIntegration {
             customActionList=new ArrayList<>();
         }
 
-        ImmutableContainerForMulti.Builder end=ImmutableContainerForMulti.builder()
+       Container.Builder end=Container.builder()
                 .name("End")
-                .tag("end-container")
-                .addChilds(dynatracEvents.build());
+                .addSteps(dynatracEvents.build());
 
         if(customActionList.size()>0)
         {
-            end.addChilds(getDeleteAnomalieAction());
+            end.addSteps(getDeleteAnomalieAction());
         }
 
-        ImmutableContainerForMulti action=ImmutableContainerForMulti.builder()
+        Container action=Container.builder()
                 .name("Actions")
-                .tag("actions-container")
-                .addChilds(dynatracMonitoring.build())
-                .addChilds(ImmutableDelay.builder()
+                .addSteps(dynatracMonitoring.build())
+                .addSteps(Delay.builder()
                         .name("delay_monitoring")
-                        .isThinkTime(false)
-                        .delay(String.valueOf(duration))
+                        .value(String.valueOf(duration))
                         .build())
                 .build();
 
 
-        return ImmutableUserPath.builder()
+        return UserPath.builder()
                 .name(DYNATRACE_USERPATH_NAME)
-                .initContainer(init.build())
-                .actionsContainer(action)
-                .endContainer(end.build())
+                .init(init.build())
+                .actions(action)
+                .end(end.build())
                 .build();
     }
 

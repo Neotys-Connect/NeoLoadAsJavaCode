@@ -1,0 +1,47 @@
+{
+  "sla_profile":
+  [
+    {
+      "name": "slaprofile_1",
+      "description": "test slaprofile",
+      "thresholds": [
+        {
+          "indicator": "avg-request-resp-time",
+          "severity": "fail",
+          "operator": ">=",
+          "value": 3000.00,
+          "scope": "per test"
+        },
+        {
+          "indicator": "perc-transaction-resp-time",
+          "severity": "fail",
+          "operator": ">=",
+          "value": 3500.00,
+          "scope": "per test",
+          "percentile": 99
+        },
+        {
+          "indicator": "error-rate",
+          "severity": "fail",
+          "operator": ">=",
+          "value": 10,
+          "scope": "per test"
+        }
+      ]
+    },
+    {
+      "name": "slaprofile_2" ,
+      "description":"test slaprofile",
+      "thresholds":
+      [
+        {
+          "indicator":"avg-request-resp-time",
+          "severity": "fail",
+          "operator": ">=",
+          "value": 3000.00,
+          "scope":"per interval"
+        }
+      ]
+    }
+    ]
+  }
