@@ -23,7 +23,7 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 	public void createNeoLoadUserPaths() {
 		this.addVirtualUser(new ApiUserPath(this));
 		this.addVirtualUser(new DynatraceIntegration(this));
-	//	this.addVirtualUser(new DynatraceSanityCheck(this));
+		this.addVirtualUser(new DynatraceSanityCheck(this));
 	}
 
 	@Override

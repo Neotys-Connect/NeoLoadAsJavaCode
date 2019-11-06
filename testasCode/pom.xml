@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <neoload-maven-plugin.version>1.0.6-SNAPSHOT</neoload-maven-plugin.version>
+        <neoload-maven-plugin.version>1.0.7-SNAPSHOT</neoload-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -52,7 +52,7 @@
                     <configuration>
                         <systemPropertyVariables>
                             <dataExchangeApiUrl>http://localhost:7400/DataExchange/v1/Service.svc/</dataExchangeApiUrl>
-                            <customActionPath>/home/hrexed/EngyteFolder/Dynatrace/target/DynatraceIntegration-3.0.1.jar</customActionPath>
+                            <customActionPath>/home/hrexed/EngyteFolder/Dynatrace/target/DynatraceIntegration-4.0.6.jar</customActionPath>
                             <dynatraceApiKey>t3FNohlfQNiuNPm0ILGLU</dynatraceApiKey>
                             <dynatraceId>pjk26067</dynatraceId>
                             <jsonAnomalieDetection>{"dynatraceAnomalieList":[

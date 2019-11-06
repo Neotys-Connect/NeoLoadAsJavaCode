@@ -90,7 +90,7 @@
     </distributionManagement>
 
     <properties>
-        <neoload-models.version>3.2.1</neoload-models.version>
+        <neoload-models.version>3.2.3</neoload-models.version>
         <gpg.passphrase>${env.PGP_PASSPHRASE}</gpg.passphrase>
     </properties>
 

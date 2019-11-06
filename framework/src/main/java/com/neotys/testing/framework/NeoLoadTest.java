@@ -253,6 +253,7 @@ public abstract class NeoLoadTest {
 					apmsettings.put("dynatrace.enabled","true");
 					apmsettings.put("dynatrace.logicalnames.enabled","true");
 					apmsettings.put("dynatrace.header","X-Dynatrace-Test");
+					apmsettings.put("dynatrace.type", "Dynatrace");
 					break;
 				case APPDYNAMICS:
 					apmsettings.put("appdynamics.enabled","true");
@@ -264,6 +265,7 @@ public abstract class NeoLoadTest {
 
 		if(!apmsettings.isEmpty())
 		{
+
 			project.projectSettings(apmsettings);
 		}
 
@@ -292,6 +294,7 @@ public abstract class NeoLoadTest {
 		//---Add all the Variables IN the project--------
 		projectBuilder.addAllVariables(design.getVariables().values());
 
+
 		final List<File> files = design.getVariables().values().stream().filter(v -> v instanceof FileVariable)
 				.map(v -> (FileVariable) v)
 				.map(path -> new File(path.getPath()))
@@ -317,7 +320,8 @@ public abstract class NeoLoadTest {
 
 		final String output = getOrCreateProjectFolder(project);
 		//-----creation of the project
-		NeoLoadWriter writer = new NeoLoadWriter(project, output, ImmutableMap.of("variables", files));
+		NeoLoadWriter writer = new NeoLoadWriter(project, output);//, ImmutableMap.of("variables", files));
+
 		writer.write(true);
 
 		//------
