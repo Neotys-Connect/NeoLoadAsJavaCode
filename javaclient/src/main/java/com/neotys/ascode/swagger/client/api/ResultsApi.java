@@ -26,28 +26,10 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import com.neotys.ascode.swagger.client.model.ArrayOfElementDefinition;
-import com.neotys.ascode.swagger.client.model.ArrayOfEventDefinition;
-import com.neotys.ascode.swagger.client.model.ArrayOfSLAGlobalIndicatorDefinition;
-import com.neotys.ascode.swagger.client.model.ArrayOfSLAPerIntervalDefinition;
-import com.neotys.ascode.swagger.client.model.ArrayOfSLAPerTestDefinition;
-import com.neotys.ascode.swagger.client.model.ArrayOfTestDefinition;
-import com.neotys.ascode.swagger.client.model.CounterDefinition;
-import com.neotys.ascode.swagger.client.model.CounterValues;
-import com.neotys.ascode.swagger.client.model.ElementDefinition;
-import com.neotys.ascode.swagger.client.model.ElementValues;
+import com.neotys.ascode.swagger.client.model.*;
 import com.neotys.ascode.swagger.client.model.Error;
-import com.neotys.ascode.swagger.client.model.EventType;
+
 import java.io.File;
-import com.neotys.ascode.swagger.client.model.MonitorPostRequest;
-import com.neotys.ascode.swagger.client.model.Points;
-import com.neotys.ascode.swagger.client.model.RateLimitError;
-import com.neotys.ascode.swagger.client.model.Sla;
-import com.neotys.ascode.swagger.client.model.TestDefinition;
-import com.neotys.ascode.swagger.client.model.TestRasterConfiguration;
-import com.neotys.ascode.swagger.client.model.TestRasterMultiConfiguration;
-import com.neotys.ascode.swagger.client.model.TestStatistics;
-import com.neotys.ascode.swagger.client.model.TestUpdateRequest;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -1480,8 +1462,8 @@ public class ResultsApi {
      * @return CounterDefinition
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public CounterDefinition getTestMonitors(String testId) throws ApiException {
-        ApiResponse<CounterDefinition> resp = getTestMonitorsWithHttpInfo(testId);
+    public ArrayOfCounterDefinition getTestMonitors(String testId) throws ApiException {
+        ApiResponse<ArrayOfCounterDefinition> resp = getTestMonitorsWithHttpInfo(testId);
         return resp.getData();
     }
 
@@ -1492,7 +1474,7 @@ public class ResultsApi {
      * @return ApiResponse&lt;CounterDefinition&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<CounterDefinition> getTestMonitorsWithHttpInfo(String testId) throws ApiException {
+    public ApiResponse<ArrayOfCounterDefinition> getTestMonitorsWithHttpInfo(String testId) throws ApiException {
         com.squareup.okhttp.Call call = getTestMonitorsValidateBeforeCall(testId, null, null);
         Type localVarReturnType = new TypeToken<CounterDefinition>(){}.getType();
         return apiClient.execute(call, localVarReturnType);

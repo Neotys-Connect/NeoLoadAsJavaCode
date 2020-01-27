@@ -15,17 +15,7 @@ package com.neotys.ascode.swagger.client.api;
 
 import com.neotys.ascode.swagger.client.ApiException;
 import com.neotys.ascode.swagger.client.api.ResultsApi;
-import com.neotys.ascode.swagger.client.model.ArrayOfElementDefinition;
-import com.neotys.ascode.swagger.client.model.ArrayOfTestDefinition;
-import com.neotys.ascode.swagger.client.model.CounterDefinition;
-import com.neotys.ascode.swagger.client.model.CounterValues;
-import com.neotys.ascode.swagger.client.model.ElementValues;
-import com.neotys.ascode.swagger.client.model.MonitorPostRequest;
-import com.neotys.ascode.swagger.client.model.Points;
-import com.neotys.ascode.swagger.client.model.Sla;
-import com.neotys.ascode.swagger.client.model.TestDefinition;
-import com.neotys.ascode.swagger.client.model.TestStatistics;
-import com.neotys.ascode.swagger.client.model.TestUpdateRequest;
+import com.neotys.ascode.swagger.client.model.*;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -170,8 +160,8 @@ public class ResultsApiTest {
     public void getTestMonitorsTest() throws ApiException {
         
         String testId = null;
-        
-        CounterDefinition response = api.getTestMonitors(testId);
+
+        ArrayOfCounterDefinition response = api.getTestMonitors(testId);
 
         // TODO: test validations
     }
