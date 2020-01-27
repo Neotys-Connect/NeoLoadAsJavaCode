@@ -77,17 +77,90 @@ public class ElementValues {
   
   @SerializedName("failureRate")
   private Float failureRate = null;
-  
-  public ElementValues count(Long count) {
-    this.count = count;
-    return this;
+
+  @SerializedName("percentile50")
+  private Float percentile50=null;
+  @SerializedName("percentile90")
+  private Float  percentile90=null;
+
+  @SerializedName("percentile95")
+  private Float percentile95=null;
+
+  @SerializedName("percentile99")
+  private Float percentile99=null;
+
+
+
+
+  /**
+   * Get percentile50
+   * @return percentile50
+   **/
+
+
+  @Schema(description = "")
+  public Float getPercentile50() {
+    return percentile50;
+  }
+  public void setPercentile50(Float percentile50) {
+    this.percentile50 = percentile50;
   }
 
-  
+  /**
+   * Get percentile90
+   * @return percentile90
+   **/
+
+
+  @Schema(description = "")
+  public Float getPercentile90() {
+    return percentile90;
+  }
+  public void setPercentile90(Float percentile50) {
+    this.percentile90 = percentile50;
+  }
+
+
+  /**
+   * Get percentile95
+   * @return percentile95
+   **/
+
+
+  @Schema(description = "")
+  public Float getPercentile95() {
+    return percentile95;
+  }
+  public void setPercentile95(Float percentile50) {
+    this.percentile95 = percentile50;
+  }
+
+
+  /**
+   * Get percentile99
+   * @return percentile99
+   **/
+
+
+  @Schema(description = "")
+  public Float getPercentile99() {
+    return percentile99;
+  }
+  public void setPercentile99(Float percentile50) {
+    this.percentile99 = percentile50;
+  }
+
+
+
+
   /**
   * Get count
   * @return count
   **/
+  public ElementValues count(Long count) {
+    this.count = count;
+    return this;
+  }
   
   
   @Schema(description = "")
