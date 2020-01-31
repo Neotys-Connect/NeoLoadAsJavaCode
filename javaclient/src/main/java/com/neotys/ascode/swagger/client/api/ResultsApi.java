@@ -1476,7 +1476,7 @@ public class ResultsApi {
      */
     public ApiResponse<ArrayOfCounterDefinition> getTestMonitorsWithHttpInfo(String testId) throws ApiException {
         com.squareup.okhttp.Call call = getTestMonitorsValidateBeforeCall(testId, null, null);
-        Type localVarReturnType = new TypeToken<CounterDefinition>(){}.getType();
+        Type localVarReturnType = new TypeToken<ArrayOfCounterDefinition>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -1488,7 +1488,7 @@ public class ResultsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getTestMonitorsAsync(String testId, final ApiCallback<CounterDefinition> callback) throws ApiException {
+    public com.squareup.okhttp.Call getTestMonitorsAsync(String testId, final ApiCallback<ArrayOfCounterDefinition> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1510,7 +1510,7 @@ public class ResultsApi {
         }
 
         com.squareup.okhttp.Call call = getTestMonitorsValidateBeforeCall(testId, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<CounterDefinition>(){}.getType();
+        Type localVarReturnType = new TypeToken<ArrayOfCounterDefinition>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

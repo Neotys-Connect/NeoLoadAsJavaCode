@@ -28,13 +28,13 @@ public class CounterValues {
   private Long count = null;
   
   @SerializedName("min")
-  private Long min = null;
+  private Float min = null;
   
   @SerializedName("max")
-  private Long max = null;
+  private Float max = null;
   
   @SerializedName("sum")
-  private Long sum = null;
+  private Float sum = null;
   
   @SerializedName("avg")
   private Float avg = null;
@@ -59,7 +59,7 @@ public class CounterValues {
     this.count = count;
   }
   
-  public CounterValues min(Long min) {
+  public CounterValues min(Float min) {
     this.min = min;
     return this;
   }
@@ -72,14 +72,14 @@ public class CounterValues {
   
   
   @Schema(description = "")
-  public Long getMin() {
+  public Float getMin() {
     return min;
   }
-  public void setMin(Long min) {
+  public void setMin(Float min) {
     this.min = min;
   }
   
-  public CounterValues max(Long max) {
+  public CounterValues max(Float max) {
     this.max = max;
     return this;
   }
@@ -92,14 +92,14 @@ public class CounterValues {
   
   
   @Schema(description = "")
-  public Long getMax() {
+  public Float getMax() {
     return max;
   }
-  public void setMax(Long max) {
+  public void setMax(Float max) {
     this.max = max;
   }
   
-  public CounterValues sum(Long sum) {
+  public CounterValues sum(Float sum) {
     this.sum = sum;
     return this;
   }
@@ -112,10 +112,10 @@ public class CounterValues {
   
   
   @Schema(description = "")
-  public Long getSum() {
+  public Float getSum() {
     return sum;
   }
-  public void setSum(Long sum) {
+  public void setSum(Float sum) {
     this.sum = sum;
   }
   
