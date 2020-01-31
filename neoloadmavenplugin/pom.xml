@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.neotys.ascode</groupId>
         <artifactId>neoload-testing-framework</artifactId>
-        <version>1.0.10</version>
+        <version>1.0.11-SNAPSHOT</version>
     </parent>
 
     <groupId>com.neotys.ascode</groupId>
