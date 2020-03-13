@@ -572,6 +572,140 @@ public class ResultsApi {
         return call;
     }
     /**
+     * Build call for getTestElementsPercentiles
+     * @param testId Unique identifier representing a specific test result. (required)
+     * @param elementId Unique identifier representing a specific element. (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getTestElementsPercentilesCall(String testId, String elementId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/tests/{testId}/elements/{elementId}/percentiles"
+            .replaceAll("\\{" + "testId" + "\\}", apiClient.escapeString(testId.toString()))
+            .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "NeoloadAuthorizer" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getTestElementsPercentilesValidateBeforeCall(String testId, String elementId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        // verify the required parameter 'testId' is set
+        if (testId == null) {
+            throw new ApiException("Missing the required parameter 'testId' when calling getTestElementsPercentiles(Async)");
+        }
+        // verify the required parameter 'elementId' is set
+        if (elementId == null) {
+            throw new ApiException("Missing the required parameter 'elementId' when calling getTestElementsPercentiles(Async)");
+        }
+
+        com.squareup.okhttp.Call call = getTestElementsPercentilesCall(testId, elementId, progressListener, progressRequestListener);
+        return call;
+
+
+
+
+
+    }
+
+    /**
+     * Test result percentiles transaction since the beginning of the test result
+     * Provides the percentiles of a test result transaction.
+     * @param testId Unique identifier representing a specific test result. (required)
+     * @param elementId Unique identifier representing a specific element. (required)
+     * @return Percentiles
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public Percentiles getTestElementsPercentiles(String testId, String elementId) throws ApiException {
+        ApiResponse<Percentiles> resp = getTestElementsPercentilesWithHttpInfo(testId, elementId);
+        return resp.getData();
+    }
+
+    /**
+     * Test result percentiles transaction since the beginning of the test result
+     * Provides the percentiles of a test result transaction.
+     * @param testId Unique identifier representing a specific test result. (required)
+     * @param elementId Unique identifier representing a specific element. (required)
+     * @return ApiResponse&lt;Percentiles&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<Percentiles> getTestElementsPercentilesWithHttpInfo(String testId, String elementId) throws ApiException {
+        com.squareup.okhttp.Call call = getTestElementsPercentilesValidateBeforeCall(testId, elementId, null, null);
+        Type localVarReturnType = new TypeToken<Percentiles>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * Test result percentiles transaction since the beginning of the test result (asynchronously)
+     * Provides the percentiles of a test result transaction.
+     * @param testId Unique identifier representing a specific test result. (required)
+     * @param elementId Unique identifier representing a specific element. (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call getTestElementsPercentilesAsync(String testId, String elementId, final ApiCallback<Percentiles> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getTestElementsPercentilesValidateBeforeCall(testId, elementId, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<Percentiles>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+    /**
      * Build call for getTestElementsPoints
      * @param testId Unique identifier representing a specific test. (required)
      * @param elementId Unique identifier representing a specific element. (required)
@@ -994,7 +1128,7 @@ public class ResultsApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getTestEventsCall(String testId, List<EventType> types, Integer limit, Integer offset, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getTestEventsCall(String testId, List<EventType> types, Integer limit, Integer offset, String sort, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1008,7 +1142,9 @@ public class ResultsApi {
         if (limit != null)
             localVarQueryParams.addAll(apiClient.parameterToPair("limit", limit));
         if (offset != null)
-            localVarQueryParams.addAll(apiClient.parameterToPair("offset", offset));
+        localVarQueryParams.addAll(apiClient.parameterToPair("offset", offset));
+        if (sort != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("sort", sort));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -1043,13 +1179,13 @@ public class ResultsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getTestEventsValidateBeforeCall(String testId, List<EventType> types, Integer limit, Integer offset, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getTestEventsValidateBeforeCall(String testId, List<EventType> types, Integer limit, Integer offset, String sort, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         // verify the required parameter 'testId' is set
         if (testId == null) {
             throw new ApiException("Missing the required parameter 'testId' when calling getTestEvents(Async)");
         }
 
-        com.squareup.okhttp.Call call = getTestEventsCall(testId, types, limit, offset, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getTestEventsCall(testId, types, limit, offset, sort, progressListener, progressRequestListener);
         return call;
 
 
@@ -1068,8 +1204,8 @@ public class ResultsApi {
      * @return ArrayOfEventDefinition
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ArrayOfEventDefinition getTestEvents(String testId, List<EventType> types, Integer limit, Integer offset) throws ApiException {
-        ApiResponse<ArrayOfEventDefinition> resp = getTestEventsWithHttpInfo(testId, types, limit, offset);
+    public ArrayOfEventDefinition getTestEvents(String testId, List<EventType> types, Integer limit, Integer offset, String sort) throws ApiException {
+        ApiResponse<ArrayOfEventDefinition> resp = getTestEventsWithHttpInfo(testId, types, limit, offset, sort);
         return resp.getData();
     }
 
@@ -1083,8 +1219,8 @@ public class ResultsApi {
      * @return ApiResponse&lt;ArrayOfEventDefinition&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ArrayOfEventDefinition> getTestEventsWithHttpInfo(String testId, List<EventType> types, Integer limit, Integer offset) throws ApiException {
-        com.squareup.okhttp.Call call = getTestEventsValidateBeforeCall(testId, types, limit, offset, null, null);
+    public ApiResponse<ArrayOfEventDefinition> getTestEventsWithHttpInfo(String testId, List<EventType> types, Integer limit, Integer offset, String sort) throws ApiException {
+        com.squareup.okhttp.Call call = getTestEventsValidateBeforeCall(testId, types, limit, offset, sort, null, null);
         Type localVarReturnType = new TypeToken<ArrayOfEventDefinition>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1100,7 +1236,7 @@ public class ResultsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getTestEventsAsync(String testId, List<EventType> types, Integer limit, Integer offset, final ApiCallback<ArrayOfEventDefinition> callback) throws ApiException {
+    public com.squareup.okhttp.Call getTestEventsAsync(String testId, List<EventType> types, Integer limit, Integer offset, String sort, final ApiCallback<ArrayOfEventDefinition> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1121,7 +1257,7 @@ public class ResultsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getTestEventsValidateBeforeCall(testId, types, limit, offset, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getTestEventsValidateBeforeCall(testId, types, limit, offset, sort, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<ArrayOfEventDefinition>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -2446,7 +2582,7 @@ public class ResultsApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getTestsCall(String status, String project, String author, Integer limit, Integer offset, String fields, Boolean pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getTestsCall(String status, String project, String author, Integer limit, Integer offset, String sort, String fields, Boolean pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -2463,7 +2599,9 @@ public class ResultsApi {
         if (limit != null)
             localVarQueryParams.addAll(apiClient.parameterToPair("limit", limit));
         if (offset != null)
-            localVarQueryParams.addAll(apiClient.parameterToPair("offset", offset));
+        localVarQueryParams.addAll(apiClient.parameterToPair("offset", offset));
+        if (sort != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("sort", sort));
         if (fields != null)
             localVarQueryParams.addAll(apiClient.parameterToPair("fields", fields));
         if (pretty != null)
@@ -2502,9 +2640,9 @@ public class ResultsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getTestsValidateBeforeCall(String status, String project, String author, Integer limit, Integer offset, String fields, Boolean pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getTestsValidateBeforeCall(String status, String project, String author, Integer limit, Integer offset, String sort, String fields, Boolean pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
 
-        com.squareup.okhttp.Call call = getTestsCall(status, project, author, limit, offset, fields, pretty, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getTestsCall(status, project, author, limit, offset, sort, fields, pretty, progressListener, progressRequestListener);
         return call;
 
 
@@ -2526,8 +2664,8 @@ public class ResultsApi {
      * @return ArrayOfTestDefinition
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ArrayOfTestDefinition getTests(String status, String project, String author, Integer limit, Integer offset, String fields, Boolean pretty) throws ApiException {
-        ApiResponse<ArrayOfTestDefinition> resp = getTestsWithHttpInfo(status, project, author, limit, offset, fields, pretty);
+    public ArrayOfTestDefinition getTests(String status, String project, String author, Integer limit, Integer offset, String sort, String fields, Boolean pretty) throws ApiException {
+        ApiResponse<ArrayOfTestDefinition> resp = getTestsWithHttpInfo(status, project, author, limit, offset, sort, fields, pretty);
         return resp.getData();
     }
 
@@ -2544,8 +2682,8 @@ public class ResultsApi {
      * @return ApiResponse&lt;ArrayOfTestDefinition&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ArrayOfTestDefinition> getTestsWithHttpInfo(String status, String project, String author, Integer limit, Integer offset, String fields, Boolean pretty) throws ApiException {
-        com.squareup.okhttp.Call call = getTestsValidateBeforeCall(status, project, author, limit, offset, fields, pretty, null, null);
+    public ApiResponse<ArrayOfTestDefinition> getTestsWithHttpInfo(String status, String project, String author, Integer limit, Integer offset, String sort, String fields, Boolean pretty) throws ApiException {
+        com.squareup.okhttp.Call call = getTestsValidateBeforeCall(status, project, author, limit, offset, sort, fields, pretty, null, null);
         Type localVarReturnType = new TypeToken<ArrayOfTestDefinition>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2564,7 +2702,7 @@ public class ResultsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getTestsAsync(String status, String project, String author, Integer limit, Integer offset, String fields, Boolean pretty, final ApiCallback<ArrayOfTestDefinition> callback) throws ApiException {
+    public com.squareup.okhttp.Call getTestsAsync(String status, String project, String author, Integer limit, Integer offset, String sort, String fields, Boolean pretty, final ApiCallback<ArrayOfTestDefinition> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2585,7 +2723,7 @@ public class ResultsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getTestsValidateBeforeCall(status, project, author, limit, offset, fields, pretty, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getTestsValidateBeforeCall(status, project, author, limit, offset, sort, fields, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<ArrayOfTestDefinition>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

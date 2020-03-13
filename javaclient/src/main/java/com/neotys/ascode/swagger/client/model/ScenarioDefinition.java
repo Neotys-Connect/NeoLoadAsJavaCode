@@ -21,32 +21,93 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * ScenarioDefinition
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaClientCodegen", date = "2018-09-05T15:48:08.071+02:00[Europe/Paris]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-03-13T10:37:42.246Z[GMT]")
 public class ScenarioDefinition {
-
   @SerializedName("scenarioName")
   private String scenarioName = null;
-  
+
+  @SerializedName("scenarioDuration")
+  private Long scenarioDuration = null;
+
+  @SerializedName("scenarioVUs")
+  private Integer scenarioVUs = null;
+
+  @SerializedName("scenarioSource")
+  private String scenarioSource = null;
+
   public ScenarioDefinition scenarioName(String scenarioName) {
     this.scenarioName = scenarioName;
     return this;
   }
 
-  
   /**
-  * Scenario name
-  * @return scenarioName
-  **/
-  
-  
-  @Schema(description = "Scenario name")
+   * Scenario name.
+   * @return scenarioName
+   **/
+  @Schema(description = "Scenario name.")
   public String getScenarioName() {
     return scenarioName;
   }
+
   public void setScenarioName(String scenarioName) {
     this.scenarioName = scenarioName;
   }
-  
+
+  public ScenarioDefinition scenarioDuration(Long scenarioDuration) {
+    this.scenarioDuration = scenarioDuration;
+    return this;
+  }
+
+  /**
+   * Duration (in seconds) of the scenario.
+   * @return scenarioDuration
+   **/
+  @Schema(description = "Duration (in seconds) of the scenario.")
+  public Long getScenarioDuration() {
+    return scenarioDuration;
+  }
+
+  public void setScenarioDuration(Long scenarioDuration) {
+    this.scenarioDuration = scenarioDuration;
+  }
+
+  public ScenarioDefinition scenarioVUs(Integer scenarioVUs) {
+    this.scenarioVUs = scenarioVUs;
+    return this;
+  }
+
+  /**
+   * Total Virtual User number of the scenario. Return 0 if the Virtual User number is not determined.
+   * @return scenarioVUs
+   **/
+  @Schema(description = "Total Virtual User number of the scenario. Return 0 if the Virtual User number is not determined.")
+  public Integer getScenarioVUs() {
+    return scenarioVUs;
+  }
+
+  public void setScenarioVUs(Integer scenarioVUs) {
+    this.scenarioVUs = scenarioVUs;
+  }
+
+  public ScenarioDefinition scenarioSource(String scenarioSource) {
+    this.scenarioSource = scenarioSource;
+    return this;
+  }
+
+  /**
+   * The scenarion location. Can be a yaml file or NLP path.
+   * @return scenarioSource
+   **/
+  @Schema(description = "The scenarion location. Can be a yaml file or NLP path.")
+  public String getScenarioSource() {
+    return scenarioSource;
+  }
+
+  public void setScenarioSource(String scenarioSource) {
+    this.scenarioSource = scenarioSource;
+  }
+
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -56,20 +117,27 @@ public class ScenarioDefinition {
       return false;
     }
     ScenarioDefinition scenarioDefinition = (ScenarioDefinition) o;
-    return Objects.equals(this.scenarioName, scenarioDefinition.scenarioName);
+    return Objects.equals(this.scenarioName, scenarioDefinition.scenarioName) &&
+            Objects.equals(this.scenarioDuration, scenarioDefinition.scenarioDuration) &&
+            Objects.equals(this.scenarioVUs, scenarioDefinition.scenarioVUs) &&
+            Objects.equals(this.scenarioSource, scenarioDefinition.scenarioSource);
   }
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(scenarioName);
+    return Objects.hash(scenarioName, scenarioDuration, scenarioVUs, scenarioSource);
   }
-  
+
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ScenarioDefinition {\n");
-    
+
     sb.append("    scenarioName: ").append(toIndentedString(scenarioName)).append("\n");
+    sb.append("    scenarioDuration: ").append(toIndentedString(scenarioDuration)).append("\n");
+    sb.append("    scenarioVUs: ").append(toIndentedString(scenarioVUs)).append("\n");
+    sb.append("    scenarioSource: ").append(toIndentedString(scenarioSource)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -85,8 +153,4 @@ public class ScenarioDefinition {
     return o.toString().replace("\n", "\n    ");
   }
 
-  
 }
-
-
-

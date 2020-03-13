@@ -21,32 +21,31 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * RunTestDefinition
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaClientCodegen", date = "2018-09-05T15:48:08.071+02:00[Europe/Paris]")
-public class RunTestDefinition {
 
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-03-13T10:37:42.246Z[GMT]")
+public class RunTestDefinition {
   @SerializedName("testId")
   private String testId = null;
-  
+
   public RunTestDefinition testId(String testId) {
     this.testId = testId;
     return this;
   }
 
-  
   /**
-  * Unique identifier of the test.
-  * @return testId
-  **/
-  
-  
+   * Unique identifier of the test.
+   * @return testId
+   **/
   @Schema(description = "Unique identifier of the test.")
   public String getTestId() {
     return testId;
   }
+
   public void setTestId(String testId) {
     this.testId = testId;
   }
-  
+
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -61,14 +60,15 @@ public class RunTestDefinition {
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(testId);
+    return Objects.hash(testId);
   }
-  
+
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RunTestDefinition {\n");
-    
+
     sb.append("    testId: ").append(toIndentedString(testId)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -85,8 +85,6 @@ public class RunTestDefinition {
     return o.toString().replace("\n", "\n    ");
   }
 
-  
 }
-
 
 

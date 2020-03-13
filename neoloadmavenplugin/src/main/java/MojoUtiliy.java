@@ -51,7 +51,7 @@ final class MojoUtiliy {
 				nlWebApiClient.setApiKey(token);
 				runtimeApi=new RuntimeApi(nlWebApiClient);
 
-				RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME + " " + scenarioName, projectDefinition.getProjectId(), nlWebScenario, TESTNAME + description,null,null,null,null,null, controllerID, lgzoneID);
+				RunTestDefinition runTestDefinition = runtimeApi.getTestsRun(TESTNAME + " " + scenarioName, projectDefinition.getProjectId(), nlWebScenario, TESTNAME + description,null,null,null,null,null, controllerID, lgzoneID,true,false);
 				NeoLoadWebTest result=new NeoLoadWebTest(runTestDefinition.getTestId(),nlwebURL.toString() + "/#!trend/?scenario=" + nlWebScenario + "&limit=-1&project=" + projectDefinition.getProjectId(),nlwebURL.toString() + "/#!result/" + runTestDefinition.getTestId() + "/overview");
 				return result;
 			} else {

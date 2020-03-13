@@ -13,6 +13,7 @@
 
 package com.neotys.ascode.swagger.client.api;
 
+import com.neotys.ascode.swagger.client.ApiClient;
 import com.neotys.ascode.swagger.client.ApiException;
 import com.neotys.ascode.swagger.client.api.ResultsApi;
 import com.neotys.ascode.swagger.client.model.*;
@@ -147,7 +148,45 @@ public class ResultsApiTest {
 
         // TODO: test validations
     }
-    
+    @Test
+    public void testpoints()
+    {
+
+        ApiClient apiClient=new ApiClient();
+        String token="15304f743f34ca33c458927a40945b7424a2066b95563774";
+        String testId="c09da065-3f4c-4fb4-b32c-928dd1a9e245";
+        String elementId = "3624ac1a-94b5-434a-aa39-c287b5286b1d"; // String | Unique identifier representing a specific element.
+
+        String statistics = "AVG_DURATION"; // String | Comma-separated list of statistics to get. Available statistics are: AVG_DURATION (ms), MIN_DURATION (ms), MAX_DURATION (ms), COUNT, THROUGHPUT (Byte/s), ELEMENTS_PER_SECOND, ERRORS, ERRORS_PER_SECOND, ERROR_RATE (%), AVG_TTFB (ms), MIN_TTFB (ms), MAX_TTFB (ms).<br/> Example: AVG_DURATION,ELEMENTS_PER_SECOND
+
+        try {
+
+            apiClient.setApiKey(token);
+            apiClient.setBasePath("https://neoload-api.saas.neotys.com/v1");
+
+            ResultsApi apiInstance = new ResultsApi(apiClient);
+
+
+            Points result = apiInstance.getTestElementsPoints(testId, elementId, statistics);
+
+                   /*result.forEach(n -> {
+
+                   n.getClass()
+
+                   });*/
+
+            result.forEach(point -> {
+                System.out.println(String.valueOf(point.getAVGDURATION()));
+            });
+
+        } catch (ApiException e) {
+
+            System.err.println("Exception when calling ResultsApi#getTestElementsPoints");
+
+            e.printStackTrace();
+
+        }
+    }
     /**
      * Test monitors
      *
@@ -248,8 +287,9 @@ public class ResultsApiTest {
         String fields = null;
         
         Boolean pretty = null;
+        String sort = null;
         
-        ArrayOfTestDefinition response = api.getTests(status, project, author, limit, offset, fields, pretty);
+        ArrayOfTestDefinition response = api.getTests(status, project, author, limit, offset, sort,fields, pretty);
 
         // TODO: test validations
     }
