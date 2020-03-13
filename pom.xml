@@ -7,7 +7,7 @@
     <groupId>com.neotys.ascode</groupId>
     <artifactId>neoload-testing-framework</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.11</version>
 
     <name>neoload-testing-framework</name>
     <url>https://github.com/NeotysLab/NeoLoadAsCode</url>
