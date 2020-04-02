@@ -25,7 +25,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
-import io.swagger.client.model.*;
+import com.neotys.ascode.api.v2.client.model.*;
 
 import java.io.IOException;
 import java.io.StringReader;
