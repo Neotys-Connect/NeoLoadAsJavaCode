@@ -42,6 +42,7 @@
         <module>javaclient</module>
         <module>framework</module>
         <module>neoloadmavenplugin</module>
+        <module>api-client-v2</module>
     </modules>
 
     <profiles>
