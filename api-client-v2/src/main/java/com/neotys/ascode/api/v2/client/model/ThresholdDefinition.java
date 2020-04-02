@@ -34,7 +34,7 @@ public class ThresholdDefinition {
   public enum OperatorEnum {
     GREATER_THAN_OR_EQUAL_TO(">="),
     LESS_THAN_OR_EQUAL_TO("<="),
-    _("==");
+    EQUAL_TO("==");
 
     private String value;
 
