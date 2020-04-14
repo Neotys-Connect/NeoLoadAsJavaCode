@@ -36,13 +36,29 @@ public final class NeoLoadHelper {
 		return serverByNames.get(serverName);
 	}
 
+
+	public static String variabilize(final String variableName) {
+		return "${" + variableName + "}";
+	}
+
+
 	public static Variable getVariableFromList(final Map<String, Variable> variableByNames, final String variableName) {
 		return variableByNames.get(variableName);
 	}
 
+	private static String cleanServerName(String host)
+	{
+		if(host.contains("${"))
+		{
+			return host.substring(2,host.length()-1);
+		}
+		else
+			return host;
+	}
 	public static Server createServer(final String host, final String port) {
+
 		return Server.builder()
-				.name(host)
+				.name(cleanServerName(host))
 				.host(host)
 				.port(port)
 				.build();

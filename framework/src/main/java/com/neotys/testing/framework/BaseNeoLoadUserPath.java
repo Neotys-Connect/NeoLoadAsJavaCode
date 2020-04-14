@@ -107,13 +107,6 @@ public abstract class BaseNeoLoadUserPath {
 				.build();
 	}
 
-	protected static String variabilize(final Variable var) {
-		return variabilize(var.getName());
-	}
-
-	protected static String variabilize(final String variableName) {
-		return "${" + variableName + "}";
-	}
 
 	protected static UserPath.Builder userPathBuilder(final String name) {
 		return UserPath.builder()
