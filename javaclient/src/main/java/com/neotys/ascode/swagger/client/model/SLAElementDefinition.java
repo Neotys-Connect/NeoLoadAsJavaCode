@@ -28,7 +28,7 @@ import java.io.IOException;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2019-05-09T16:44:40.746Z[GMT]")
 public class SLAElementDefinition {
 
-  @SerializedName("elementID")
+  @SerializedName("elementId")
   private String elementID = null;
 
   @SerializedName("name")
@@ -79,7 +79,7 @@ public class SLAElementDefinition {
   @SerializedName("category")
   private CategoryEnum category = null;
 
-  @SerializedName("userPath")
+  @SerializedName("userpath")
   private String userPath = null;
 
   @SerializedName("parent")

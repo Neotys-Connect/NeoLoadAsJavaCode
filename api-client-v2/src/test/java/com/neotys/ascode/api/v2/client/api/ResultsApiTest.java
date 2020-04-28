@@ -58,6 +58,7 @@ public class ResultsApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
+
     @Test
     public void deleteTestResultTest() throws ApiException {
         String resultId = null;

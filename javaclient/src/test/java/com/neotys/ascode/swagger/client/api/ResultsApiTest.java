@@ -30,7 +30,8 @@ public class ResultsApiTest {
 
     private final ResultsApi api = new ResultsApi();
 
-    
+
+
     /**
      * Deletes a test result
      *
