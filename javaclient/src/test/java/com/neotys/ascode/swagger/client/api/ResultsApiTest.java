@@ -32,6 +32,26 @@ public class ResultsApiTest {
 
 
 
+
+
+        @Test
+        public void testSLAPertest()
+        {
+        ApiClient client=new ApiClient();
+        client.setApiKey("d580b5a763f315113d0536ce65d22d4c38822479e56b35a6");
+        String testid="2b83d717-fcc7-4c7b-9981-22f6c2e5274e";
+        client.setBasePath("https://neoload-api.saas.neotys.com/v1");
+        ResultsApi resultsApi=new ResultsApi(client);
+            try {
+                ArrayOfSLAPerTestDefinition arrayOfSLAPerTestDefinition=resultsApi.getTestSLAPerTest(testid,null,null);
+                arrayOfSLAPerTestDefinition.forEach(slaPerTestDefinition -> {
+                    System.out.println(slaPerTestDefinition.getStatus().toString());
+                }
+            );
+            } catch (ApiException e) {
+                e.printStackTrace();
+            }
+        }
     /**
      * Deletes a test result
      *

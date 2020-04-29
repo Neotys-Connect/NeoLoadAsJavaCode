@@ -27,6 +27,7 @@ import com.google.gson.stream.JsonWriter;
  */
 @JsonAdapter(SLAKPIDefinition.Adapter.class)
 public enum SLAKPIDefinition {
+  //vg-request-resp-time, avg-page-resp-time, avg-transaction-resp-time, perc-transaction-resp-time, avg-request-per-sec, avg-throughput-per-sec, errors-count, count, throughput, avg-resp-time, errors-per-sec, error-rate
   AVERAGE_REQUEST_RESPONSE_TIME("AVERAGE_REQUEST_RESPONSE_TIME"),
   AVERAGE_PAGE_RESPONSE_TIME("AVERAGE_PAGE_RESPONSE_TIME"),
   AVERAGE_CONTAINER_RESPONSE_TIME("AVERAGE_CONTAINER_RESPONSE_TIME"),
@@ -38,7 +39,20 @@ public enum SLAKPIDefinition {
   TOTAL_THROUGHPUT("TOTAL_THROUGHPUT"),
   AVERAGE_RESPONSE_TIME("AVERAGE_RESPONSE_TIME"),
   ERRORS_PER_SECOND("ERRORS_PER_SECOND"),
-  ERROR_PERCENTILE("ERROR_PERCENTILE");
+  ERROR_PERCENTILE("ERROR_PERCENTILE"),
+  AVG_REQUEST_RESP_TIME("avg-request-resp-time"),
+  AVG_PAGE_RESP_TIME("avg-page-resp-time"),
+  AVG_TRANSACTION_RESP_TIME("avg-transaction-resp-time"),
+  PERC_TRANSACTION_RESP_TIME("perc-transaction-resp-time"),
+  AVG_REQUEST_PER_SEC("avg-request-per-sec"),
+  AVG_THROUGHPUT_PER_SEC("avg-throughput-per-sec"),
+  ERRORS_COUNT("errors-count"),
+  COUNT("count"),
+  THROUGHPUT("throughput"),
+  AVG_RESP_TIME("avg-resp-time"),
+  ERRORS_PER_SEC("errors-per-sec"),
+  ERROR_RATE("error-rate");
+
 
   private String value;
 
