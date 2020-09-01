@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <neoload-maven-plugin.version>1.0.7</neoload-maven-plugin.version>
+        <neoload-maven-plugin.version>1.0.18-SNAPSHOT</neoload-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -51,15 +51,12 @@
                     <version>2.5</version>
                     <configuration>
                         <systemPropertyVariables>
-                            <dataExchangeApiUrl>http://localhost:7400/DataExchange/v1/Service.svc/</dataExchangeApiUrl>
-                            <customActionPath>/home/hrexed/EngyteFolder/Dynatrace/target/DynatraceIntegration-4.0.6.jar</customActionPath>
-                            <dynatraceApiKey>t3FNohlfQNiuNPm0ILGLU</dynatraceApiKey>
-                            <dynatraceId>pjk26067</dynatraceId>
+                            <dynatraceApiKey>YouTOKEN</dynatraceApiKey>
+                            <dynatraceURL>https://vwv51099.live.dynatrace.com/</dynatraceURL>
                             <jsonAnomalieDetection>{"dynatraceAnomalieList":[
                                 { "dynatraceMetricName":"com.dynatrace.builtin:service.responsetime", "operator":"ABOVE", "value": "100" ,"typeOfAnomalie":"PERFORMANCE"}
                                 ] }</jsonAnomalieDetection>
-                            <outPutReferenceFile>/home/hrexed/dynatrace_smarscape.json</outPutReferenceFile>
-                            <tags>easytravel</tags>
+                            <dynatraceTags>easytravel</dynatraceTags>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>

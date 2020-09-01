@@ -7,6 +7,7 @@ import com.neotys.testing.framework.BaseNeoLoadUserPath;
 import java.util.List;
 import java.util.Optional;
 
+import static com.neotys.testing.framework.utils.NeoLoadHelper.variabilize;
 import static java.util.Collections.emptyList;
 
 /**

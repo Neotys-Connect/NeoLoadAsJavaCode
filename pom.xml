@@ -43,6 +43,7 @@
         <module>framework</module>
         <module>neoloadmavenplugin</module>
         <module>api-client-v2</module>
+        <module>api-client-v3</module>
     </modules>
 
     <profiles>
@@ -91,7 +92,7 @@
     </distributionManagement>
 
     <properties>
-        <neoload-models.version>3.2.3</neoload-models.version>
+        <neoload-models.version>3.2.9</neoload-models.version>
         <gpg.passphrase>${env.PGP_PASSPHRASE}</gpg.passphrase>
     </properties>
 

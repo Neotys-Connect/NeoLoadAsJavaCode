@@ -1,6 +1,8 @@
 package com.neotys.testing.framework;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.neotys.neoload.model.v3.project.Project;
 import com.neotys.neoload.model.v3.project.population.*;
 import com.neotys.neoload.model.v3.project.scenario.*;
@@ -8,9 +10,8 @@ import com.neotys.neoload.model.v3.project.userpath.UserPath;
 import com.neotys.neoload.model.v3.project.variable.FileVariable;
 import com.neotys.neoload.model.v3.writers.neoload.NeoLoadWriter;
 import com.neotys.testing.framework.plugin.apm.AppDynamicsIntegration;
-import com.neotys.testing.framework.plugin.apm.DynatraceIntegration;
 import com.neotys.testing.framework.plugin.apm.NewRelicIntegration;
-import com.neotys.testing.framework.plugin.apm.sanityCheck.DynatraceSanityCheck;
+import com.neotys.testing.framework.plugin.apm.data.DynatraceAnomalie;
 import com.neotys.testing.framework.utils.NeoloadFileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,9 +34,9 @@ public abstract class NeoLoadTest {
 
 	private static final Path NEO_LOAD_TARGET_PATH = NeoloadFileUtils.getNeoLoadTargetPath();
 	private final static String APPDYNAMICS="APPDYNAMICS";
-	private final static String DYNATRACE="DYNATRACE";
 	private final static String NEWRELIC="NEWRELIC";
-	private final static String DYNATRACE_SANITYCHECK="DYNATRACE_SANITYCHECK";
+	private static final String DYNATRACE ="DYNATRACE" ;
+
 
 	private BaseNeoLoadDesign design;
 	private List<Population> populations;
@@ -82,6 +83,16 @@ public abstract class NeoLoadTest {
 		}
 		return null;
 	}
+	private boolean IsDynatraceEnabled()
+	{
+		Properties props = System.getProperties();
+		String url=props.getProperty("dynatraceURL");
+		String token = props.getProperty("dynatraceApiKey");
+		if(url!=null&& token!=null)
+			return true;
+		else
+			return false;
+	}
 
 	private Population getPopulationFromName(final String name) {
 		for (final Population p : populations) {
@@ -106,13 +117,9 @@ public abstract class NeoLoadTest {
 	public Population getAPMpopulation()
 	{
 		//---test for dynatrace
-		Population population = getPopulationFromName(defaultPopulationNameForUserPath(DynatraceIntegration.DYNATRACE_USERPATH_NAME));
-		if(population !=null)
-			return population;
-		else
-		{
+
 			//----test for newrelic
-			population=getPopulationFromName(defaultPopulationNameForUserPath(NewRelicIntegration.NEWRELIC_USERPATH_NAME));
+			Population population=getPopulationFromName(defaultPopulationNameForUserPath(NewRelicIntegration.NEWRELIC_USERPATH_NAME));
 			if(population!=null)
 				return population;
 			else
@@ -123,82 +130,29 @@ public abstract class NeoLoadTest {
 					return population;
 
 			}
-		}
-		return null;
+
+			return null;
 	}
-	public Population getSanityCheckpopulation()
-	{
-		//---test for dynatrace
-		Population population = getPopulationFromName(defaultPopulationNameForUserPath(DynatraceSanityCheck.DYNATRACE_USERPATH_NAME));
-		if(population !=null)
-			return population;
-		else
-		{
-			//----test for other type of sanityCheck
-
-		}
-		return null;
-	}
-	public void createSanityCheckScenario()
-	{
-		Population sanitycheck=getSanityCheckpopulation();
-		if(sanitycheck!=null)
-		{
-
-				final Scenario.Builder scenario;
-
-				scenario = Scenario.builder()
-						.name(getSanityCheckProductsUsed())
-						.addPopulations(PopulationPolicy.builder()
-								.name(sanitycheck.getName())
-								.loadPolicy(ConstantLoadPolicy.builder()
-										.duration(LoadDuration.builder().type(LoadDuration.Type.ITERATION).value(1).build())
-										.users(1)
-										.rampup(0)
-										.build()
-								)
-								.build()
-						);
 
 
-
-				scenarios.add(scenario.build());
-
-		}
-
-	}
 	public String getAPMProductsUsed()
 	{
 		Population apm=getAPMpopulation();
 		if(apm!=null)
 		{
-			if(apm.getName().contains(DynatraceIntegration.DYNATRACE_USERPATH_NAME))
-				return DYNATRACE;
-			else
-			{
-				if(apm.getName().contains(NewRelicIntegration.NEWRELIC_USERPATH_NAME))
-					return NEWRELIC;
 
-				if(apm.getName().contains(AppDynamicsIntegration.APPD_USERPATH_NAME))
-					return APPDYNAMICS;
-			}
+			if(apm.getName().contains(NewRelicIntegration.NEWRELIC_USERPATH_NAME))
+				return NEWRELIC;
+
+			if(apm.getName().contains(AppDynamicsIntegration.APPD_USERPATH_NAME))
+				return APPDYNAMICS;
+
 		}
-
-
-		return null;
-
-	}
-	public String getSanityCheckProductsUsed()
-	{
-		Population senitycheck=getSanityCheckpopulation();
-		if(senitycheck!=null)
+		else
 		{
-			if(senitycheck.getName().contains(DynatraceSanityCheck.DYNATRACE_USERPATH_NAME))
-				return DYNATRACE_SANITYCHECK;
-			else
-			{
-				//----test for other sanitycheck
-			}
+			Properties props = System.getProperties();
+			if(props.getProperty("dynatraceApiKey")!=null)
+				return DYNATRACE;
 		}
 
 
@@ -206,7 +160,8 @@ public abstract class NeoLoadTest {
 
 	}
 
-	public void createSimpleConstantLoadScenario(final String scenarioName, final String userPathName, final int duration, final int maxUser, final int rampupTime,Optional<String> slaprofile) {
+
+	public void createSimpleConstantLoadScenario(final String scenarioName, final String userPathName, final int duration, final int maxUser, final int rampupTime,Optional<String> slaprofile) throws FileNotFoundException {
 		Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 		if (population != null) {
@@ -234,12 +189,64 @@ public abstract class NeoLoadTest {
 				.build()
 				);
 			}
+			else
+			{
+				if(IsDynatraceEnabled())
+				{
+
+					scenario.apm(getApmsettings());
+
+
+				}
+			}
 
 
 			scenarios.add(scenario.build());
 		}
 	}
 
+	private Apm getApmsettings() throws FileNotFoundException {
+		Properties props = System.getProperties();
+		String tags=props.getProperty("dynatraceTags");
+		if(tags!=null)
+		{
+			Apm.Builder immutableApm=  Apm.builder().dynatraceTags(Arrays.asList(tags.split(",")));
+			String jsonAnomalieDetection= props.getProperty("jsonAnomalieDetection");
+			String  jsonAnomalieDetectionFile = props.getProperty("jsonAnomalieDetectionFile");
+			DynatraceAnomalie dynatraceAnomalie = getDynatraceAnomalie(jsonAnomalieDetectionFile, jsonAnomalieDetection);
+			if(dynatraceAnomalie!=null)
+			{
+				dynatraceAnomalie.getDynatraceAnomalieList().stream().forEach(dynatraceAnomalies -> {
+					DynatraceAnomalyRule.Builder dynatracebuilder=DynatraceAnomalyRule.builder().metricId(dynatraceAnomalies.getDynatraceMetricName()).operator(dynatraceAnomalies.getOperator()).severity(dynatraceAnomalies.getTypeOfAnomalie()).value(dynatraceAnomalies.value);
+					immutableApm.addDynatraceAnomalyRules(dynatracebuilder.build());
+				});
+			}
+
+			return immutableApm.build();
+		}
+		else
+			return null;
+	}
+	private DynatraceAnomalie getDynatraceAnomalie(String jsonAnomalieDetectionFile,String jsonAnomalieDetection) throws FileNotFoundException {
+		DynatraceAnomalie dynatraceAnomalies;
+		Gson gson=new Gson();
+
+		if(jsonAnomalieDetectionFile!=null)
+		{
+			JsonReader reader = new JsonReader(new FileReader(jsonAnomalieDetectionFile));
+			return dynatraceAnomalies=gson.fromJson(reader,DynatraceAnomalie.class);
+		}
+		else
+		{
+			if(jsonAnomalieDetection!=null)
+			{
+				return  dynatraceAnomalies =gson.fromJson(jsonAnomalieDetection, DynatraceAnomalie.class);
+
+			}
+		}
+		return null;
+
+	}
 	private void addAPMSettings(final Project.Builder project)
 	{
 		String apm;
@@ -252,8 +259,13 @@ public abstract class NeoLoadTest {
 				case DYNATRACE:
 					apmsettings.put("dynatrace.enabled","true");
 					apmsettings.put("dynatrace.logicalnames.enabled","true");
-					apmsettings.put("dynatrace.header","X-Dynatrace-Test");
-					apmsettings.put("dynatrace.type", "Dynatrace");
+					Properties props = System.getProperties();
+					String url=props.getProperty("dynatraceURL");
+					String token = props.getProperty("dynatraceApiKey");
+					if(url !=null && token !=null) {
+						apmsettings.put("dynatrace.url", url);
+						apmsettings.put("dynatrace.token", token);
+					}
 					break;
 				case APPDYNAMICS:
 					apmsettings.put("appdynamics.enabled","true");
@@ -311,6 +323,7 @@ public abstract class NeoLoadTest {
 
 		//---add all the scenarios-------
 		for (Scenario scenario : scenarios) {
+
 			projectBuilder.addScenarios(scenario);
 			jsonScenarios.add(scenario.getName());
 		}
@@ -387,7 +400,7 @@ public abstract class NeoLoadTest {
 		return neoloadDir.getAbsolutePath();
 	}
 
-	protected void createSimpleConstantIterationScenario(final String scenarioName, final String userPathName, final int incremenNumber, final int maxUser, final int rampupTime,final Optional<String> slaprofilename) {
+	protected void createSimpleConstantIterationScenario(final String scenarioName, final String userPathName, final int incremenNumber, final int maxUser, final int rampupTime,final Optional<String> slaprofilename) throws FileNotFoundException {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 
@@ -422,11 +435,21 @@ public abstract class NeoLoadTest {
 						.build()
 				);
 			}
+			else
+			{
+				if(IsDynatraceEnabled())
+				{
+
+					scenario.apm(getApmsettings());
+
+
+				}
+			}
 			scenarios.add(scenario.build());
 		}
 	}
 	protected void createSimpleRampupLoadScenario(final String scenarioName, final String userPathName, final int duration,
-												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime,final Optional<String> slaprofile) {
+												  final int initialNbVU, final int incrementNbVu, final Optional<Integer> maxvu, final int incrementTime,final Optional<String> slaprofile) throws FileNotFoundException {
 		final Population population = getPopulationFromName(defaultPopulationNameForUserPath(userPathName));
 		Population apm;
 
@@ -477,6 +500,16 @@ public abstract class NeoLoadTest {
 						.build())
 				.build()
 				);
+			}
+			else
+			{
+				if(IsDynatraceEnabled())
+				{
+
+					scenario.apm(getApmsettings());
+
+
+				}
 			}
 			scenario.slaProfile(slaprofile);
 			scenarios.add(scenario.build());

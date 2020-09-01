@@ -1,8 +1,7 @@
 import com.neotys.neoload.model.v3.project.server.Server;
 import com.neotys.neoload.model.v3.project.variable.*;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
-import com.neotys.testing.framework.plugin.apm.DynatraceIntegration;
-import com.neotys.testing.framework.plugin.apm.sanityCheck.DynatraceSanityCheck;
+
 
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
@@ -22,8 +21,7 @@ public class ApiTestDesign extends BaseNeoLoadDesign {
 	@Override
 	public void createNeoLoadUserPaths() {
 		this.addVirtualUser(new ApiUserPath(this));
-		this.addVirtualUser(new DynatraceIntegration(this));
-		this.addVirtualUser(new DynatraceSanityCheck(this));
+
 	}
 
 	@Override
