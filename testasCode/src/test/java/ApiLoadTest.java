@@ -37,11 +37,11 @@ public class ApiLoadTest extends NeoLoadTest {
 	@Override
 	public void execute() {
 
-		try {
+		/*try {
 			createSimpleRampupLoadScenario("API test", "CreateReportAPI", 90, 1, 1, Optional.empty(),5,Optional.of("slaprofile_1"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		}*/
 		//	createSanityCheckScenario();
 	}
 }
