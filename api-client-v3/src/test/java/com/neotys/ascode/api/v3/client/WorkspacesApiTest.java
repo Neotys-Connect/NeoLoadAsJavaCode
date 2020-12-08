@@ -43,7 +43,10 @@ public class WorkspacesApiTest {
      */
     @Test
     public void getWorkspaceListTest() throws ApiException {
-        WorkspaceDefinitionList response = api.getWorkspaceList();
+        Boolean allWorkspaces = null;
+        Integer limit = null;
+        Integer offset = null;
+        WorkspaceDefinitionList response = api.getWorkspaceList(allWorkspaces,limit,offset);
 
         // TODO: test validations
     }

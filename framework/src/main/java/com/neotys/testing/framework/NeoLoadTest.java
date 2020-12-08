@@ -125,7 +125,7 @@ public abstract class NeoLoadTest {
 			else
 			{
 				//----test for Appd
-				getPopulationFromName(defaultPopulationNameForUserPath(AppDynamicsIntegration.APPD_USERPATH_NAME));
+				population=getPopulationFromName(defaultPopulationNameForUserPath(AppDynamicsIntegration.APPD_USERPATH_NAME));
 				if(population!=null)
 					return population;
 
@@ -148,12 +148,7 @@ public abstract class NeoLoadTest {
 				return APPDYNAMICS;
 
 		}
-		else
-		{
-			Properties props = System.getProperties();
-			if(props.getProperty("dynatraceApiKey")!=null)
-				return DYNATRACE;
-		}
+
 
 
 		return null;

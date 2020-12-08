@@ -57,19 +57,28 @@ public class WorkspacesApi {
 
     /**
      * Build call for getWorkspaceList
+     * @param allWorkspaces If true (reserved to admin users), returns all existing workspaces, including the workspaces I am not member of. If false, returns only the workspaces I am a member of. (optional)
+     * @param limit The maximum number of elements returned by this call. The maximum must be less than or equal to 200. (optional, default to 50)
+     * @param offset The offset of the first element to return. Starting at this offset, the query will return a maximum of &#x27;limit&#x27; elements. (optional, default to 0)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getWorkspaceListCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getWorkspaceListCall(Boolean allWorkspaces, Integer limit, Integer offset, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/workspaces";
+        String localVarPath = "/v3/workspaces";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        if (allWorkspaces != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("allWorkspaces", allWorkspaces));
+        if (limit != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("limit", limit));
+        if (offset != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("offset", offset));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -104,9 +113,9 @@ public class WorkspacesApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getWorkspaceListValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getWorkspaceListValidateBeforeCall(Boolean allWorkspaces, Integer limit, Integer offset, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
-        com.squareup.okhttp.Call call = getWorkspaceListCall(progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getWorkspaceListCall(allWorkspaces, limit, offset, progressListener, progressRequestListener);
         return call;
 
         
@@ -118,22 +127,28 @@ public class WorkspacesApi {
     /**
      * Get the list of all accessible Workspaces
      * Lists all accessible Workspaces.
+     * @param allWorkspaces If true (reserved to admin users), returns all existing workspaces, including the workspaces I am not member of. If false, returns only the workspaces I am a member of. (optional)
+     * @param limit The maximum number of elements returned by this call. The maximum must be less than or equal to 200. (optional, default to 50)
+     * @param offset The offset of the first element to return. Starting at this offset, the query will return a maximum of &#x27;limit&#x27; elements. (optional, default to 0)
      * @return WorkspaceDefinitionList
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public WorkspaceDefinitionList getWorkspaceList() throws ApiException {
-        ApiResponse<WorkspaceDefinitionList> resp = getWorkspaceListWithHttpInfo();
+    public WorkspaceDefinitionList getWorkspaceList(Boolean allWorkspaces, Integer limit, Integer offset) throws ApiException {
+        ApiResponse<WorkspaceDefinitionList> resp = getWorkspaceListWithHttpInfo(allWorkspaces, limit, offset);
         return resp.getData();
     }
 
     /**
      * Get the list of all accessible Workspaces
      * Lists all accessible Workspaces.
+     * @param allWorkspaces If true (reserved to admin users), returns all existing workspaces, including the workspaces I am not member of. If false, returns only the workspaces I am a member of. (optional)
+     * @param limit The maximum number of elements returned by this call. The maximum must be less than or equal to 200. (optional, default to 50)
+     * @param offset The offset of the first element to return. Starting at this offset, the query will return a maximum of &#x27;limit&#x27; elements. (optional, default to 0)
      * @return ApiResponse&lt;WorkspaceDefinitionList&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<WorkspaceDefinitionList> getWorkspaceListWithHttpInfo() throws ApiException {
-        com.squareup.okhttp.Call call = getWorkspaceListValidateBeforeCall(null, null);
+    public ApiResponse<WorkspaceDefinitionList> getWorkspaceListWithHttpInfo(Boolean allWorkspaces, Integer limit, Integer offset) throws ApiException {
+        com.squareup.okhttp.Call call = getWorkspaceListValidateBeforeCall(allWorkspaces, limit, offset, null, null);
         Type localVarReturnType = new TypeToken<WorkspaceDefinitionList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -141,11 +156,14 @@ public class WorkspacesApi {
     /**
      * Get the list of all accessible Workspaces (asynchronously)
      * Lists all accessible Workspaces.
+     * @param allWorkspaces If true (reserved to admin users), returns all existing workspaces, including the workspaces I am not member of. If false, returns only the workspaces I am a member of. (optional)
+     * @param limit The maximum number of elements returned by this call. The maximum must be less than or equal to 200. (optional, default to 50)
+     * @param offset The offset of the first element to return. Starting at this offset, the query will return a maximum of &#x27;limit&#x27; elements. (optional, default to 0)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getWorkspaceListAsync(final ApiCallback<WorkspaceDefinitionList> callback) throws ApiException {
+    public com.squareup.okhttp.Call getWorkspaceListAsync(Boolean allWorkspaces, Integer limit, Integer offset, final ApiCallback<WorkspaceDefinitionList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -166,7 +184,7 @@ public class WorkspacesApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getWorkspaceListValidateBeforeCall(progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getWorkspaceListValidateBeforeCall(allWorkspaces, limit, offset, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<WorkspaceDefinitionList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

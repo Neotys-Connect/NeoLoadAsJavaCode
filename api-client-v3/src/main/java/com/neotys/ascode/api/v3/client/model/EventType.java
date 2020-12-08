@@ -29,7 +29,8 @@ import com.google.gson.stream.JsonWriter;
 public enum EventType {
   ERROR("ERROR"),
   SLA("SLA"),
-  ALERT("ALERT");
+  ALERT("ALERT"),
+  CUSTOM("CUSTOM");
 
   private String value;
 
