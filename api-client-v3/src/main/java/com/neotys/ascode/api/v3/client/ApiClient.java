@@ -109,7 +109,10 @@ public class ApiClient {
      * @return An instance of OkHttpClient
      */
     public ApiClient setBasePath(String basePath) {
-        this.basePath = basePath;
+        if(basePath.contains(this.basePath))
+            this.basePath = basePath;
+        else
+            this.basePath=basePath+this.basePath;
         return this;
     }
 

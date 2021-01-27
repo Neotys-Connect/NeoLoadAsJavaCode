@@ -27,7 +27,7 @@ import java.io.IOException;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-09-01T07:09:13.021Z[GMT]")
 public class SLAElementDefinition {
-  @SerializedName("elementID")
+  @SerializedName("elementId")
   private String elementID = null;
 
   @SerializedName("name")
