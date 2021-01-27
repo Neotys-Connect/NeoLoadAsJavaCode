@@ -98,7 +98,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -229,7 +229,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/raw"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/raw"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -374,7 +374,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/raw"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/raw"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
@@ -525,7 +525,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -660,7 +660,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
@@ -803,7 +803,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -947,7 +947,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/percentiles"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/percentiles"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
@@ -1091,7 +1091,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/points"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/points"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
@@ -1243,7 +1243,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/sla"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/sla"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
@@ -1386,7 +1386,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/values"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/elements/{elementId}/values"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "elementId" + "\\}", apiClient.escapeString(elementId.toString()));
@@ -1532,7 +1532,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/events"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/events"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -1687,7 +1687,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/graph"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/graph"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -1831,7 +1831,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results"
+        String localVarPath = "/workspaces/{workspaceId}/test-results"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1998,7 +1998,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/monitors/{counterId}"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/monitors/{counterId}"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "counterId" + "\\}", apiClient.escapeString(counterId.toString()));
@@ -2140,7 +2140,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/monitors"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/monitors"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -2275,7 +2275,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/monitors/{counterId}/points"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/monitors/{counterId}/points"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "counterId" + "\\}", apiClient.escapeString(counterId.toString()));
@@ -2418,7 +2418,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/monitors/{counterId}/values"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/monitors/{counterId}/values"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "counterId" + "\\}", apiClient.escapeString(counterId.toString()));
@@ -2560,7 +2560,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/graph"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/graph"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2690,7 +2690,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/slas/statistics"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/slas/statistics"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -2831,7 +2831,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/slas/per-interval"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/slas/per-interval"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -2977,7 +2977,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/slas/per-test"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/slas/per-test"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -3121,7 +3121,7 @@ public class ResultsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/statistics"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/statistics"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -3257,7 +3257,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/events/{eventId}"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/events/{eventId}"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()))
             .replaceAll("\\{" + "eventId" + "\\}", apiClient.escapeString(eventId.toString()));
@@ -3407,7 +3407,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/events"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/events"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -3549,7 +3549,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/monitors"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/monitors"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -3687,7 +3687,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}/stop"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}/stop"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 
@@ -3829,7 +3829,7 @@ public class ResultsApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces/{workspaceId}/test-results/{resultId}"
+        String localVarPath = "/workspaces/{workspaceId}/test-results/{resultId}"
             .replaceAll("\\{" + "workspaceId" + "\\}", apiClient.escapeString(workspaceId.toString()))
             .replaceAll("\\{" + "resultId" + "\\}", apiClient.escapeString(resultId.toString()));
 

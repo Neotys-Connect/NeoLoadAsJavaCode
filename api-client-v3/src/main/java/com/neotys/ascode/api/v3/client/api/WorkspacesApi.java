@@ -69,7 +69,7 @@ public class WorkspacesApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v3/workspaces";
+        String localVarPath = "/workspaces";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
